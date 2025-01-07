@@ -1,0 +1,2338 @@
+{
+  "Web Development": [
+    {
+      "term": "REST API",
+      "translations": {
+        "primary": "RESTful API",
+        "alternates": [
+          "REST API",
+          "Рестовый API"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "An API that follows REST architectural constraints, using HTTP methods (GET, POST, PUT, DELETE) to interact with resources.",
+          "ru": "API, следующий архитектурным принципам REST, использующий HTTP-методы (GET, POST, PUT, DELETE) для взаимодействия с ресурсами. Обеспечивает простой и стандартизированный способ обмена данными."
+        },
+        "example": {
+          "en": "A web application might use a REST API to fetch user data from a server using a GET request to `/users/{id}`.",
+          "context": "Backend Development, Web Services"
+        }
+      },
+      "related_terms": [
+        "API",
+        "HTTP",
+        "Endpoint"
+      ]
+    },
+    {
+      "term": "Microservices",
+      "translations": {
+        "primary": "Микросервисы",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "An architectural style that structures an application as a collection of small, autonomous services, each running its own process and communicating with lightweight mechanisms.",
+          "ru": "Архитектурный стиль, который структурирует приложение как набор небольших, автономных сервисов, каждый из которых работает в собственном процессе и взаимодействует с помощью легковесных механизмов. Позволяет повысить масштабируемость и гибкость приложения."
+        },
+        "example": {
+          "en": "An e-commerce platform might use separate microservices for user accounts, product catalog, and order processing.",
+          "context": "Software Architecture, Scalability"
+        }
+      },
+      "related_terms": [
+        "API",
+        "Serverless",
+        "Monolith"
+      ]
+    },
+    {
+      "term": "SQL",
+      "translations": {
+        "primary": "SQL",
+        "alternates": [
+          "Structured Query Language",
+          "Язык структурированных запросов"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A domain-specific language used for managing and manipulating data in relational database management systems.",
+          "ru": "Специализированный язык для управления и манипулирования данными в реляционных системах управления базами данных (СУБД). Используется для создания, обновления и извлечения данных из таблиц."
+        },
+        "example": {
+          "en": "The query `SELECT * FROM users WHERE age > 25` retrieves all users older than 25.",
+          "context": "Database Management, Data Retrieval"
+        }
+      },
+      "related_terms": [
+        "Database",
+        "MySQL",
+        "PostgreSQL"
+      ]
+    },
+    {
+      "term": "NoSQL",
+      "translations": {
+        "primary": "NoSQL",
+        "alternates": [
+          "Не реляционные базы данных"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A class of database management systems that do not use the traditional table-based relational database model.",
+          "ru": "Класс систем управления базами данных, которые не используют традиционную таблично-ориентированную реляционную модель данных. Часто используются для работы с большими объемами неструктурированных данных."
+        },
+        "example": {
+          "en": "MongoDB is a popular NoSQL database used for storing JSON-like documents.",
+          "context": "Database Management, Big Data"
+        }
+      },
+      "related_terms": [
+        "MongoDB",
+        "Cassandra",
+        "Database"
+      ]
+    },
+    {
+      "term": "URL",
+      "translations": {
+        "primary": "Унифицированный указатель ресурса",
+        "alternates": [
+          "адрес URL",
+          "ссылка"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "The address of a website or page on the internet.",
+          "ru": "Адрес веб-сайта или страницы в интернете. Позволяет браузеру найти нужный ресурс."
+        },
+        "example": {
+          "en": "https://www.example.com is a URL.",
+          "context": "Web Browsing, Resource Location"
+        }
+      },
+      "related_terms": [
+        "HTTP",
+        "API",
+        "Client"
+      ]
+    },
+    {
+      "term": "Client",
+      "translations": {
+        "primary": "Клиент",
+        "alternates": [
+          "клиентская сторона"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A software application (like a web browser) that requests information from a server.",
+          "ru": "Программное приложение (например, веб-браузер), запрашивающее информацию у сервера."
+        },
+        "example": {
+          "en": "Your web browser is a client that requests web pages from servers.",
+          "context": "Client-Server Architecture, Web Browsing"
+        }
+      },
+      "related_terms": [
+        "Server",
+        "API",
+        "HTTP"
+      ]
+    },
+    {
+      "term": "Server",
+      "translations": {
+        "primary": "Сервер",
+        "alternates": [
+          "серверная сторона"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A computer system that provides data to clients.",
+          "ru": "Компьютерная система, предоставляющая данные клиентам. Хранит и обрабатывает информацию."
+        },
+        "example": {
+          "en": "A web server stores and sends web pages to clients.",
+          "context": "Client-Server Architecture, Web Hosting"
+        }
+      },
+      "related_terms": [
+        "Client",
+        "API",
+        "Database"
+      ]
+    },
+    {
+      "term": "HTML",
+      "translations": {
+        "primary": "HTML",
+        "alternates": [
+          "язык разметки гипертекста"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "The language used to structure content on web pages.",
+          "ru": "Язык разметки гипертекста, используемый для структурирования контента веб-страниц."
+        },
+        "example": {
+          "en": "<p>This is a paragraph.</p>",
+          "context": "Frontend Development, Web Page Structure"
+        }
+      },
+      "related_terms": [
+        "CSS",
+        "JavaScript",
+        "DOM"
+      ]
+    },
+    {
+      "term": "CSS",
+      "translations": {
+        "primary": "CSS",
+        "alternates": [
+          "каскадные таблицы стилей"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "The language used to style the content on web pages.",
+          "ru": "Язык каскадных таблиц стилей, используемый для стилизации контента веб-страниц."
+        },
+        "example": {
+          "en": "p { color: blue; }",
+          "context": "Frontend Development, Web Page Styling"
+        }
+      },
+      "related_terms": [
+        "HTML",
+        "JavaScript",
+        "Flexbox"
+      ]
+    },
+    {
+      "term": "JavaScript",
+      "translations": {
+        "primary": "JavaScript",
+        "alternates": [
+          "JS",
+          "Джаваскрипт"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A programming language used to add interactivity to web pages.",
+          "ru": "Язык программирования, используемый для добавления интерактивности на веб-страницах."
+        },
+        "example": {
+          "en": "document.getElementById('myButton').addEventListener('click', function() { ... });",
+          "context": "Frontend Development, Web Page Interactivity"
+        }
+      },
+      "related_terms": [
+        "HTML",
+        "CSS",
+        "DOM"
+      ]
+    },
+    {
+      "term": "REST",
+      "translations": {
+        "primary": "REST",
+        "alternates": [
+          "RESTful API",
+          "REST API"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A software architectural style for building web services.",
+          "ru": "Архитектурный стиль для построения веб-сервисов, основанный на использовании стандартных HTTP методов."
+        },
+        "example": {
+          "en": "Many APIs use REST to define how clients interact with the server.",
+          "context": "API Design, Web Services"
+        }
+      },
+      "related_terms": [
+        "API",
+        "HTTP",
+        "GraphQL"
+      ]
+    },
+    {
+      "term": "GraphQL",
+      "translations": {
+        "primary": "GraphQL",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A query language for APIs that allows clients to request exactly the data they need.",
+          "ru": "Язык запросов для API, позволяющий клиентам запрашивать только необходимые данные."
+        },
+        "example": {
+          "en": "GraphQL is used to reduce over-fetching and improve API efficiency.",
+          "context": "API Design, Data Fetching"
+        }
+      },
+      "related_terms": [
+        "REST",
+        "API",
+        "Client"
+      ]
+    },
+    {
+      "term": "Database",
+      "translations": {
+        "primary": "База данных",
+        "alternates": [
+          "БД"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "An organized collection of structured information.",
+          "ru": "Организованная коллекция структурированной информации, хранящаяся на компьютере."
+        },
+        "example": {
+          "en": "Websites use databases to store user information and other data.",
+          "context": "Data Storage, Backend Development"
+        }
+      },
+      "related_terms": [
+        "SQL",
+        "NoSQL",
+        "Server"
+      ]
+    },
+    {
+      "term": "ORM",
+      "translations": {
+        "primary": "ORM",
+        "alternates": [
+          "Объектно-реляционное отображение"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A technique that lets you interact with a database using objects instead of SQL queries.",
+          "ru": "Техника, позволяющая взаимодействовать с базой данных, используя объекты, вместо SQL-запросов."
+        },
+        "example": {
+          "en": "ORMs simplify database interactions in many programming languages.",
+          "context": "Database Interaction, Backend Development"
+        }
+      },
+      "related_terms": [
+        "SQL",
+        "Database",
+        "Python"
+      ]
+    },
+    {
+      "term": "JWT",
+      "translations": {
+        "primary": "JWT",
+        "alternates": [
+          "JSON Web Token",
+          "токен JWT"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A compact, URL-safe means of representing claims to be transferred between parties as a JSON object.",
+          "ru": "Компактный, безопасный для URL способ представления данных, передаваемых между сторонами в виде JSON объекта. Часто используется для аутентификации."
+        },
+        "example": {
+          "en": "JWTs are commonly used for authentication and authorization in web applications.",
+          "context": "Authentication, Security"
+        }
+      },
+      "related_terms": [
+        "OAuth",
+        "Authentication",
+        "Security"
+      ]
+    },
+    {
+      "term": "OAuth",
+      "translations": {
+        "primary": "OAuth",
+        "alternates": [
+          "OAuth 2.0"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "An authorization framework that allows third-party applications to obtain limited access to an HTTP service, either on behalf of a resource owner by orchestrating an authorization grant with the resource owner and the HTTP service, or by allowing the third-party application to obtain access on its own behalf.",
+          "ru": "Фреймворк авторизации, который позволяет сторонним приложениям получать ограниченный доступ к HTTP-сервису."
+        },
+        "example": {
+          "en": "Many websites use OAuth for user authentication with Google or Facebook.",
+          "context": "Authentication, Authorization, Security"
+        }
+      },
+      "related_terms": [
+        "JWT",
+        "Authentication",
+        "Security"
+      ]
+    },
+    {
+      "term": "Endpoint",
+      "translations": {
+        "primary": "Конечная точка",
+        "alternates": [
+          "Точка доступа"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A specific address or URL where a client can interact with an API.",
+          "ru": "Конкретный адрес или URL, по которому клиент может взаимодействовать с API. Это точка доступа к определённой функции или ресурсу."
+        },
+        "example": {
+          "en": "https://api.example.com/users is an endpoint for retrieving user data.",
+          "context": "API Interaction, RESTful APIs"
+        }
+      },
+      "related_terms": [
+        "API",
+        "REST",
+        "HTTP"
+      ]
+    },
+    {
+      "term": "HTTPS",
+      "translations": {
+        "primary": "Безопасный протокол передачи гипертекста",
+        "alternates": [
+          "HTTPS-протокол"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A secure version of HTTP that encrypts communication between the client and server.",
+          "ru": "Защищённая версия протокола HTTP, обеспечивающая шифрование связи между клиентом и сервером. Это важно для безопасности передачи данных, особенно конфиденциальной информации."
+        },
+        "example": {
+          "en": "Websites using HTTPS have 'https://' at the beginning of their URLs.",
+          "context": "Web Security, Data Encryption"
+        }
+      },
+      "related_terms": [
+        "HTTP",
+        "SSL",
+        "TLS"
+      ]
+    },
+    {
+      "term": "JWT (JSON Web Token)",
+      "translations": {
+        "primary": "JSON Web Token",
+        "alternates": [
+          "Джет-токен",
+          "JWT-токен"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A compact and self-contained way to represent claims to be transmitted between parties as a JSON object.",
+          "ru": "Компактный и самодостаточный способ представления утверждений для передачи между сторонами в виде JSON-объекта. Часто используется для аутентификации."
+        },
+        "example": {
+          "en": "JWTs are commonly used for authentication in REST APIs.",
+          "context": "Authentication, Authorization"
+        }
+      },
+      "related_terms": [
+        "OAuth",
+        "Authentication",
+        "Authorization"
+      ]
+    },
+    {
+      "term": "Session Management",
+      "translations": {
+        "primary": "Управление сессиями",
+        "alternates": [
+          "Сессионное управление"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "The process of tracking a user's activity over a period of time on a website.",
+          "ru": "Процесс отслеживания активности пользователя на веб-сайте в течение определённого периода времени. Обычно используется для сохранения состояния пользователя между запросами."
+        },
+        "example": {
+          "en": "Session management is crucial for maintaining a user's login state.",
+          "context": "User Authentication, Web Applications"
+        }
+      },
+      "related_terms": [
+        "Cookies",
+        "JWT",
+        "Authentication"
+      ]
+    },
+    {
+      "term": "ORM (Object-Relational Mapper)",
+      "translations": {
+        "primary": "Объектно-реляционное отображение",
+        "alternates": [
+          "ORM-фреймворк"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A technique that lets you query and manipulate data from a database using an object-oriented programming language.",
+          "ru": "Техника, позволяющая запрашивать и управлять данными из базы данных, используя объектно-ориентированный язык программирования. Упрощает работу с базами данных."
+        },
+        "example": {
+          "en": "Using an ORM, you can interact with database tables as if they were objects in your code.",
+          "context": "Database Interaction, Object-Oriented Programming"
+        }
+      },
+      "related_terms": [
+        "Database",
+        "SQL",
+        "NoSQL"
+      ]
+    },
+    {
+      "term": "Caching",
+      "translations": {
+        "primary": "Кэширование",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "Storing frequently accessed data in a temporary location for faster retrieval.",
+          "ru": "Хранение часто используемых данных во временном хранилище для ускорения их получения. Позволяет снизить нагрузку на основную базу данных."
+        },
+        "example": {
+          "en": "Websites use caching to speed up page load times by storing static assets in a cache.",
+          "context": "Web Performance, Database Optimization"
+        }
+      },
+      "related_terms": [
+        "Redis",
+        "Memcached",
+        "Database"
+      ]
+    },
+    {
+      "term": "Message Queue",
+      "translations": {
+        "primary": "Очередь сообщений",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A central point where messages are stored temporarily before being processed.",
+          "ru": "Центральное место, где сообщения временно хранятся перед обработкой. Используется для асинхронного обмена сообщениями между компонентами системы."
+        },
+        "example": {
+          "en": "Message queues are often used in microservices architectures for asynchronous communication.",
+          "context": "Asynchronous Communication, Microservices"
+        }
+      },
+      "related_terms": [
+        "RabbitMQ",
+        "Kafka",
+        "Microservices"
+      ]
+    },
+    {
+      "term": "Serverless Architecture",
+      "translations": {
+        "primary": "Бессерверная архитектура",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "advanced",
+      "context": {
+        "definition": {
+          "en": "An architectural approach where the cloud provider manages the servers.",
+          "ru": "Архитектурный подход, где управление серверами берёт на себя облачный провайдер. Разработчику не нужно беспокоиться об управлении инфраструктурой."
+        },
+        "example": {
+          "en": "AWS Lambda is a popular serverless computing service.",
+          "context": "Cloud Computing, Microservices"
+        }
+      },
+      "related_terms": [
+        "Microservices",
+        "AWS",
+        "Cloud Computing"
+      ]
+    },
+    {
+      "term": "React",
+      "translations": {
+        "primary": "React",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A popular JavaScript library for building user interfaces.",
+          "ru": "Популярная JavaScript библиотека для построения пользовательских интерфейсов, известная своей компонентой архитектурой."
+        },
+        "example": {
+          "en": "React uses a component-based architecture to build reusable UI elements.",
+          "context": "Frontend Framework, UI Development"
+        }
+      },
+      "related_terms": [
+        "JavaScript",
+        "Component",
+        "Frontend"
+      ]
+    },
+    {
+      "term": "Vue",
+      "translations": {
+        "primary": "Vue.js",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A progressive framework for building user interfaces.",
+          "ru": "Прогрессивный фреймворк для построения пользовательских интерфейсов, известный своей простотой и гибкостью."
+        },
+        "example": {
+          "en": "Vue is often praised for its ease of learning and integration with other libraries.",
+          "context": "Frontend Framework, UI Development"
+        }
+      },
+      "related_terms": [
+        "JavaScript",
+        "Component",
+        "Frontend"
+      ]
+    },
+    {
+      "term": "Angular",
+      "translations": {
+        "primary": "Angular",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A comprehensive framework for building complex web applications.",
+          "ru": "Всеобъемлющий фреймворк для построения сложных веб-приложений, основанный на TypeScript."
+        },
+        "example": {
+          "en": "Angular is a powerful framework suitable for large-scale projects.",
+          "context": "Frontend Framework, TypeScript"
+        }
+      },
+      "related_terms": [
+        "TypeScript",
+        "Component",
+        "Frontend"
+      ]
+    },
+    {
+      "term": "Responsive Design",
+      "translations": {
+        "primary": "Адаптивный дизайн",
+        "alternates": [
+          "Респонсивный дизайн"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "Designing websites that adapt to different screen sizes.",
+          "ru": "Дизайн веб-сайтов, который подстраивается под разные размеры экранов, обеспечивая оптимальное отображение на любых устройствах."
+        },
+        "example": {
+          "en": "Responsive design uses techniques like flexible layouts and media queries.",
+          "context": "Web Development, User Experience"
+        }
+      },
+      "related_terms": [
+        "HTML",
+        "CSS",
+        "Media Query"
+      ]
+    },
+    {
+      "term": "HTTP Request",
+      "translations": {
+        "primary": "HTTP-запрос",
+        "alternates": [
+          "Запрос HTTP"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A message sent from a client (like a web browser) to a server to request information or perform an action.",
+          "ru": "Сообщение, отправляемое клиентом (например, веб-браузером) на сервер для запроса информации или выполнения действия. Например, запрос страницы или отправка данных на сервер."
+        },
+        "example": {
+          "en": "A GET request retrieves data from a server, while a POST request sends data to be processed.",
+          "context": "Web Development, Client-Server Interaction"
+        }
+      },
+      "related_terms": [
+        "HTTP Response",
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "term": "HTTP Response",
+      "translations": {
+        "primary": "HTTP-ответ",
+        "alternates": [
+          "Ответ HTTP"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A message sent from a server to a client in response to an HTTP request.",
+          "ru": "Сообщение, отправляемое сервером клиенту в ответ на HTTP-запрос. Содержит запрашиваемые данные или информацию об ошибке."
+        },
+        "example": {
+          "en": "A successful response includes the requested data and a status code of 200 (OK).",
+          "context": "Web Development, Client-Server Interaction"
+        }
+      },
+      "related_terms": [
+        "HTTP Request",
+        "Status Code",
+        "Error Handling"
+      ]
+    },
+    {
+      "term": "RESTful API",
+      "translations": {
+        "primary": "RESTful API",
+        "alternates": [
+          "Рестовое API"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "An API that follows the REST architectural constraints, making it easy to use and understand.",
+          "ru": "API, соответствующий архитектурным ограничениям REST, что делает его простым в использовании и понимании. Обычно использует HTTP методы (GET, POST, PUT, DELETE) для работы с ресурсами."
+        },
+        "example": {
+          "en": "Many modern web services use RESTful APIs for their data access.",
+          "context": "Web Development, API Design"
+        }
+      },
+      "related_terms": [
+        "API",
+        "HTTP",
+        "Resource"
+      ]
+    },
+    {
+      "term": "Frontend Framework",
+      "translations": {
+        "primary": "Фреймворк для фронтенда",
+        "alternates": [
+          "Фронтенд-фреймворк"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A collection of tools and libraries that simplify the development of user interfaces.",
+          "ru": "Набор инструментов и библиотек, упрощающих разработку пользовательских интерфейсов. Помогает структурировать код и ускоряет разработку."
+        },
+        "example": {
+          "en": "React, Angular, and Vue are popular frontend frameworks.",
+          "context": "Web Development, UI Development"
+        }
+      },
+      "related_terms": [
+        "React",
+        "Angular",
+        "Vue"
+      ]
+    },
+    {
+      "term": "Backend Framework",
+      "translations": {
+        "primary": "Фреймворк для бэкенда",
+        "alternates": [
+          "Бэкенд-фреймворк"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A collection of tools and libraries that simplify the development of server-side logic and APIs.",
+          "ru": "Набор инструментов и библиотек, упрощающих разработку серверной логики и API. Обеспечивает структуру и удобство в разработке серверной части приложения."
+        },
+        "example": {
+          "en": "Node.js, Django, and Ruby on Rails are popular backend frameworks.",
+          "context": "Web Development, Server-Side Development"
+        }
+      },
+      "related_terms": [
+        "Node.js",
+        "Django",
+        "Ruby on Rails"
+      ]
+    },
+    {
+      "term": "Asynchronous Programming",
+      "translations": {
+        "primary": "Асинхронное программирование",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Frontend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A programming paradigm where tasks run independently without blocking each other.",
+          "ru": "Парадигма программирования, где задачи выполняются независимо друг от друга, не блокируя друг друга. Позволяет улучшить производительность и отзывчивость приложения."
+        },
+        "example": {
+          "en": "Using Promises or async/await in JavaScript allows for asynchronous operations.",
+          "context": "Web Development, JavaScript"
+        }
+      },
+      "related_terms": [
+        "Promises",
+        "async/await",
+        "Callbacks"
+      ]
+    },
+    {
+      "term": "Serverless Computing",
+      "translations": {
+        "primary": "Бессерверные вычисления",
+        "alternates": [
+          "Serverless"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "An execution model where the cloud provider dynamically manages the allocation of computing resources.",
+          "ru": "Модель выполнения, при которой провайдер облачных услуг динамически управляет распределением вычислительных ресурсов."
+        },
+        "example": {
+          "en": "Using AWS Lambda, the function was triggered only when needed, reducing costs.",
+          "context": "Cloud Computing, Cost Optimization"
+        }
+      },
+      "related_terms": [
+        "Cloud Computing",
+        "Microservices",
+        "Function as a Service (FaaS)"
+      ]
+    },
+    {
+      "term": "Function as a Service (FaaS)",
+      "translations": {
+        "primary": "Функция как услуга",
+        "alternates": [
+          "FaaS"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A type of cloud computing service that lets you run code without managing servers.",
+          "ru": "Тип облачной услуги, позволяющий выполнять код без управления серверами."
+        },
+        "example": {
+          "en": "AWS Lambda is a popular FaaS offering.",
+          "context": "Serverless Computing, Cloud Services"
+        }
+      },
+      "related_terms": [
+        "Serverless Computing",
+        "Cloud Functions",
+        "Microservices"
+      ]
+    },
+    {
+      "term": "Cloud Functions",
+      "translations": {
+        "primary": "Облачные функции",
+        "alternates": []
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "Small, self-contained pieces of code that are executed in response to events.",
+          "ru": "Небольшие, автономные фрагменты кода, которые выполняются в ответ на события."
+        },
+        "example": {
+          "en": "Cloud functions are often used for event-driven architectures.",
+          "context": "Serverless Computing, Event-driven Architecture"
+        }
+      },
+      "related_terms": [
+        "Serverless Computing",
+        "FaaS",
+        "Event-driven Architecture"
+      ]
+    },
+    {
+      "term": "API Gateway",
+      "translations": {
+        "primary": "Шлюз API",
+        "alternates": [
+          "API Gateway"
+        ]
+      },
+      "category": {
+        "main": "Web Development",
+        "sub": "Backend Development"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A service that acts as a reverse proxy for APIs, managing traffic and security.",
+          "ru": "Сервис, который выступает в качестве обратного прокси-сервера для API, управляя трафиком и безопасностью."
+        },
+        "example": {
+          "en": "An API gateway can help manage authentication and authorization for microservices.",
+          "context": "Microservices, API Management"
+        }
+      },
+      "related_terms": [
+        "Microservices",
+        "API",
+        "Authentication"
+      ]
+    }
+  ],
+  "DevOps & Infrastructure": [
+    {
+      "term": "Docker",
+      "translations": {
+        "primary": "Docker",
+        "alternates": []
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Containerization"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A platform that allows you to package your application and its dependencies into containers for easy deployment and portability.",
+          "ru": "Платформа, позволяющая упаковывать ваше приложение и его зависимости в контейнеры для простого развертывания и переносимости. Обеспечивает согласованную среду выполнения приложения вне зависимости от окружения."
+        },
+        "example": {
+          "en": "Using Docker, you can create a container image containing your application, libraries, and runtime environment.",
+          "context": "Containerization, DevOps"
+        }
+      },
+      "related_terms": [
+        "Container",
+        "Kubernetes",
+        "CI/CD"
+      ]
+    },
+    {
+      "term": "Kubernetes",
+      "translations": {
+        "primary": "Kubernetes",
+        "alternates": [
+          "K8s",
+          "Кубернетис"
+        ]
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Containerization"
+      },
+      "difficulty": "advanced",
+      "context": {
+        "definition": {
+          "en": "An open-source platform for automating the deployment, scaling, and management of containerized applications.",
+          "ru": "Платформа с открытым исходным кодом для автоматизации развертывания, масштабирования и управления контейнеризованными приложениями. Обеспечивает оркестрацию контейнеров в кластерах."
+        },
+        "example": {
+          "en": "Kubernetes orchestrates the deployment of Docker containers across a cluster of machines.",
+          "context": "Container Orchestration, DevOps"
+        }
+      },
+      "related_terms": [
+        "Docker",
+        "Container",
+        "CI/CD"
+      ]
+    },
+    {
+      "term": "CI/CD",
+      "translations": {
+        "primary": "CI/CD",
+        "alternates": [
+          "Непрерывная интеграция/непрерывное развертывание"
+        ]
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "CI/CD"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A set of practices that automates the process of building, testing, and deploying software.",
+          "ru": "Совокупность практик, автоматизирующих процесс сборки, тестирования и развертывания программного обеспечения. Позволяет ускорить процесс разработки и повысить качество программного продукта."
+        },
+        "example": {
+          "en": "A CI/CD pipeline automatically builds, tests, and deploys the code changes to the production server.",
+          "context": "DevOps, Automation"
+        }
+      },
+      "related_terms": [
+        "Jenkins",
+        "GitHub Actions",
+        "Deployment"
+      ]
+    },
+    {
+      "term": "Cloud Computing",
+      "translations": {
+        "primary": "Облачные вычисления",
+        "alternates": [
+          "облако"
+        ]
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "The on-demand availability of computer system resources, especially data storage (cloud storage) and computing power, without direct active management by the user.",
+          "ru": "Предоставление вычислительных ресурсов по запросу, таких как хранилище данных и вычислительная мощность, без прямого управления пользователем."
+        },
+        "example": {
+          "en": "Many companies use cloud services like AWS or Google Cloud.",
+          "context": "Infrastructure, Hosting, Scalability"
+        }
+      },
+      "related_terms": [
+        "AWS",
+        "GCP",
+        "Azure"
+      ]
+    },
+    {
+      "term": "Virtual Machine",
+      "translations": {
+        "primary": "Виртуальная машина",
+        "alternates": [
+          "ВМ"
+        ]
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Common Terms"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A virtualized computer system that emulates a physical computer.",
+          "ru": "Виртуализированная компьютерная система, эмулирующая физический компьютер."
+        },
+        "example": {
+          "en": "Virtual machines are used for testing and running applications in isolated environments.",
+          "context": "Virtualization, Server Management"
+        }
+      },
+      "related_terms": [
+        "Container",
+        "Cloud Computing",
+        "Docker"
+      ]
+    },
+    {
+      "term": "Container",
+      "translations": {
+        "primary": "Контейнер",
+        "alternates": []
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Common Terms"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A standardized unit of software that packages code and all its dependencies so the application runs quickly and reliably from one computing environment to another.",
+          "ru": "Стандартизированная единица программного обеспечения, упаковывающая код и все его зависимости, чтобы приложение запускалось быстро и надежно в разных вычислительных средах."
+        },
+        "example": {
+          "en": "Docker is a popular tool for creating and managing containers.",
+          "context": "Containerization, Deployment, Docker"
+        }
+      },
+      "related_terms": [
+        "Docker",
+        "Kubernetes",
+        "Virtual Machine"
+      ]
+    },
+    {
+      "term": "CI/CD Pipeline",
+      "translations": {
+        "primary": "CI/CD-пайплайн",
+        "alternates": [
+          "Конвейер CI/CD"
+        ]
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "CI/CD"
+      },
+      "difficulty": "advanced",
+      "context": {
+        "definition": {
+          "en": "An automated process for building, testing, and deploying software.",
+          "ru": "Автоматизированный процесс сборки, тестирования и развертывания программного обеспечения. Ускоряет и упрощает процесс разработки."
+        },
+        "example": {
+          "en": "A CI/CD pipeline automatically builds, tests, and deploys code changes to production.",
+          "context": "Software Development, DevOps"
+        }
+      },
+      "related_terms": [
+        "Jenkins",
+        "GitHub Actions",
+        "DevOps"
+      ]
+    },
+    {
+      "term": "Infrastructure as Code (IaC)",
+      "translations": {
+        "primary": "Инфраструктура как код",
+        "alternates": [
+          "IaC"
+        ]
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Infrastructure as Code"
+      },
+      "difficulty": "advanced",
+      "context": {
+        "definition": {
+          "en": "Managing and provisioning infrastructure through code.",
+          "ru": "Управление и обеспечение инфраструктуры с помощью кода. Позволяет автоматизировать создание и настройку инфраструктуры."
+        },
+        "example": {
+          "en": "Terraform and CloudFormation are popular IaC tools.",
+          "context": "DevOps, Cloud Computing"
+        }
+      },
+      "related_terms": [
+        "Terraform",
+        "CloudFormation",
+        "DevOps"
+      ]
+    },
+    {
+      "term": "Deployment",
+      "translations": {
+        "primary": "Развертывание",
+        "alternates": [
+          "Деплой"
+        ]
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Common Terms"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "The process of releasing software to a production environment where users can access it.",
+          "ru": "Процесс выпуска программного обеспечения в рабочую среду, где пользователи могут получить к нему доступ. Включает в себя установку, настройку и запуск приложения."
+        },
+        "example": {
+          "en": "Deploying a new version of the web application to a cloud server using Docker and Kubernetes.",
+          "context": "Software Release, DevOps"
+        }
+      },
+      "related_terms": [
+        "CI/CD",
+        "Container",
+        "Server"
+      ]
+    },
+    {
+      "term": "Cloud Provider",
+      "translations": {
+        "primary": "Облачный провайдер",
+        "alternates": []
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Cloud Services"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A company that provides cloud computing services, such as storage, compute, and databases.",
+          "ru": "Компания, предоставляющая услуги облачных вычислений, такие как хранилище, вычислительные мощности и базы данных. Например, AWS, Azure, Google Cloud."
+        },
+        "example": {
+          "en": "Amazon Web Services (AWS) is a major cloud provider.",
+          "context": "Cloud Computing, Infrastructure"
+        }
+      },
+      "related_terms": [
+        "AWS",
+        "Azure",
+        "GCP"
+      ]
+    },
+    {
+      "term": "Virtual Machine (VM)",
+      "translations": {
+        "primary": "Виртуальная машина",
+        "alternates": [
+          "ВМ"
+        ]
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A virtual environment that mimics a physical computer, allowing you to run software on it.",
+          "ru": "Виртуальная среда, имитирующая физический компьютер, позволяющая запускать на ней программное обеспечение. Разделяет ресурсы физической машины между несколькими виртуальными."
+        },
+        "example": {
+          "en": "You can run multiple VMs on a single physical server.",
+          "context": "Cloud Computing, Virtualization"
+        }
+      },
+      "related_terms": [
+        "Hypervisor",
+        "Virtualization",
+        "Cloud Computing"
+      ]
+    },
+    {
+      "term": "Containerization",
+      "translations": {
+        "primary": "Контейнеризация",
+        "alternates": []
+      },
+      "category": {
+        "main": "DevOps & Infrastructure",
+        "sub": "Containerization"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "Packaging software and its dependencies into a standardized unit for easy deployment and portability.",
+          "ru": "Упаковка программного обеспечения и его зависимостей в стандартизированный блок для упрощения развертывания и переноса. Позволяет запускать приложения в разных средах без проблем с совместимостью."
+        },
+        "example": {
+          "en": "Docker is a popular tool for containerization.",
+          "context": "DevOps, Deployment"
+        }
+      },
+      "related_terms": [
+        "Docker",
+        "Kubernetes",
+        "Container"
+      ]
+    }
+  ],
+  "Data Science & Machine Learning": [
+    {
+      "term": "Machine Learning",
+      "translations": {
+        "primary": "Машинное обучение",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A type of artificial intelligence that allows software applications to become more accurate in predicting outcomes without being explicitly programmed.",
+          "ru": "Раздел искусственного интеллекта, позволяющий программным приложениям становиться более точными в прогнозировании результатов без явного программирования. Обучается на данных и строит модели для предсказаний."
+        },
+        "example": {
+          "en": "A machine learning model can be trained to predict customer churn based on historical data.",
+          "context": "Artificial Intelligence, Data Analysis"
+        }
+      },
+      "related_terms": [
+        "Model",
+        "Training",
+        "Evaluation"
+      ]
+    },
+    {
+      "term": "Deep Learning",
+      "translations": {
+        "primary": "Глубокое обучение",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Deep Learning"
+      },
+      "difficulty": "advanced",
+      "context": {
+        "definition": {
+          "en": "A subfield of machine learning that uses artificial neural networks with multiple layers to analyze data.",
+          "ru": "Подполе машинного обучения, использующее искусственные нейронные сети с множеством слоев для анализа данных. Позволяет решать сложные задачи, требующие обработки больших объемов информации."
+        },
+        "example": {
+          "en": "Deep learning models are used for image recognition, natural language processing, and speech recognition.",
+          "context": "Machine Learning, Neural Networks"
+        }
+      },
+      "related_terms": [
+        "Neural Networks",
+        "CNN",
+        "RNN"
+      ]
+    },
+    {
+      "term": "Natural Language Processing (NLP)",
+      "translations": {
+        "primary": "Обработка естественного языка (NLP)",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Specialized Areas"
+      },
+      "difficulty": "advanced",
+      "context": {
+        "definition": {
+          "en": "A branch of artificial intelligence that deals with the interaction between computers and human languages.",
+          "ru": "Раздел искусственного интеллекта, который занимается взаимодействием компьютеров и человеческого языка. Используется для анализа, понимания и генерации текста."
+        },
+        "example": {
+          "en": "NLP techniques are used in chatbots, machine translation, and sentiment analysis.",
+          "context": "Artificial Intelligence, Language Processing"
+        }
+      },
+      "related_terms": [
+        "Machine Learning",
+        "Deep Learning",
+        "Language Models"
+      ]
+    },
+    {
+      "term": "Feature Engineering",
+      "translations": {
+        "primary": "Обработка признаков",
+        "alternates": [
+          "инженерия признаков"
+        ]
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "The process of using domain knowledge to extract features from raw data.",
+          "ru": "Процесс использования знаний предметной области для извлечения признаков из необработанных данных."
+        },
+        "example": {
+          "en": "Creating new features improves the accuracy of machine learning models.",
+          "context": "Data Preprocessing, Model Improvement"
+        }
+      },
+      "related_terms": [
+        "Feature Selection",
+        "Model Training",
+        "Data Preprocessing"
+      ]
+    },
+    {
+      "term": "Model Training",
+      "translations": {
+        "primary": "Обучение модели",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "The process of feeding data to a machine learning model to teach it to make predictions.",
+          "ru": "Процесс подачи данных в модель машинного обучения для обучения её делать предсказания."
+        },
+        "example": {
+          "en": "Model training involves using algorithms to learn patterns in the data.",
+          "context": "Machine Learning, Model Development"
+        }
+      },
+      "related_terms": [
+        "Feature Engineering",
+        "Model Evaluation",
+        "Algorithm"
+      ]
+    },
+    {
+      "term": "Model Evaluation",
+      "translations": {
+        "primary": "Оценка модели",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "The process of measuring how well a machine learning model performs.",
+          "ru": "Процесс измерения эффективности модели машинного обучения."
+        },
+        "example": {
+          "en": "Metrics like accuracy and precision are used to evaluate models.",
+          "context": "Machine Learning, Model Performance"
+        }
+      },
+      "related_terms": [
+        "Model Training",
+        "Metrics",
+        "Cross-validation"
+      ]
+    },
+    {
+      "term": "Regression",
+      "translations": {
+        "primary": "Регрессионный анализ",
+        "alternates": [
+          "Регрессия"
+        ]
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A type of supervised learning used to predict a continuous output variable based on input variables.",
+          "ru": "Метод контролируемого обучения, используемый для предсказания непрерывной выходной переменной на основе входных данных. Например, предсказание цены дома на основе его площади и местоположения."
+        },
+        "example": {
+          "en": "Predicting house prices using linear regression based on features like size and location.",
+          "context": "Predictive Modeling, Supervised Learning"
+        }
+      },
+      "related_terms": [
+        "Classification",
+        "Supervised Learning",
+        "Linear Regression"
+      ]
+    },
+    {
+      "term": "Classification",
+      "translations": {
+        "primary": "Классификация",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A machine learning task where the model predicts the category or class of an input.",
+          "ru": "Задача машинного обучения, где модель предсказывает категорию или класс входных данных. Например, классификация изображений или текстов."
+        },
+        "example": {
+          "en": "Spam detection is a classification problem.",
+          "context": "Machine Learning, Supervised Learning"
+        }
+      },
+      "related_terms": [
+        "Supervised Learning",
+        "Logistic Regression",
+        "Decision Tree"
+      ]
+    },
+    {
+      "term": "Feature Scaling",
+      "translations": {
+        "primary": "Масштабирование признаков",
+        "alternates": [
+          "Нормализация признаков"
+        ]
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "Transforming features to a similar scale to improve model performance.",
+          "ru": "Преобразование признаков в схожий масштаб для улучшения производительности модели. Необходимо для моделей, чувствительных к масштабу признаков."
+        },
+        "example": {
+          "en": "Standardization and Min-Max scaling are common techniques for feature scaling.",
+          "context": "Machine Learning, Data Preprocessing"
+        }
+      },
+      "related_terms": [
+        "Feature Engineering",
+        "Standardization",
+        "Normalization"
+      ]
+    },
+    {
+      "term": "Data Cleaning",
+      "translations": {
+        "primary": "Очистка данных",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Data Analysis"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "The process of identifying and correcting or removing errors, inconsistencies, and inaccuracies in data.",
+          "ru": "Процесс выявления и исправления или удаления ошибок, несоответствий и неточностей в данных. Важный этап подготовки данных для анализа и моделирования."
+        },
+        "example": {
+          "en": "Data cleaning may involve handling missing values, removing duplicates, and correcting typos.",
+          "context": "Data Science, Data Preprocessing"
+        }
+      },
+      "related_terms": [
+        "Data Preprocessing",
+        "Missing Values",
+        "Outliers"
+      ]
+    },
+    {
+      "term": "Overfitting",
+      "translations": {
+        "primary": "Переобучение",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A situation where a machine learning model performs well on training data but poorly on unseen data.",
+          "ru": "Ситуация, когда модель машинного обучения хорошо работает на обучающих данных, но плохо на невидимых данных. Модель слишком сильно подстраивается под обучающую выборку."
+        },
+        "example": {
+          "en": "Overfitting can be addressed by using techniques like regularization or cross-validation.",
+          "context": "Machine Learning, Model Evaluation"
+        }
+      },
+      "related_terms": [
+        "Underfitting",
+        "Regularization",
+        "Cross-validation"
+      ]
+    },
+    {
+      "term": "Underfitting",
+      "translations": {
+        "primary": "Недообучение",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Machine Learning"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A situation where a machine learning model is too simple to capture the patterns in the data.",
+          "ru": "Ситуация, когда модель машинного обучения слишком проста, чтобы уловить закономерности в данных. Модель не может адекватно описывать данные."
+        },
+        "example": {
+          "en": "Underfitting can be addressed by using a more complex model or adding more features.",
+          "context": "Machine Learning, Model Evaluation"
+        }
+      },
+      "related_terms": [
+        "Overfitting",
+        "Model Complexity",
+        "Feature Engineering"
+      ]
+    },
+    {
+      "term": "Data Mining",
+      "translations": {
+        "primary": "Добыча данных",
+        "alternates": [
+          "Data Mining"
+        ]
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Specialized Areas"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "The process of discovering patterns and insights from large datasets.",
+          "ru": "Процесс обнаружения закономерностей и информации в больших объемах данных."
+        },
+        "example": {
+          "en": "Data mining techniques were used to identify customer segments.",
+          "context": "Data Analysis, Business Intelligence"
+        }
+      },
+      "related_terms": [
+        "Data Analysis",
+        "Machine Learning",
+        "Pattern Recognition"
+      ]
+    },
+    {
+      "term": "Data Warehouse",
+      "translations": {
+        "primary": "Хранилище данных",
+        "alternates": [
+          "Data Warehouse"
+        ]
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Specialized Areas"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A central repository of integrated data from multiple sources.",
+          "ru": "Централизованное хранилище интегрированных данных из нескольких источников."
+        },
+        "example": {
+          "en": "The company built a data warehouse to support business intelligence reporting.",
+          "context": "Data Management, Business Intelligence"
+        }
+      },
+      "related_terms": [
+        "Data Lake",
+        "Data Mining",
+        "Database"
+      ]
+    },
+    {
+      "term": "Data Lake",
+      "translations": {
+        "primary": "Озеро данных",
+        "alternates": [
+          "Data Lake"
+        ]
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Specialized Areas"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A centralized repository that stores large amounts of raw data in its native format.",
+          "ru": "Централизованное хранилище, которое хранит большие объемы необработанных данных в их исходном формате."
+        },
+        "example": {
+          "en": "The data lake stores both structured and unstructured data for future analysis.",
+          "context": "Big Data, Data Storage"
+        }
+      },
+      "related_terms": [
+        "Data Warehouse",
+        "Big Data",
+        "Data Mining"
+      ]
+    },
+    {
+      "term": "Big Data",
+      "translations": {
+        "primary": "Большие данные",
+        "alternates": [
+          "Big Data"
+        ]
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Specialized Areas"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "Extremely large and complex datasets that require special techniques to process and analyze.",
+          "ru": "Чрезвычайно большие и сложные наборы данных, для обработки и анализа которых требуются специальные методы."
+        },
+        "example": {
+          "en": "Big data technologies are used to analyze social media trends.",
+          "context": "Data Analysis, Data Science"
+        }
+      },
+      "related_terms": [
+        "Data Lake",
+        "Data Mining",
+        "Hadoop"
+      ]
+    },
+    {
+      "term": "Hadoop",
+      "translations": {
+        "primary": "Hadoop",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Specialized Areas"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "An open-source framework for storing and processing large datasets.",
+          "ru": "Программная платформа с открытым исходным кодом для хранения и обработки больших объемов данных."
+        },
+        "example": {
+          "en": "Hadoop was used to process the massive dataset generated by the sensor network.",
+          "context": "Big Data, Distributed Computing"
+        }
+      },
+      "related_terms": [
+        "Big Data",
+        "Spark",
+        "MapReduce"
+      ]
+    },
+    {
+      "term": "Spark",
+      "translations": {
+        "primary": "Spark",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Specialized Areas"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A fast and general-purpose cluster computing system for big data processing.",
+          "ru": "Быстрая и универсальная система кластерных вычислений для обработки больших данных."
+        },
+        "example": {
+          "en": "Spark was used to perform real-time data analysis on streaming data.",
+          "context": "Big Data, Real-time Analytics"
+        }
+      },
+      "related_terms": [
+        "Hadoop",
+        "Big Data",
+        "Data Processing"
+      ]
+    },
+    {
+      "term": "MapReduce",
+      "translations": {
+        "primary": "MapReduce",
+        "alternates": []
+      },
+      "category": {
+        "main": "Data Science & Machine Learning",
+        "sub": "Specialized Areas"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A programming model for processing large datasets on a cluster of computers.",
+          "ru": "Модель программирования для обработки больших объемов данных на кластере компьютеров."
+        },
+        "example": {
+          "en": "MapReduce is a core component of Hadoop.",
+          "context": "Big Data, Parallel Processing"
+        }
+      },
+      "related_terms": [
+        "Hadoop",
+        "Big Data",
+        "Parallel Computing"
+      ]
+    }
+  ],
+  "Version Control & Collaboration": [
+    {
+      "term": "Version Control",
+      "translations": {
+        "primary": "Система контроля версий",
+        "alternates": [
+          "Контроль версий"
+        ]
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A system that records changes to a file or set of files over time so that you can recall specific versions later.",
+          "ru": "Система, которая записывает изменения в файлах или наборе файлов с течением времени, чтобы вы могли позже восстановить определенные версии. Позволяет отслеживать историю изменений и работать в команде."
+        },
+        "example": {
+          "en": "Git is a popular version control system.",
+          "context": "Software Development, Collaboration"
+        }
+      },
+      "related_terms": [
+        "Git",
+        "GitHub",
+        "Repository"
+      ]
+    },
+    {
+      "term": "Pull Request",
+      "translations": {
+        "primary": "Запрос на слияние",
+        "alternates": [
+          "Pull Request",
+          "Запрос на pull"
+        ]
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Common Terms"
+      },
+      "difficulty": "basic",
+      "context": {
+        "definition": {
+          "en": "A way to propose changes to a codebase for review before merging them into the main branch.",
+          "ru": "Способ предложить изменения в кодовой базе на проверку перед слиянием их в основную ветку. Позволяет другим разработчикам проверить код перед внесением изменений в основной проект."
+        },
+        "example": {
+          "en": "A developer creates a pull request to add a new feature to the project.",
+          "context": "Software Development, Collaboration"
+        }
+      },
+      "related_terms": [
+        "Git",
+        "Branch",
+        "Merge"
+      ]
+    },
+    {
+      "term": "Agile Methodology",
+      "translations": {
+        "primary": "Агильная методология",
+        "alternates": [
+          "Agile"
+        ]
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Project Management"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A way of managing projects that emphasizes flexibility and collaboration.",
+          "ru": "Подход к управлению проектами, который подразумевает гибкость и тесное сотрудничество между командой и заказчиком."
+        },
+        "example": {
+          "en": "Using Scrum, a popular Agile framework, the team sprints through development iterations.",
+          "context": "Project Management, Software Development"
+        }
+      },
+      "related_terms": [
+        "Scrum",
+        "Kanban",
+        "Sprint"
+      ]
+    },
+    {
+      "term": "Scrum",
+      "translations": {
+        "primary": "Scrum",
+        "alternates": [
+          "Скрам"
+        ]
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Project Management"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A specific Agile framework that uses short cycles (sprints) to develop software.",
+          "ru": "Один из популярных фреймворков Agile, использующий короткие итерации (спринты) для разработки ПО."
+        },
+        "example": {
+          "en": "The team held a daily Scrum meeting to discuss progress and any roadblocks.",
+          "context": "Agile Development, Project Management"
+        }
+      },
+      "related_terms": [
+        "Agile Methodology",
+        "Sprint",
+        "Daily Scrum"
+      ]
+    },
+    {
+      "term": "Kanban",
+      "translations": {
+        "primary": "Канбан",
+        "alternates": []
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Project Management"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A visual system for managing workflow, often used in Agile development.",
+          "ru": "Визуальная система управления рабочим процессом, часто используемая в Agile-разработке."
+        },
+        "example": {
+          "en": "The team uses a Kanban board to track tasks and their progress.",
+          "context": "Agile Development, Workflow Management"
+        }
+      },
+      "related_terms": [
+        "Agile Methodology",
+        "Workflow",
+        "Task Management"
+      ]
+    },
+    {
+      "term": "Sprint",
+      "translations": {
+        "primary": "Спринт",
+        "alternates": []
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Project Management"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A short, time-boxed period (usually 2-4 weeks) in Agile development where a specific set of features are built.",
+          "ru": "Краткосрочный период (обычно 2-4 недели) в Agile-разработке, в течение которого создается определенный набор функциональных возможностей."
+        },
+        "example": {
+          "en": "The team completed the sprint backlog and delivered a working product increment.",
+          "context": "Agile Development, Iteration Management"
+        }
+      },
+      "related_terms": [
+        "Scrum",
+        "Agile Methodology",
+        "Backlog"
+      ]
+    },
+    {
+      "term": "Backlog",
+      "translations": {
+        "primary": "Бэклог",
+        "alternates": [
+          "Список задач"
+        ]
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Project Management"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "An ordered list of tasks to be completed in a project.",
+          "ru": "Упорядоченный список задач, которые должны быть выполнены в рамках проекта."
+        },
+        "example": {
+          "en": "The product owner prioritized the items in the backlog.",
+          "context": "Agile Development, Task Prioritization"
+        }
+      },
+      "related_terms": [
+        "Sprint",
+        "Product Owner",
+        "Task"
+      ]
+    },
+    {
+      "term": "Product Owner",
+      "translations": {
+        "primary": "Продуктовладелец",
+        "alternates": []
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Project Management"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "The person responsible for defining and prioritizing the features of a product.",
+          "ru": "Человек, ответственный за определение и приоритизацию функций продукта."
+        },
+        "example": {
+          "en": "The product owner worked with the team to refine the user stories.",
+          "context": "Agile Development, Product Management"
+        }
+      },
+      "related_terms": [
+        "Backlog",
+        "User Story",
+        "Stakeholder"
+      ]
+    },
+    {
+      "term": "User Story",
+      "translations": {
+        "primary": "Юзер стори",
+        "alternates": [
+          "История пользователя"
+        ]
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Project Management"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A short description of a feature from the perspective of a user.",
+          "ru": "Краткое описание функциональности с точки зрения пользователя."
+        },
+        "example": {
+          "en": "As a user, I want to be able to log in so that I can access my account.",
+          "context": "Agile Development, Requirements Gathering"
+        }
+      },
+      "related_terms": [
+        "Product Owner",
+        "Backlog",
+        "Requirement"
+      ]
+    },
+    {
+      "term": "Stakeholder",
+      "translations": {
+        "primary": "Заинтересованная сторона",
+        "alternates": [
+          "Стейкхолдер"
+        ]
+      },
+      "category": {
+        "main": "Version Control & Collaboration",
+        "sub": "Project Management"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "Anyone who is affected by or has an interest in a project.",
+          "ru": "Любой, кто затронут проектом или имеет к нему отношение."
+        },
+        "example": {
+          "en": "The stakeholders reviewed the project plan and provided feedback.",
+          "context": "Project Management, Collaboration"
+        }
+      },
+      "related_terms": [
+        "Product Owner",
+        "Team",
+        "Client"
+      ]
+    }
+  ],
+  "Software Architecture": [
+    {
+      "term": "System Design",
+      "translations": {
+        "primary": "Проектирование системы",
+        "alternates": []
+      },
+      "category": {
+        "main": "Software Architecture",
+        "sub": "System Design"
+      },
+      "difficulty": "advanced",
+      "context": {
+        "definition": {
+          "en": "The process of defining the architecture, components, and interactions of a software system.",
+          "ru": "Процесс определения архитектуры, компонентов и взаимодействия программной системы. Включает в себя выбор технологий, определение требований и масштабируемости."
+        },
+        "example": {
+          "en": "System design involves considering factors like scalability, reliability, and security.",
+          "context": "Software Architecture, Software Engineering"
+        }
+      },
+      "related_terms": [
+        "Software Architecture",
+        "Scalability",
+        "Reliability"
+      ]
+    },
+    {
+      "term": "Event-driven Architecture",
+      "translations": {
+        "primary": "Архитектура, управляемая событиями",
+        "alternates": []
+      },
+      "category": {
+        "main": "Software Architecture",
+        "sub": "Architectural Patterns"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A software architecture style where components communicate by asynchronously publishing and subscribing to events.",
+          "ru": "Архитектурный стиль, в котором компоненты общаются путем асинхронной публикации и подписки на события."
+        },
+        "example": {
+          "en": "Event-driven architecture is well-suited for microservices applications.",
+          "context": "Software Architecture, Microservices"
+        }
+      },
+      "related_terms": [
+        "Microservices",
+        "Message Queue",
+        "Pub/Sub"
+      ]
+    },
+    {
+      "term": "Pub/Sub",
+      "translations": {
+        "primary": "Pub/Sub",
+        "alternates": [
+          "Publish/Subscribe"
+        ]
+      },
+      "category": {
+        "main": "Software Architecture",
+        "sub": "Architectural Patterns"
+      },
+      "difficulty": "intermediate",
+      "context": {
+        "definition": {
+          "en": "A messaging pattern where publishers send messages without knowing who the subscribers are.",
+          "ru": "Шаблон обмена сообщениями, в котором издатели отправляют сообщения, не зная, кто являются подписчиками."
+        },
+        "example": {
+          "en": "Pub/Sub is used for asynchronous communication between components.",
+          "context": "Software Architecture, Asynchronous Communication"
+        }
+      },
+      "related_terms": [
+        "Message Queue",
+        "Event-driven Architecture",
+        "Messaging"
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,1578 @@
+[
+  {
+    "word": "strategy",
+    "translation": "стратегия",
+    "context": "We need to develop a new marketing strategy.",
+    "context_translation": "Нам нужно разработать новую маркетинговую стратегию.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "collaboration",
+    "translation": "совместная работа",
+    "context": "Successful collaboration is key to this project.",
+    "context_translation": "Успешная совместная работа является ключом к этому проекту.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "implement",
+    "translation": "внедрять",
+    "context": "We will implement the changes next week.",
+    "context_translation": "Мы внедрим изменения на следующей неделе.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "evaluate",
+    "translation": "оценивать",
+    "context": "We need to evaluate the results of the survey.",
+    "context_translation": "Нам нужно оценить результаты опроса.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "significant",
+    "translation": "значительный",
+    "context": "This is a significant improvement.",
+    "context_translation": "Это значительное улучшение.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "potential",
+    "translation": "потенциальный",
+    "context": "This approach has great potential.",
+    "context_translation": "Этот подход имеет большой потенциал.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "effectively",
+    "translation": "эффективно",
+    "context": "We need to communicate effectively with clients.",
+    "context_translation": "Нам нужно эффективно общаться с клиентами.",
+    "word_type": "adverb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "proactively",
+    "translation": "проактивно",
+    "context": "We need to proactively address potential problems.",
+    "context_translation": "Нам нужно проактивно решать потенциальные проблемы.",
+    "word_type": "adverb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "with regards to",
+    "translation": "что касается",
+    "context": "With regards to your question, the answer is yes.",
+    "context_translation": "Что касается вашего вопроса, ответ - да.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "in the near future",
+    "translation": "в ближайшем будущем",
+    "context": "We expect to launch the product in the near future.",
+    "context_translation": "Мы ожидаем запустить продукт в ближайшем будущем.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "deadline",
+    "translation": "крайний срок",
+    "context": "The deadline for this report is Friday.",
+    "context_translation": "Крайний срок для этого отчета - пятница.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "prioritize",
+    "translation": "приоритизировать",
+    "context": "We need to prioritize tasks based on urgency.",
+    "context_translation": "Нам нужно расставить задачи по приоритетам в зависимости от срочности.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "crucial",
+    "translation": "важный, решающий",
+    "context": "This step is crucial for the project's success.",
+    "context_translation": "Этот шаг имеет решающее значение для успеха проекта.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "immediately",
+    "translation": "немедленно",
+    "context": "Please respond immediately if you have any questions.",
+    "context_translation": "Пожалуйста, ответьте немедленно, если у вас есть какие-либо вопросы.",
+    "word_type": "adverb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "at your earliest convenience",
+    "translation": "по первому удобному случаю",
+    "context": "Please let me know at your earliest convenience.",
+    "context_translation": "Пожалуйста, дайте мне знать по первому удобному случаю.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "comprehensive",
+    "translation": "всеобъемлющий",
+    "context": "We need a comprehensive report on the findings.",
+    "context_translation": "Нам нужен всеобъемлющий отчет о результатах.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "facilitate",
+    "translation": "содействовать, облегчать",
+    "context": "She will facilitate the meeting tomorrow.",
+    "context_translation": "Она будет вести завтрашнее совещание.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "successfully",
+    "translation": "успешно",
+    "context": "We successfully completed the project.",
+    "context_translation": "Мы успешно завершили проект.",
+    "word_type": "adverb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "initiative",
+    "translation": "инициатива",
+    "context": "This new initiative will improve efficiency.",
+    "context_translation": "Эта новая инициатива повысит эффективность.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "for your information",
+    "translation": "к вашему сведению",
+    "context": "For your information, the meeting has been rescheduled.",
+    "context_translation": "К вашему сведению, собрание перенесено.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "feedback",
+    "translation": "обратная связь",
+    "context": "We need to gather feedback from the clients.",
+    "context_translation": "Нам нужно собрать обратную связь от клиентов.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "progress",
+    "translation": "прогресс",
+    "context": "The project is making good progress.",
+    "context_translation": "Проект делает хороший прогресс.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "analyze",
+    "translation": "анализировать",
+    "context": "Let's analyze the data before making a decision.",
+    "context_translation": "Давайте проанализируем данные, прежде чем принимать решение.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "present",
+    "translation": "представлять",
+    "context": "I will present the findings at the meeting.",
+    "context_translation": "Я представлю результаты на собрании.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "complex",
+    "translation": "сложный",
+    "context": "This is a complex issue requiring careful consideration.",
+    "context_translation": "Это сложный вопрос, требующий тщательного рассмотрения.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "timely",
+    "translation": "своевременный",
+    "context": "Timely completion of the project is crucial.",
+    "context_translation": "Своевременное завершение проекта имеет решающее значение.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "consistently",
+    "translation": "постоянно",
+    "context": "We need to consistently meet our goals.",
+    "context_translation": "Нам нужно постоянно достигать наших целей.",
+    "word_type": "adverb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "thoroughly",
+    "translation": "тщательно",
+    "context": "Please review the document thoroughly.",
+    "context_translation": "Пожалуйста, тщательно просмотрите документ.",
+    "word_type": "adverb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "best regards",
+    "translation": "с уважением",
+    "context": "Best regards, John Doe.",
+    "context_translation": "С уважением, Джон Доу.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "pending approval",
+    "translation": "в ожидании утверждения",
+    "context": "The proposal is pending approval from senior management.",
+    "context_translation": "Предложение находится в ожидании утверждения высшего руководства.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "objective",
+    "translation": "цель",
+    "context": "Our main objective is to increase sales by 15%.",
+    "context_translation": "Наша главная цель - увеличить продажи на 15%.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "clarify",
+    "translation": "уточнять",
+    "context": "Could you clarify your request?",
+    "context_translation": "Не могли бы вы уточнить ваш запрос?",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "relevant",
+    "translation": "актуальный, уместный",
+    "context": "Please provide only relevant information.",
+    "context_translation": "Пожалуйста, предоставьте только актуальную информацию.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "subsequently",
+    "translation": "впоследствии",
+    "context": "We discussed the issue and subsequently found a solution.",
+    "context_translation": "Мы обсудили проблему и впоследствии нашли решение.",
+    "word_type": "adverb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "in accordance with",
+    "translation": "в соответствии с",
+    "context": "This is in accordance with company policy.",
+    "context_translation": "Это в соответствии с политикой компании.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "outcome",
+    "translation": "результат",
+    "context": "The outcome of the meeting was positive.",
+    "context_translation": "Результат встречи был положительным.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "determine",
+    "translation": "определять",
+    "context": "We need to determine the best course of action.",
+    "context_translation": "Нам нужно определить наилучший курс действий.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "feasible",
+    "translation": "осуществимый, выполнимый",
+    "context": "Is this project feasible within the given timeframe?",
+    "context_translation": "Выполним ли этот проект в заданные сроки?",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "concisely",
+    "translation": "кратко, ясно",
+    "context": "Please summarize the report concisely.",
+    "context_translation": "Пожалуйста, кратко изложите отчет.",
+    "word_type": "adverb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "for your review",
+    "translation": "для вашего ознакомления",
+    "context": "Please find attached the document for your review.",
+    "context_translation": "Пожалуйста, найдите приложенный документ для вашего ознакомления.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "challenges",
+    "translation": "задачи",
+    "context": "We encountered several challenges during the project.",
+    "context_translation": "Мы столкнулись с несколькими трудностями во время проекта.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "deliverables",
+    "translation": "результаты работы",
+    "context": "All project deliverables are due by Friday.",
+    "context_translation": "Все результаты проекта должны быть представлены к пятнице.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "optimize",
+    "translation": "оптимизировать",
+    "context": "We need to optimize our workflow to improve efficiency.",
+    "context_translation": "Нам нужно оптимизировать наш рабочий процесс для повышения эффективности.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "integrate",
+    "translation": "интегрировать",
+    "context": "We will integrate the new software next week.",
+    "context_translation": "Мы интегрируем новое программное обеспечение на следующей неделе.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "efficient",
+    "translation": "эффективный",
+    "context": "The new system is much more efficient.",
+    "context_translation": "Новая система намного эффективнее.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "essential",
+    "translation": "важный, существенный",
+    "context": "This information is essential for the meeting.",
+    "context_translation": "Эта информация важна для встречи.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "in conclusion",
+    "translation": "в заключение",
+    "context": "In conclusion, the project was a success.",
+    "context_translation": "В заключение, проект увенчался успехом.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "for your consideration",
+    "translation": "для вашего рассмотрения",
+    "context": "Please find attached the proposal for your consideration.",
+    "context_translation": "Пожалуйста, найдите во вложении предложение для вашего рассмотрения.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "objectives",
+    "translation": "цели",
+    "context": "We need to redefine our project objectives.",
+    "context_translation": "Нам нужно пересмотреть цели нашего проекта.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "approach",
+    "translation": "подход",
+    "context": "Our approach to this problem needs revision.",
+    "context_translation": "Наш подход к этой проблеме нуждается в пересмотре.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "achieve",
+    "translation": "достигать",
+    "context": "We aim to achieve our targets by the end of the quarter.",
+    "context_translation": "Мы стремимся достичь наших целей к концу квартала.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "transparent",
+    "translation": "прозрачный",
+    "context": "We maintain a transparent communication process.",
+    "context_translation": "Мы поддерживаем прозрачный процесс коммуникации.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "positive",
+    "translation": "позитивный",
+    "context": "The feedback received was overwhelmingly positive.",
+    "context_translation": "Полученные отзывы были в подавляющем большинстве позитивными.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "Please let me know",
+    "translation": "Пожалуйста, дайте мне знать",
+    "context": "Please let me know if you have any questions.",
+    "context_translation": "Пожалуйста, дайте мне знать, если у вас есть какие-либо вопросы.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "in a timely manner",
+    "translation": "своевременно",
+    "context": "We will respond to your request in a timely manner.",
+    "context_translation": "Мы ответим на ваш запрос своевременно.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "proposal",
+    "translation": "предложение",
+    "context": "Please review the proposal and let me know your thoughts.",
+    "context_translation": "Пожалуйста, ознакомьтесь с предложением и сообщите мне о своих мыслях.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "investigate",
+    "translation": "расследовать",
+    "context": "We need to investigate the cause of the delay.",
+    "context_translation": "Нам нужно расследовать причину задержки.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "decisive",
+    "translation": "решительный",
+    "context": "We need a decisive action plan to address this issue.",
+    "context_translation": "Нам нужен решительный план действий для решения этой проблемы.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "at this juncture",
+    "translation": "на данном этапе",
+    "context": "At this juncture, we are confident about meeting the deadline.",
+    "context_translation": "На данном этапе мы уверены в выполнении сроков.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "clarification",
+    "translation": "уточнение",
+    "context": "We need further clarification on the next steps.",
+    "context_translation": "Нам нужно дополнительное уточнение по следующим шагам.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "opportunity",
+    "translation": "возможность",
+    "context": "This new project presents a great opportunity for growth.",
+    "context_translation": "Этот новый проект представляет отличную возможность для роста.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "enhance",
+    "translation": "улучшать",
+    "context": "We need to enhance our communication strategies.",
+    "context_translation": "Нам нужно улучшить наши стратегии общения.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "reliable",
+    "translation": "надежный",
+    "context": "We need a reliable solution to this problem.",
+    "context_translation": "Нам нужно надежное решение этой проблемы.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "simultaneously",
+    "translation": "одновременно",
+    "context": "We need to complete these tasks simultaneously.",
+    "context_translation": "Нам нужно выполнить эти задачи одновременно.",
+    "word_type": "adverb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "meeting minutes",
+    "translation": "протокол совещания",
+    "context": "Please find the meeting minutes attached.",
+    "context_translation": "Пожалуйста, найдите прикрепленный протокол совещания.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "implementation",
+    "translation": "внедрение",
+    "context": "The implementation of the new system is underway.",
+    "context_translation": "Внедрение новой системы уже началось.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "expedite",
+    "translation": "ускорять",
+    "context": "Let's expedite the process to meet the deadline.",
+    "context_translation": "Давайте ускорим процесс, чтобы уложиться в срок.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "collaborative",
+    "translation": "совместный",
+    "context": "It was a highly collaborative effort.",
+    "context_translation": "Это была очень совместная работа.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "going forward",
+    "translation": "в дальнейшем",
+    "context": "Going forward, we will implement these changes.",
+    "context_translation": "В дальнейшем мы внедрим эти изменения.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "coordinate",
+    "translation": "координировать",
+    "context": "We need to coordinate our efforts to meet the deadline.",
+    "context_translation": "Нам нужно скоординировать наши усилия, чтобы уложиться в срок.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "delegates",
+    "translation": "распределяет",
+    "context": "The manager delegates tasks effectively.",
+    "context_translation": "Менеджер эффективно распределяет задачи.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "critical",
+    "translation": "критический",
+    "context": "This is a critical issue that needs immediate attention.",
+    "context_translation": "Это критическая проблема, требующая немедленного внимания.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "outstanding",
+    "translation": "отличный",
+    "context": "Your work on this project has been outstanding.",
+    "context_translation": "Ваша работа над этим проектом была отличной.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "at your convenience",
+    "translation": "в удобное для вас время",
+    "context": "Please let me know your availability at your convenience.",
+    "context_translation": "Пожалуйста, сообщите о вашей доступности в удобное для вас время.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "for further clarification",
+    "translation": "для дальнейшего уточнения",
+    "context": "Please contact me for further clarification.",
+    "context_translation": "Пожалуйста, свяжитесь со мной для дальнейшего уточнения.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "resolve",
+    "translation": "решать",
+    "context": "We need to resolve this issue quickly.",
+    "context_translation": "Нам нужно быстро решить эту проблему.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "best practice",
+    "translation": "лучшая практика",
+    "context": "We should follow best practice in this situation.",
+    "context_translation": "В этой ситуации нам следует следовать лучшей практике.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "communicate",
+    "translation": "общаться",
+    "context": "It's important to communicate clearly.",
+    "context_translation": "Важно четко общаться.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "in summary",
+    "translation": "в итоге",
+    "context": "In summary, the project was a success.",
+    "context_translation": "В итоге проект увенчался успехом.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "assessment",
+    "translation": "оценка",
+    "context": "A thorough assessment of the situation is required.",
+    "context_translation": "Требуется тщательная оценка ситуации.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "streamline",
+    "translation": "облегчать, оптимизировать",
+    "context": "We need to streamline the workflow.",
+    "context_translation": "Нам нужно оптимизировать рабочий процесс.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "substantial",
+    "translation": "существенный",
+    "context": "We've made substantial progress on the project.",
+    "context_translation": "Мы добились существенного прогресса в проекте.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "detrimental",
+    "translation": "вредный, пагубный",
+    "context": "The delays were detrimental to the project timeline.",
+    "context_translation": "Задержки пагубно сказались на графике проекта.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "moving forward",
+    "translation": "в дальнейшем",
+    "context": "Moving forward, we will implement these changes.",
+    "context_translation": "В дальнейшем мы внедрим эти изменения.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "solution",
+    "translation": "решение",
+    "context": "We've found a viable solution to the problem.",
+    "context_translation": "Мы нашли жизнеспособное решение проблемы.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "finalize",
+    "translation": "завершать",
+    "context": "We need to finalize the report by Friday.",
+    "context_translation": "Нам нужно завершить отчет к пятнице.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "mitigate",
+    "translation": "смягчать",
+    "context": "We need to mitigate the risks associated with this project.",
+    "context_translation": "Нам нужно смягчить риски, связанные с этим проектом.",
+    "word_type": "verb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "optimal",
+    "translation": "оптимальный",
+    "context": "We're striving for an optimal solution.",
+    "context_translation": "Мы стремимся к оптимальному решению.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "in the meantime",
+    "translation": "тем временем",
+    "context": "In the meantime, please focus on task A.",
+    "context_translation": "Тем временем, пожалуйста, сосредоточьтесь на задаче А.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "with respect to",
+    "translation": "относительно",
+    "context": "With respect to your concerns, we're taking action.",
+    "context_translation": "Относительно ваших опасений, мы принимаем меры.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "Please advise",
+    "translation": "Пожалуйста, сообщите",
+    "context": "Please advise on the next steps.",
+    "context_translation": "Пожалуйста, сообщите о следующих шагах.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "capability",
+    "translation": "способность",
+    "context": "We need to assess the team's capability to handle this project.",
+    "context_translation": "Нам нужно оценить способность команды справиться с этим проектом.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "in due course",
+    "translation": "в свое время",
+    "context": "We will provide feedback in due course.",
+    "context_translation": "Мы предоставим отзыв в свое время.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "alignment",
+    "translation": "согласование",
+    "context": "We need to ensure alignment between the teams.",
+    "context_translation": "Нам нужно обеспечить согласование между командами.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "address",
+    "translation": "решать, обращаться",
+    "context": "We need to address the concerns raised by the client.",
+    "context_translation": "Нам нужно решить проблемы, поднятые клиентом.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "in detail",
+    "translation": "подробно",
+    "context": "Let's discuss the proposal in detail.",
+    "context_translation": "Давайте обсудим предложение подробно.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "to set expectations",
+    "translation": "установить ожидания",
+    "context": "Let's set expectations for the upcoming project.",
+    "context_translation": "Давайте установим ожидания для предстоящего проекта.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "at a later date",
+    "translation": "позже",
+    "context": "We can discuss this further at a later date.",
+    "context_translation": "Мы можем обсудить это подробнее позже.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "impact",
+    "translation": "влияние",
+    "context": "We need to assess the impact of this decision.",
+    "context_translation": "Нам нужно оценить влияние этого решения.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "contribute",
+    "translation": "внести вклад",
+    "context": "I'm happy to contribute to the project.",
+    "context_translation": "Я с удовольствием внесу свой вклад в проект.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "promptly",
+    "translation": "быстро",
+    "context": "Please respond promptly to this email.",
+    "context_translation": "Пожалуйста, ответьте на это письмо быстро.",
+    "word_type": "adverb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "in the process",
+    "translation": "в процессе",
+    "context": "The report is in the process of being finalized.",
+    "context_translation": "Отчет находится в процессе завершения.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "effective",
+    "translation": "эффективный",
+    "context": "This is an effective solution.",
+    "context_translation": "Это эффективное решение.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "for your reference",
+    "translation": "для вашей справки",
+    "context": "I've attached the document for your reference.",
+    "context_translation": "Я прикрепил документ для вашей справки.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "strategic",
+    "translation": "стратегический",
+    "context": "This is a strategic decision for the company.",
+    "context_translation": "Это стратегическое решение для компании.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "We are awaiting your response",
+    "translation": "Мы ожидаем вашего ответа",
+    "context": "We are awaiting your response regarding the proposal.",
+    "context_translation": "Мы ожидаем вашего ответа относительно предложения.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "in order to",
+    "translation": "для того, чтобы",
+    "context": "We need to finalize the budget in order to proceed.",
+    "context_translation": "Нам нужно завершить бюджет, чтобы продолжить.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "guidance",
+    "translation": "руководство",
+    "context": "We need guidance on how to proceed with this project.",
+    "context_translation": "Нам нужно руководство о том, как действовать в этом проекте.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "robust",
+    "translation": "надежный, прочный",
+    "context": "We need a robust solution to this problem.",
+    "context_translation": "Нам нужно надежное решение этой проблемы.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "in alignment with",
+    "translation": "в соответствии с",
+    "context": "This proposal is in alignment with our company goals.",
+    "context_translation": "Это предложение соответствует целям нашей компании.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "prioritize tasks",
+    "translation": "расставлять приоритеты задач",
+    "context": "We need to prioritize tasks to ensure timely completion.",
+    "context_translation": "Нам нужно расставить приоритеты задач, чтобы обеспечить своевременное завершение.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "parameters",
+    "translation": "параметры",
+    "context": "We need to define the parameters of the project.",
+    "context_translation": "Нам нужно определить параметры проекта.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "in response to your email",
+    "translation": "в ответ на ваше электронное письмо",
+    "context": "In response to your email, please find attached the report.",
+    "context_translation": "В ответ на ваше электронное письмо, пожалуйста, найдите прикрепленный отчет.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "framework",
+    "translation": "фреймворк, структура",
+    "context": "We need a new framework for managing projects.",
+    "context_translation": "Нам нужна новая структура для управления проектами.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "urgent",
+    "translation": "срочный",
+    "context": "This matter is urgent and requires immediate attention.",
+    "context_translation": "Это дело срочное и требует немедленного внимания.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "as needed",
+    "translation": "по мере необходимости",
+    "context": "We will provide support as needed.",
+    "context_translation": "Мы будем предоставлять поддержку по мере необходимости.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "for your approval",
+    "translation": "для вашего утверждения",
+    "context": "Please find attached the document for your approval.",
+    "context_translation": "Пожалуйста, найдите прикрепленный документ для вашего утверждения.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "please confirm",
+    "translation": "пожалуйста, подтвердите",
+    "context": "Please confirm your attendance by Friday.",
+    "context_translation": "Пожалуйста, подтвердите ваше присутствие к пятнице.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "efficiently",
+    "translation": "эффективно",
+    "context": "We need to complete this task efficiently.",
+    "context_translation": "Нам нужно выполнить эту задачу эффективно.",
+    "word_type": "adverb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "assess",
+    "translation": "оценивать",
+    "context": "We need to assess the risks before proceeding.",
+    "context_translation": "Нам нужно оценить риски, прежде чем продолжать.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "regarding this matter",
+    "translation": "касательно этого вопроса",
+    "context": "Regarding this matter, please see the attached document.",
+    "context_translation": "Касательно этого вопроса, пожалуйста, ознакомьтесь с приложенным документом.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "successful",
+    "translation": "успешный",
+    "context": "The project was successful.",
+    "context_translation": "Проект был успешным.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "to be in the loop",
+    "translation": "быть в курсе",
+    "context": "Please keep me in the loop on the progress.",
+    "context_translation": "Пожалуйста, держите меня в курсе прогресса.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "complete",
+    "translation": "завершать",
+    "context": "Please complete the report by Friday.",
+    "context_translation": "Пожалуйста, завершите отчет к пятнице.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "important",
+    "translation": "важный",
+    "context": "This is an important decision.",
+    "context_translation": "Это важное решение.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "regarding the next steps",
+    "translation": "относительно следующих шагов",
+    "context": "Regarding the next steps, we will schedule a meeting.",
+    "context_translation": "Относительно следующих шагов, мы запланируем встречу.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "completing",
+    "translation": "завершение",
+    "context": "We are currently completing the final report.",
+    "context_translation": "В настоящее время мы завершаем заключительный отчет.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "contingency",
+    "translation": "форс-мажор, непредвиденные обстоятельства",
+    "context": "We need a contingency plan in case of unforeseen circumstances.",
+    "context_translation": "Нам нужен план на случай непредвиденных обстоятельств.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "review",
+    "translation": "просмотр, обзор",
+    "context": "We need to review the final report before submission.",
+    "context_translation": "Нам нужно просмотреть окончательный отчет перед подачей.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "challenging",
+    "translation": "сложный, трудный",
+    "context": "The project proved to be more challenging than anticipated.",
+    "context_translation": "Проект оказался более сложным, чем ожидалось.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "We are on track",
+    "translation": "Мы в графике",
+    "context": "We are on track to meet the deadline.",
+    "context_translation": "Мы в графике, чтобы уложиться в срок.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "Please review and approve",
+    "translation": "Пожалуйста, проверьте и одобрите",
+    "context": "Please review and approve the attached document.",
+    "context_translation": "Пожалуйста, проверьте и одобрите приложенный документ.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "Collaborate",
+    "translation": "Сотрудничать",
+    "context": "We need to collaborate effectively to meet the deadline.",
+    "context_translation": "Нам нужно эффективно сотрудничать, чтобы уложиться в срок.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "Substantially",
+    "translation": "Существенно",
+    "context": "The project costs have increased substantially.",
+    "context_translation": "Затраты на проект существенно возросли.",
+    "word_type": "adverb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "To ensure clarity",
+    "translation": "Для обеспечения ясности",
+    "context": "To ensure clarity, please review the attached document.",
+    "context_translation": "Для обеспечения ясности, пожалуйста, просмотрите приложенный документ.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "to gain traction",
+    "translation": "набирать популярность/обораты",
+    "context": "The new marketing campaign is starting to gain traction.",
+    "context_translation": "Новая маркетинговая кампания начинает набирать обороты.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "due diligence",
+    "translation": "должная осмотрительность",
+    "context": "We performed our due diligence before making the decision.",
+    "context_translation": "Мы провели должную осмотрительность, прежде чем принять решение.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "action plan",
+    "translation": "план действий",
+    "context": "Let's create an action plan to achieve our goals.",
+    "context_translation": "Давайте составим план действий для достижения наших целей.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "Please provide updates",
+    "translation": "Пожалуйста, предоставьте обновления",
+    "context": "Please provide updates on your progress by Friday.",
+    "context_translation": "Пожалуйста, предоставьте обновления о вашем прогрессе к пятнице.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "to expedite",
+    "translation": "ускорить",
+    "context": "We need to expedite the process to meet the deadline.",
+    "context_translation": "Нам нужно ускорить процесс, чтобы успеть к дедлайну.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "expectation",
+    "translation": "ожидание",
+    "context": "We need to manage client expectations.",
+    "context_translation": "Нам нужно управлять ожиданиями клиентов.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "obtain",
+    "translation": "получать",
+    "context": "We need to obtain the necessary approvals.",
+    "context_translation": "Нам нужно получить необходимые разрешения.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "in progress",
+    "translation": "в процессе",
+    "context": "The project is currently in progress.",
+    "context_translation": "Проект сейчас находится в процессе.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "recommendation",
+    "translation": "рекомендация",
+    "context": "I have a few recommendations for improvement.",
+    "context_translation": "У меня есть несколько рекомендаций по улучшению.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "best practices",
+    "translation": "лучшие практики",
+    "context": "We should follow best practices for project management.",
+    "context_translation": "Нам следует следовать лучшим практикам управления проектами.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "execute",
+    "translation": "выполнять",
+    "context": "We need to execute the plan efficiently.",
+    "context_translation": "Нам нужно эффективно выполнить план.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "revise",
+    "translation": "пересматривать",
+    "context": "Please revise the document and send it back by Friday.",
+    "context_translation": "Пожалуйста, пересмотрите документ и отправьте его обратно к пятнице.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "deliberate",
+    "translation": "обдуманный",
+    "context": "We need a deliberate approach to solving this problem.",
+    "context_translation": "Нам нужен обдуманный подход к решению этой проблемы.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "in line with",
+    "translation": "в соответствии с",
+    "context": "The proposal is in line with company policy.",
+    "context_translation": "Предложение соответствует политике компании.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "We are on schedule",
+    "translation": "Мы в графике",
+    "context": "We are on schedule to complete the project by Friday.",
+    "context_translation": "Мы в графике, чтобы завершить проект к пятнице.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "proactive",
+    "translation": "проактивный",
+    "context": "We need to be proactive in addressing potential issues.",
+    "context_translation": "Нам нужно упреждающе решать потенциальные проблемы.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "to reach a consensus",
+    "translation": "прийти к консенсусу",
+    "context": "We need to reach a consensus on the next steps.",
+    "context_translation": "Нам нужно прийти к консенсусу относительно следующих шагов.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "oversight",
+    "translation": "надзор",
+    "context": "The project requires careful oversight.",
+    "context_translation": "Проект требует тщательного надзора.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "in regards to",
+    "translation": "относительно",
+    "context": "In regards to your question, the answer is yes.",
+    "context_translation": "Относительно вашего вопроса, ответ - да.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "exceptional",
+    "translation": "исключительный",
+    "context": "Her work has been exceptional this quarter.",
+    "context_translation": "Ее работа в этом квартале была исключительной.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "With immediate effect",
+    "translation": "С немедленным вступлением в силу",
+    "context": "These changes will be implemented with immediate effect.",
+    "context_translation": "Эти изменения будут внедрены с немедленным вступлением в силу.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "concise",
+    "translation": "краткий, лаконичный",
+    "context": "Please keep your report concise.",
+    "context_translation": "Пожалуйста, сделайте ваш отчет кратким.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "Please find attached the document",
+    "translation": "Пожалуйста, найдите прикрепленный документ",
+    "context": "Please find attached the document you requested.",
+    "context_translation": "Пожалуйста, найдите прикрепленный документ, который вы запрашивали.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "We are awaiting your feedback",
+    "translation": "Мы ожидаем ваши отзывы",
+    "context": "We are awaiting your feedback on the proposal.",
+    "context_translation": "Мы ожидаем ваши отзывы по предложению.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "We need to align on",
+    "translation": "Нам нужно согласовать",
+    "context": "We need to align on the next steps.",
+    "context_translation": "Нам нужно согласовать дальнейшие шаги.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "as soon as possible",
+    "translation": "как можно скорее",
+    "context": "Please respond as soon as possible.",
+    "context_translation": "Пожалуйста, ответьте как можно скорее.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "to keep you updated",
+    "translation": "держать вас в курсе",
+    "context": "I will keep you updated on the progress.",
+    "context_translation": "Я буду держать вас в курсе прогресса.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "to prioritize tasks",
+    "translation": "расставлять приоритеты в задачах",
+    "context": "We need to prioritize tasks to ensure we meet the project goals.",
+    "context_translation": "Нам нужно расставить приоритеты в задачах, чтобы гарантировать достижение целей проекта.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "to keep you in the loop",
+    "translation": "держать вас в курсе",
+    "context": "I will keep you in the loop on any updates.",
+    "context_translation": "Я буду держать вас в курсе всех обновлений.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "to make a decision",
+    "translation": "принять решение",
+    "context": "We need to make a decision about the next steps by Friday.",
+    "context_translation": "Нам нужно принять решение о следующих шагах к пятнице.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "comply",
+    "translation": "соблюдать",
+    "context": "We must comply with all company regulations.",
+    "context_translation": "Мы должны соблюдать все правила компании.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "streamlined",
+    "translation": "упрощенный",
+    "context": "The streamlined process saved us considerable time.",
+    "context_translation": "Упрощенный процесс сэкономил нам значительное время.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "task",
+    "translation": "задача",
+    "context": "The task is to complete the report by Friday.",
+    "context_translation": "Задача - завершить отчет к пятнице.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "propose",
+    "translation": "предлагать",
+    "context": "I propose we meet next week to discuss this further.",
+    "context_translation": "Я предлагаю нам встретиться на следующей неделе, чтобы обсудить это подробнее.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "action items",
+    "translation": "задачи",
+    "context": "Let's review the action items from the last meeting.",
+    "context_translation": "Давайте рассмотрим задачи с последнего совещания.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "thorough",
+    "translation": "тщательный",
+    "context": "A thorough investigation is required.",
+    "context_translation": "Требуется тщательное расследование.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "looking ahead",
+    "translation": "заглядывая вперед",
+    "context": "Looking ahead, we anticipate strong growth.",
+    "context_translation": "Заглядывая вперед, мы ожидаем сильного роста.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "accordingly",
+    "translation": "соответственно",
+    "context": "We reviewed the data and proceeded accordingly.",
+    "context_translation": "Мы изучили данные и поступили соответственно.",
+    "word_type": "adverb",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "teamwork",
+    "translation": "командная работа",
+    "context": "Teamwork is essential for project success.",
+    "context_translation": "Командная работа необходима для успеха проекта.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "compliance",
+    "translation": "соблюдение",
+    "context": "Ensuring compliance with regulations is paramount.",
+    "context_translation": "Обеспечение соблюдения правил имеет первостепенное значение.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "progress report",
+    "translation": "отчет о ходе работы",
+    "context": "Please submit your progress report by Friday.",
+    "context_translation": "Пожалуйста, предоставьте свой отчет о ходе работы к пятнице.",
+    "word_type": "noun",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "pending your approval",
+    "translation": "в ожидании вашего утверждения",
+    "context": "The next step is pending your approval.",
+    "context_translation": "Следующий шаг — ожидание вашего утверждения.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "We are pleased to announce",
+    "translation": "Мы рады сообщить",
+    "context": "We are pleased to announce the successful completion of the project.",
+    "context_translation": "Мы рады сообщить об успешном завершении проекта.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "upcoming",
+    "translation": "предстоящий",
+    "context": "We have an upcoming meeting to discuss this.",
+    "context_translation": "У нас есть предстоящая встреча, чтобы обсудить это.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "We are slightly behind schedule",
+    "translation": "Мы немного отстаем от графика",
+    "context": "We are slightly behind schedule, but we expect to catch up soon.",
+    "context_translation": "Мы немного отстаем от графика, но ожидаем скоро наверстать упущенное.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "cooperate",
+    "translation": "сотрудничать",
+    "context": "We need to cooperate to achieve our goals.",
+    "context_translation": "Нам нужно сотрудничать, чтобы достичь наших целей.",
+    "word_type": "verb",
+    "difficulty": "basic"
+  },
+  {
+    "word": "integral",
+    "translation": "неотъемлемый",
+    "context": "Teamwork is an integral part of our success.",
+    "context_translation": "Командная работа является неотъемлемой частью нашего успеха.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  },
+  {
+    "word": "viable",
+    "translation": "жизнеспособный, осуществимый",
+    "context": "We need to explore viable solutions to this problem.",
+    "context_translation": "Нам нужно изучить жизнеспособные решения этой проблемы.",
+    "word_type": "adjective",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "to ensure compliance",
+    "translation": "для обеспечения соответствия",
+    "context": "We'll review the processes to ensure compliance with regulations.",
+    "context_translation": "Мы проверим процессы, чтобы обеспечить соответствие нормативным актам.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "We are on the right track",
+    "translation": "Мы на правильном пути",
+    "context": "Despite some delays, we are on the right track to meet our deadline.",
+    "context_translation": "Несмотря на некоторые задержки, мы на правильном пути к выполнению наших сроков.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "timeline",
+    "translation": "график",
+    "context": "We need to agree on a realistic timeline for the project.",
+    "context_translation": "Нам нужно договориться о реалистичном графике проекта.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "Please confirm receipt",
+    "translation": "Пожалуйста, подтвердите получение",
+    "context": "Please confirm receipt of this email at your earliest convenience.",
+    "context_translation": "Пожалуйста, подтвердите получение этого письма в ближайшее время.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "We are making good progress",
+    "translation": "Мы добиваемся хороших результатов",
+    "context": "We are making good progress on the project.",
+    "context_translation": "Мы добиваемся хороших результатов по проекту.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "to reach a conclusion",
+    "translation": "прийти к выводу",
+    "context": "After much deliberation, we were able to reach a conclusion.",
+    "context_translation": "После долгих размышлений мы смогли прийти к выводу.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "to reach a compromise",
+    "translation": "найти компромисс",
+    "context": "We need to reach a compromise on this issue.",
+    "context_translation": "Нам нужно найти компромисс по этому вопросу.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "Please let us know if you have any questions.",
+    "translation": "Пожалуйста, сообщите нам, если у вас возникнут вопросы.",
+    "context": "Please let us know if you have any questions.",
+    "context_translation": "Пожалуйста, сообщите нам, если у вас возникнут вопросы.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "We have completed the second phase.",
+    "translation": "Мы завершили второй этап.",
+    "context": "We have completed the second phase.",
+    "context_translation": "Мы завершили второй этап.",
+    "word_type": "common phrase",
+    "difficulty": "basic"
+  },
+  {
+    "word": "to ensure alignment",
+    "translation": "обеспечить согласованность",
+    "context": "We need to schedule a meeting to ensure alignment on the project goals.",
+    "context_translation": "Нам нужно запланировать встречу, чтобы обеспечить согласованность в отношении целей проекта.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "We have yet to...",
+    "translation": "Мы еще не...",
+    "context": "We have yet to receive a response from the client.",
+    "context_translation": "Мы еще не получили ответа от клиента.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "We are on track to",
+    "translation": "Мы на пути к",
+    "context": "We are on track to complete the project by Friday.",
+    "context_translation": "Мы на пути к завершению проекта к пятнице.",
+    "word_type": "common phrase",
+    "difficulty": "intermediate"
+  },
+  {
+    "word": "innovation",
+    "translation": "инновация",
+    "context": "We need to foster innovation within the team.",
+    "context_translation": "Нам нужно стимулировать инновации в команде.",
+    "word_type": "noun",
+    "difficulty": "basic"
+  },
+  {
+    "word": "proficient",
+    "translation": "компетентный, опытный",
+    "context": "He is proficient in project management.",
+    "context_translation": "Он опытен в управлении проектами.",
+    "word_type": "adjective",
+    "difficulty": "basic"
+  }
+]
