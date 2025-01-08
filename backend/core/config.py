@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 from typing import Optional
+from typing import Any
 
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -23,7 +24,7 @@ class Settings(BaseSettings):
     # CORS Settings
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
 
-    @field_validator('BACKEND_CORS_ORIGINS', pre=True)
+    @field_validator('BACKEND_CORS_ORIGINS')
     def assemble_cors_origins(cls, v: str | list[str]) -> list[str] | str:
         if isinstance(v, str) and not v.startswith('['):
             return [i.strip() for i in v.split(',')]
@@ -45,7 +46,7 @@ class Settings(BaseSettings):
     # Security settings
     PASSWORD_RESET_TOKEN_EXPIRE_HOURS: int = 24
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 24
-    MINIMUM_PASSWORD_LENGTH: int = 8
+    MINIMUM_PASSWORD_LENGTH: int = 4
 
     # Rate limiting
     RATE_LIMIT_PER_MINUTE: int = 60

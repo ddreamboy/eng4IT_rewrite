@@ -244,7 +244,7 @@ class TaskContext(Base):
     
     # JSON поля для разных типов заданий
     options = Column(JSON)  # Может содержать: неправильные ответы, варианты для сопоставления и т.д.
-    metadata = Column(JSON)  # Дополнительные данные специфичные для типа задания
+    task_metadata = Column(JSON)  # Дополнительные данные специфичные для типа задания
     
     difficulty = Column(Enum(DifficultyLevel))
 
@@ -360,7 +360,7 @@ context = TaskContext(
             {'term': 'index', 'definition': 'data structure improving search speed'}
         ]
     },
-    metadata={
+    task_metadata={
         'max_score': 3,  # Количество правильных пар
         'partial_scoring': True  # Разрешаем частичные баллы
     }
@@ -374,7 +374,7 @@ context = TaskContext(
     target_item_id=term.id,
     target_item_type=ItemType.TERM,
     difficulty=term.difficulty,
-    metadata={
+    task_metadata={
         'key_points': ['data storage', 'organized', 'structured', 'retrieval'],
         'min_words': 10,
         'scoring_type': 'key_points_based'
