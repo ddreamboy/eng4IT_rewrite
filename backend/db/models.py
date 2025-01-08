@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy import (
     JSON,
     Boolean,
+    CheckConstraint,
     Column,
     DateTime,
     Enum,
@@ -12,7 +13,6 @@ from sqlalchemy import (
     Index,
     Integer,
     String,
-    CheckConstraint,
 )
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -32,19 +32,19 @@ class DifficultyLevel(enum.Enum):
 
 class TaskType(enum.Enum):
     TRANSLATION = 'translation'  # Перевод слова
-    DEFINITION = 'definition'    # Выбор определения
-    CONTEXT = 'context'         # Заполнение пропуска в контексте
-    MATCHING = 'matching'       # Сопоставление слов/определений
-    WRITE = 'write'            # Написание слова по определению
-    
-    
+    DEFINITION = 'definition'  # Выбор определения
+    CONTEXT = 'context'  # Заполнение пропуска в контексте
+    MATCHING = 'matching'  # Сопоставление слов/определений
+    WRITE = 'write'  # Написание слова по определению
+
+
 class AchievementType(enum.Enum):
-    STREAK = 'streak'           # Достижения за регулярность
-    COMPLETION = 'completion'   # За выполнение определенного числа заданий
-    MASTERY = 'mastery'        # За достижение определенного уровня мастерства
-    SPEED = 'speed'            # За скорость выполнения
-    ACCURACY = 'accuracy'      # За точность выполнения
-    CATEGORY = 'category'      # За прогресс в определенной категории
+    STREAK = 'streak'  # Достижения за регулярность
+    COMPLETION = 'completion'  # За выполнение определенного числа заданий
+    MASTERY = 'mastery'  # За достижение определенного уровня мастерства
+    SPEED = 'speed'  # За скорость выполнения
+    ACCURACY = 'accuracy'  # За точность выполнения
+    CATEGORY = 'category'  # За прогресс в определенной категории
 
 
 class WordType(enum.Enum):
@@ -73,7 +73,9 @@ class UserORM(Base):
     learning_preferences = Column(JSON, default=dict)
 
     # Уровень и прогресс
-    current_level = Column(Enum(DifficultyLevel), default=DifficultyLevel.INTERMEDIATE)
+    current_level = Column(
+        Enum(DifficultyLevel), default=DifficultyLevel.INTERMEDIATE
+    )
     proficiency_score = Column(Float, default=50.0)  # Общая метрика уровня (0-100)
     daily_goal = Column(Integer, default=20)
     study_streak = Column(Integer, default=0)
@@ -97,16 +99,18 @@ class UserORM(Base):
         lazy='dynamic',
     )
     word_statuses = relationship('UserWordStatus', backref='user')
-    
+
+
 class Achievement(Base):
     """Модель для описания возможных достижений"""
+
     __tablename__ = 'achievements'
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
     achievement_type = Column(Enum(AchievementType), nullable=False)
-    
+
     # Условия для получения достижения в JSON формате
     # Примеры:
     # {"type": "streak", "days": 7}
@@ -114,16 +118,16 @@ class Achievement(Base):
     # {"type": "mastery", "level": 90, "category": "databases"}
     # {"type": "speed", "time": 30, "task_type": "matching"}
     conditions = Column(JSON, nullable=False)
-    
+
     # Уровни достижения (бронза, серебро, золото и т.д.)
     levels = Column(JSON, nullable=False)
-    
-    __table_args__ = (
-        Index('idx_achievement_type', 'achievement_type'),
-    )
+
+    __table_args__ = (Index('idx_achievement_type', 'achievement_type'),)
+
 
 class UserAchievement(Base):
     """Модель для хранения достижений пользователя"""
+
     __tablename__ = 'user_achievements'
 
     id = Column(Integer, primary_key=True)
@@ -132,7 +136,7 @@ class UserAchievement(Base):
     current_level = Column(Integer, default=0)  # 0 = не получено
     progress = Column(Float, default=0.0)  # Прогресс к следующему уровню
     achieved_at = Column(DateTime)
-    
+
     __table_args__ = (
         Index('idx_user_achievements', 'user_id', 'achievement_id', unique=True),
     )
@@ -170,7 +174,11 @@ class TermORM(Base):
         'LearningAttempt.item_type == "term")',
         foreign_keys='[LearningAttempt.item_id]',
     )
-    user_statuses = relationship('UserWordStatus', foreign_keys='[UserWordStatus.item_id]')
+    user_statuses = relationship(
+        'UserWordStatus',
+        primaryjoin='and_(UserWordStatus.item_id == TermORM.id, UserWordStatus.item_type == "term")',
+        foreign_keys='[UserWordStatus.item_id]',
+    )
 
 
 class WordORM(Base):
@@ -198,35 +206,44 @@ class WordORM(Base):
         primaryjoin='and_(LearningAttempt.item_id == WordORM.id, '
         'LearningAttempt.item_type == "word")',
         foreign_keys='[LearningAttempt.item_id]',
+        overlaps='learning_attempts',
     )
-    user_statuses = relationship('UserWordStatus', foreign_keys='[UserWordStatus.item_id]')
+
+    user_statuses = relationship(
+        'UserWordStatus',
+        primaryjoin='and_(UserWordStatus.item_id == WordORM.id, UserWordStatus.item_type == "word")',
+        foreign_keys='[UserWordStatus.item_id]',
+        overlaps='user_statuses',
+    )
 
 
 class UserWordStatus(Base):
     """Модель для отслеживания прогресса пользователя по словам/терминам"""
 
     __tablename__ = 'user_word_status'
-    
+
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     item_id = Column(Integer, nullable=False)
     item_type = Column(Enum(ItemType), nullable=False)
-    
+
     # Статусы
     is_favorite = Column(Boolean, default=False)
     is_known = Column(Boolean, default=False)
     mastery_level = Column(Float, default=0.0)
-    
+
     # SRS поля
     last_reviewed = Column(DateTime)
     next_review_date = Column(DateTime)
     ease_factor = Column(Float, default=2.5)
     interval_level = Column(Integer, default=0)
-    
+
     __table_args__ = (
         CheckConstraint('ease_factor >= 1.3 AND ease_factor <= 3.0'),
         CheckConstraint('mastery_level >= 0 AND mastery_level <= 100'),
-        Index('idx_user_word_status', 'user_id', 'item_id', 'item_type', unique=True),
+        Index(
+            'idx_user_word_status', 'user_id', 'item_id', 'item_type', unique=True
+        ),
         Index('idx_next_review', 'user_id', 'next_review_date'),
     )
 
@@ -241,15 +258,24 @@ class TaskContext(Base):
     context_type = Column(Enum(TaskType), nullable=False)
     target_item_id = Column(Integer, nullable=False)
     target_item_type = Column(Enum(ItemType), nullable=False)
-    
+
     # JSON поля для разных типов заданий
-    options = Column(JSON)  # Может содержать: неправильные ответы, варианты для сопоставления и т.д.
-    task_metadata = Column(JSON)  # Дополнительные данные специфичные для типа задания
-    
+    options = Column(
+        JSON
+    )  # Может содержать: неправильные ответы, варианты для сопоставления и т.д.
+    task_metadata = Column(
+        JSON
+    )  # Дополнительные данные специфичные для типа задания
+
     difficulty = Column(Enum(DifficultyLevel))
 
     __table_args__ = (
-        Index('idx_context_type_item', 'context_type', 'target_item_type', 'target_item_id'),
+        Index(
+            'idx_context_type_item',
+            'context_type',
+            'target_item_type',
+            'target_item_id',
+        ),
         Index('idx_context_difficulty', 'difficulty'),
     )
 
@@ -267,7 +293,7 @@ class LearningAttempt(Base):
     item_type = Column(Enum(ItemType), nullable=False)
     task_type = Column(Enum(TaskType), nullable=False)
     context_id = Column(Integer, ForeignKey('task_contexts.id'))
-    
+
     # Результат
     is_successful = Column(Boolean, nullable=False)
     score = Column(Float)  # Для заданий с градацией успеха (например, matching)
@@ -287,30 +313,38 @@ class LearningAttempt(Base):
         foreign_keys=[item_id],
         primaryjoin='and_(LearningAttempt.item_id == TermORM.id, '
         'LearningAttempt.item_type == "term")',
+        overlaps='learning_attempts',
     )
     word = relationship(
         'WordORM',
         foreign_keys=[item_id],
         primaryjoin='and_(LearningAttempt.item_id == WordORM.id, '
         'LearningAttempt.item_type == "word")',
+        overlaps='learning_attempts,term',
     )
-    
+
     timing = relationship('TaskTiming', uselist=False, back_populates='attempt')
-    
+
+
 class TaskTiming(Base):
     """Модель для хранения времени выполнения заданий"""
+
     __tablename__ = 'task_timings'
 
     id = Column(Integer, primary_key=True)
-    attempt_id = Column(Integer, ForeignKey('learning_attempts.id'), nullable=False)
+    attempt_id = Column(
+        Integer, ForeignKey('learning_attempts.id'), nullable=False
+    )
     start_time = Column(DateTime, nullable=False)
     end_time = Column(DateTime, nullable=False)
-    
+
     # Дополнительные метрики времени
     thinking_time = Column(Integer)  # время на обдумывание в миллисекундах
-    input_time = Column(Integer)     # время на ввод ответа
-    total_time = Column(Integer)     # общее время
-    
+    input_time = Column(Integer)  # время на ввод ответа
+    total_time = Column(Integer)  # общее время
+
+    attempt = relationship('LearningAttempt', back_populates='timing')
+
     __table_args__ = (
         Index('idx_task_timing_attempt', 'attempt_id'),
         CheckConstraint('end_time > start_time'),

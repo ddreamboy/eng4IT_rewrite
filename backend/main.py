@@ -12,6 +12,8 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from logger import setup_logger
 
+from backend.db.database import init_db
+
 logger = setup_logger(__name__)
 
 
@@ -20,6 +22,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     """Контекст жизненного цикла приложения."""
     # Startup
     logger.info('Starting up FastAPI application')
+    await init_db()
     yield
     # Shutdown
     logger.info('Shutting down FastAPI application')
