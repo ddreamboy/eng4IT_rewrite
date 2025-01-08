@@ -1,6 +1,6 @@
 from typing import Optional
 
-from database import async_engine, async_session
+from database import async_engine, async_session, get_session
 from models import Base, TermORM, WordORM
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -87,7 +87,7 @@ async def get_random_words(session: AsyncSession, limit: int = 3) -> list[WordOR
 
 async def get_random_items() -> tuple[list[TermORM], list[WordORM]]:
     """Получает случайные термины и слова."""
-    async with async_session() as session:
+    async for session in get_session():
         terms = await get_random_terms(session)
         words = await get_random_words(session)
         return terms, words

@@ -36,6 +36,15 @@ class TaskType(enum.Enum):
     CONTEXT = 'context'         # Заполнение пропуска в контексте
     MATCHING = 'matching'       # Сопоставление слов/определений
     WRITE = 'write'            # Написание слова по определению
+    
+    
+class AchievementType(enum.Enum):
+    STREAK = 'streak'           # Достижения за регулярность
+    COMPLETION = 'completion'   # За выполнение определенного числа заданий
+    MASTERY = 'mastery'        # За достижение определенного уровня мастерства
+    SPEED = 'speed'            # За скорость выполнения
+    ACCURACY = 'accuracy'      # За точность выполнения
+    CATEGORY = 'category'      # За прогресс в определенной категории
 
 
 class WordType(enum.Enum):
@@ -88,6 +97,45 @@ class UserORM(Base):
         lazy='dynamic',
     )
     word_statuses = relationship('UserWordStatus', backref='user')
+    
+class Achievement(Base):
+    """Модель для описания возможных достижений"""
+    __tablename__ = 'achievements'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+    description = Column(String, nullable=False)
+    achievement_type = Column(Enum(AchievementType), nullable=False)
+    
+    # Условия для получения достижения в JSON формате
+    # Примеры:
+    # {"type": "streak", "days": 7}
+    # {"type": "completion", "count": 100, "task_type": "translation"}
+    # {"type": "mastery", "level": 90, "category": "databases"}
+    # {"type": "speed", "time": 30, "task_type": "matching"}
+    conditions = Column(JSON, nullable=False)
+    
+    # Уровни достижения (бронза, серебро, золото и т.д.)
+    levels = Column(JSON, nullable=False)
+    
+    __table_args__ = (
+        Index('idx_achievement_type', 'achievement_type'),
+    )
+
+class UserAchievement(Base):
+    """Модель для хранения достижений пользователя"""
+    __tablename__ = 'user_achievements'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    achievement_id = Column(Integer, ForeignKey('achievements.id'), nullable=False)
+    current_level = Column(Integer, default=0)  # 0 = не получено
+    progress = Column(Float, default=0.0)  # Прогресс к следующему уровню
+    achieved_at = Column(DateTime)
+    
+    __table_args__ = (
+        Index('idx_user_achievements', 'user_id', 'achievement_id', unique=True),
+    )
 
 
 class TermORM(Base):
@@ -245,6 +293,27 @@ class LearningAttempt(Base):
         foreign_keys=[item_id],
         primaryjoin='and_(LearningAttempt.item_id == WordORM.id, '
         'LearningAttempt.item_type == "word")',
+    )
+    
+    timing = relationship('TaskTiming', uselist=False, back_populates='attempt')
+    
+class TaskTiming(Base):
+    """Модель для хранения времени выполнения заданий"""
+    __tablename__ = 'task_timings'
+
+    id = Column(Integer, primary_key=True)
+    attempt_id = Column(Integer, ForeignKey('learning_attempts.id'), nullable=False)
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=False)
+    
+    # Дополнительные метрики времени
+    thinking_time = Column(Integer)  # время на обдумывание в миллисекундах
+    input_time = Column(Integer)     # время на ввод ответа
+    total_time = Column(Integer)     # общее время
+    
+    __table_args__ = (
+        Index('idx_task_timing_attempt', 'attempt_id'),
+        CheckConstraint('end_time > start_time'),
     )
 
 

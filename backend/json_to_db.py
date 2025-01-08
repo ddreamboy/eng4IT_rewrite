@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from database import async_session
+from database import async_session, get_session
 from orm import create_term, create_word, init_db_tables
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -140,7 +140,7 @@ async def init_db_from_json() -> None:
         return
 
     # Импортируем данные
-    async with async_session() as session:
+    async for session in get_session():
         try:
             # Обрабатываем слова
             if words_data:
@@ -155,7 +155,6 @@ async def init_db_from_json() -> None:
                 )
 
             # Фиксируем изменения
-            await session.commit()
             print('\n=== Итоги импорта ===')
             if terms_data:
                 print(
@@ -169,7 +168,6 @@ async def init_db_from_json() -> None:
 
         except Exception as e:
             print(f'\n❌ Ошибка при импорте данных: {str(e)}')
-            await session.rollback()
             print('✗ Изменения отменены')
 
 
