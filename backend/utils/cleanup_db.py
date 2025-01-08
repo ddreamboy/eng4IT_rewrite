@@ -1,6 +1,6 @@
 import asyncio
 
-from database import async_engine
+from backend.db.database import async_engine
 from sqlalchemy import text
 
 
