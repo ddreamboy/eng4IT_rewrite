@@ -3,3 +3,10 @@ pydantic-settings
 asyncpg
 google-generativeai
 pyyaml
+fastapi
+uvicorn[standard]
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+redis
+pydantic[email]

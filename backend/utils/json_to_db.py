@@ -2,8 +2,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from database import async_session, get_session
-from orm import create_term, create_word, init_db_tables
+from backend.db.database import async_session, get_session
+from backend.db.orm import create_term, create_word, init_db_tables
 from sqlalchemy.ext.asyncio import AsyncSession
 
 

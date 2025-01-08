@@ -1,5 +1,5 @@
 import asyncio
-from orm import get_random_items
+from backend.db.orm import get_random_items
 
 
 async def show_random_items():

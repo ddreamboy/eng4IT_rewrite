@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
-from gemini import GeminiServiceSinglethon as GeminiService
+from .gemini import GeminiServiceSinglethon as GeminiService
 from logger import setup_logger
 
 logger = setup_logger(__name__)

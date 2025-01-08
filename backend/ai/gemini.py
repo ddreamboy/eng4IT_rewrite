@@ -1,19 +1,16 @@
 import asyncio
-import base64
 import json
 import os
 import re
-import uuid
 from collections import deque
 from datetime import datetime, timedelta
-from io import BytesIO
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 import google.generativeai as genai
-
-from config import settings
 from logger import setup_logger
 from prompt_loader import PromptLoader
+
+from backend.core.config import settings
 
 logger = setup_logger(__name__)
 
@@ -166,7 +163,9 @@ class GeminiService:
                 json_str = cleaned_response
                 logger.info('Extracted JSON from plain text')
 
-            logger.debug(f'Extracted JSON string before cleaning: {json_str[:100]}')
+            logger.debug(
+                f'Extracted JSON string before cleaning: {json_str[:100]}'
+            )
 
             json_str = self._clean_json_string(json_str)
             logger.debug(f'Cleaned JSON string: {json_str}')
@@ -213,7 +212,9 @@ class GeminiService:
                 temperature=settings.DEFAULT_TEMPERATURE,
                 top_p=settings.DEFAULT_TOP_P,
             )
-            logger.debug(f'Generation parts length: {len(generation_parts)} and types: {[type(element) for element in generation_parts]}')
+            logger.debug(
+                f'Generation parts length: {len(generation_parts)} and types: {[type(element) for element in generation_parts]}'
+            )
             response = await self.model.generate_content_async(
                 generation_parts, generation_config=generation_config
             )

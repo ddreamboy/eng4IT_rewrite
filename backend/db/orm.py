@@ -1,6 +1,6 @@
 from typing import Optional
 
-from database import async_engine, async_session, get_session
+from backend.db.database import async_engine, async_session, get_session
 from models import Base, TermORM, WordORM
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
