@@ -1,7 +1,8 @@
 import asyncio
 
-from backend.db.database import async_engine
 from sqlalchemy import text
+
+from backend.db.database import async_engine
 
 
 async def drop_all_tables():

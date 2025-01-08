@@ -1,20 +1,31 @@
 from api.deps import get_auth_service
 from api.v1.schemas.auth import Token, UserCreate, UserLogin
 from api.v1.schemas.user import UserResponse
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 from services.auth import AuthService
 
 router = APIRouter()
 
 
-@router.post('/register', response_model=UserResponse)
+@router.post(
+    '/register',
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary='Регистрация нового пользователя',
+    description="""
+    Регистрация нового пользователя в системе.
+    
+    - **username**: имя пользователя (3-50 символов)
+    - **email**: действующий email адрес
+    - **password**: надежный пароль (минимум 8 символов)
+    
+    После успешной регистрации возвращается информация о созданном пользователе.
+    """,
+)
 async def register(
     user_data: UserCreate, auth_service: AuthService = Depends(get_auth_service)
 ):
-    """
-    Регистрация нового пользователя.
-    """
     user = await auth_service.register_user(user_data)
     return user
 
