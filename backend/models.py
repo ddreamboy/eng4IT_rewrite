@@ -7,10 +7,12 @@ from sqlalchemy import (
     Column,
     DateTime,
     Enum,
+    Float,
     ForeignKey,
     Index,
     Integer,
     String,
+    CheckConstraint,
 )
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -20,6 +22,28 @@ Base = declarative_base()
 class ItemType(enum.Enum):
     TERM = 'term'
     WORD = 'word'
+
+
+class DifficultyLevel(enum.Enum):
+    BEGINNER = 'beginner'
+    INTERMEDIATE = 'intermediate'
+    ADVANCED = 'advanced'
+
+
+class TaskType(enum.Enum):
+    TRANSLATION = 'translation'  # Перевод слова
+    DEFINITION = 'definition'    # Выбор определения
+    CONTEXT = 'context'         # Заполнение пропуска в контексте
+    MATCHING = 'matching'       # Сопоставление слов/определений
+    WRITE = 'write'            # Написание слова по определению
+
+
+class WordType(enum.Enum):
+    NOUN = 'noun'
+    VERB = 'verb'
+    ADJECTIVE = 'adjective'
+    ADVERB = 'adverb'
+    PHRASAL_VERB = 'phrasal_verb'
 
 
 class UserORM(Base):
@@ -36,15 +60,21 @@ class UserORM(Base):
     is_active = Column(Boolean, default=True)
 
     # Настройки пользователя
-    settings = Column(JSON, default=dict)  # Для хранения пользовательских настроек
-    learning_preferences = Column(JSON, default=dict)  # Предпочтения в обучении
+    settings = Column(JSON, default=dict)
+    learning_preferences = Column(JSON, default=dict)
+
+    # Уровень и прогресс
+    current_level = Column(Enum(DifficultyLevel), default=DifficultyLevel.INTERMEDIATE)
+    proficiency_score = Column(Float, default=50.0)  # Общая метрика уровня (0-100)
+    daily_goal = Column(Integer, default=20)
+    study_streak = Column(Integer, default=0)
 
     # Статистика
     total_attempts = Column(Integer, default=0)
     successful_attempts = Column(Integer, default=0)
 
-    # Индексы
     __table_args__ = (
+        CheckConstraint('proficiency_score >= 0 AND proficiency_score <= 100'),
         Index('idx_users_username', 'username'),
         Index('idx_users_email', 'email'),
         Index('idx_users_activity', 'is_active', 'last_login'),
@@ -55,8 +85,9 @@ class UserORM(Base):
         'LearningAttempt',
         backref='user',
         primaryjoin='UserORM.id == LearningAttempt.user_id',
-        lazy='dynamic',  # Для оптимизации запросов
+        lazy='dynamic',
     )
+    word_statuses = relationship('UserWordStatus', backref='user')
 
 
 class TermORM(Base):
@@ -69,7 +100,7 @@ class TermORM(Base):
     primary_translation = Column(String, nullable=False)
     category_main = Column(String, nullable=False)
     category_sub = Column(String)
-    difficulty = Column(String, nullable=False)
+    difficulty = Column(Enum(DifficultyLevel), nullable=False)
     definition_en = Column(String, nullable=False)
     definition_ru = Column(String, nullable=False)
     example_en = Column(String)
@@ -77,16 +108,13 @@ class TermORM(Base):
     related_terms = Column(JSON, default=list)
     alternate_translations = Column(JSON, default=list)
 
-    # Индексы для ускорения поиска
     __table_args__ = (
-        Index('idx_terms_term', 'term'),  # Для поиска по термину
-        Index(
-            'idx_terms_category', 'category_main', 'category_sub'
-        ),  # Для фильтрации по категориям
-        Index('idx_terms_difficulty', 'difficulty'),  # Для фильтрации по сложности
+        Index('idx_terms_term', 'term'),
+        Index('idx_terms_category', 'category_main', 'category_sub'),
+        Index('idx_terms_difficulty', 'difficulty'),
     )
 
-    # Попытки изучения
+    # Связи
     learning_attempts = relationship(
         'LearningAttempt',
         back_populates='term',
@@ -94,6 +122,7 @@ class TermORM(Base):
         'LearningAttempt.item_type == "term")',
         foreign_keys='[LearningAttempt.item_id]',
     )
+    user_statuses = relationship('UserWordStatus', foreign_keys='[UserWordStatus.item_id]')
 
 
 class WordORM(Base):
@@ -106,24 +135,51 @@ class WordORM(Base):
     translation = Column(String, nullable=False)
     context = Column(String)
     context_translation = Column(String)
-    word_type = Column(String, nullable=False)
-    difficulty = Column(String, nullable=False)
+    word_type = Column(Enum(WordType), nullable=False)
+    difficulty = Column(Enum(DifficultyLevel), nullable=False)
 
-    # Индексы
     __table_args__ = (
-        Index('idx_words_word', 'word'),  # Для поиска по слову
-        Index(
-            'idx_words_type_difficulty', 'word_type', 'difficulty'
-        ),  # Для фильтрации по типу и сложности
+        Index('idx_words_word', 'word'),
+        Index('idx_words_type_difficulty', 'word_type', 'difficulty'),
     )
 
-    # Попытки изучения
+    # Связи
     learning_attempts = relationship(
         'LearningAttempt',
         back_populates='word',
         primaryjoin='and_(LearningAttempt.item_id == WordORM.id, '
         'LearningAttempt.item_type == "word")',
         foreign_keys='[LearningAttempt.item_id]',
+    )
+    user_statuses = relationship('UserWordStatus', foreign_keys='[UserWordStatus.item_id]')
+
+
+class UserWordStatus(Base):
+    """Модель для отслеживания прогресса пользователя по словам/терминам"""
+
+    __tablename__ = 'user_word_status'
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    item_id = Column(Integer, nullable=False)
+    item_type = Column(Enum(ItemType), nullable=False)
+    
+    # Статусы
+    is_favorite = Column(Boolean, default=False)
+    is_known = Column(Boolean, default=False)
+    mastery_level = Column(Float, default=0.0)
+    
+    # SRS поля
+    last_reviewed = Column(DateTime)
+    next_review_date = Column(DateTime)
+    ease_factor = Column(Float, default=2.5)
+    interval_level = Column(Integer, default=0)
+    
+    __table_args__ = (
+        CheckConstraint('ease_factor >= 1.3 AND ease_factor <= 3.0'),
+        CheckConstraint('mastery_level >= 0 AND mastery_level <= 100'),
+        Index('idx_user_word_status', 'user_id', 'item_id', 'item_type', unique=True),
+        Index('idx_next_review', 'user_id', 'next_review_date'),
     )
 
 
@@ -134,23 +190,19 @@ class TaskContext(Base):
 
     id = Column(Integer, primary_key=True)
     text = Column(String, nullable=False)
-    context_type = Column(String, nullable=False)
+    context_type = Column(Enum(TaskType), nullable=False)
     target_item_id = Column(Integer, nullable=False)
     target_item_type = Column(Enum(ItemType), nullable=False)
-    wrong_options = Column(JSON)
-    difficulty = Column(String)
+    
+    # JSON поля для разных типов заданий
+    options = Column(JSON)  # Может содержать: неправильные ответы, варианты для сопоставления и т.д.
+    metadata = Column(JSON)  # Дополнительные данные специфичные для типа задания
+    
+    difficulty = Column(Enum(DifficultyLevel))
 
-    # Индексы
     __table_args__ = (
-        Index(
-            'idx_context_type_item',
-            'context_type',
-            'target_item_type',
-            'target_item_id',
-        ),  # Для поиска контекстов
-        Index(
-            'idx_context_difficulty', 'difficulty'
-        ),  # Для фильтрации по сложности
+        Index('idx_context_type_item', 'context_type', 'target_item_type', 'target_item_id'),
+        Index('idx_context_difficulty', 'difficulty'),
     )
 
     attempts = relationship('LearningAttempt', back_populates='context')
@@ -165,19 +217,19 @@ class LearningAttempt(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     item_id = Column(Integer, nullable=False)
     item_type = Column(Enum(ItemType), nullable=False)
-    task_type = Column(String, nullable=False)
+    task_type = Column(Enum(TaskType), nullable=False)
     context_id = Column(Integer, ForeignKey('task_contexts.id'))
+    
+    # Результат
     is_successful = Column(Boolean, nullable=False)
+    score = Column(Float)  # Для заданий с градацией успеха (например, matching)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    # Индексы
     __table_args__ = (
-        Index('idx_attempts_user', 'user_id'),  # Для поиска по пользователю
-        Index(
-            'idx_attempts_item', 'item_type', 'item_id'
-        ),  # Для поиска по изучаемому элементу
-        Index('idx_attempts_task', 'task_type'),  # Для анализа по типу задания
-        Index('idx_attempts_date', 'created_at'),  # Для временного анализа
+        Index('idx_attempts_user', 'user_id'),
+        Index('idx_attempts_item', 'item_type', 'item_id'),
+        Index('idx_attempts_task', 'task_type'),
+        Index('idx_attempts_date', 'created_at'),
     )
 
     # Связи
@@ -197,56 +249,184 @@ class LearningAttempt(Base):
 
 
 """
-Как добавить новый тип задания:
+Добавление нового типа задания в систему
+========================================
 
-1. Создать новый контекст в TaskContext:
-   context = TaskContext(
-       text="Текст задания",
-       context_type="new_task_type",
-       target_item_id=term_id,
-       target_item_type=ItemType.TERM,
-       wrong_options=[...],
-       difficulty="intermediate"
-   )
+1. Добавить новый тип в TaskType enum:
+---------------------------------------
+class TaskType(enum.Enum):
+    TRANSLATION = 'translation'
+    NEW_TASK = 'new_task'  # Добавляем новый тип
 
-2. Записать попытки выполнения:
-   attempt = LearningAttempt(
-       user_id=user_id,
-       item_id=term_id,
-       item_type=ItemType.TERM,
-       task_type="new_task_type",
-       context_id=context.id,
-       is_successful=True/False
-   )
 
-Примеры анализа:
+2. Создание задания в базе:
+---------------------------
 
-1. Общий прогресс по слову/термину:
-   attempts = session.query(LearningAttempt).filter(
-       LearningAttempt.item_id == item_id,
-       LearningAttempt.item_type == item_type
-   ).all()
-   success_rate = sum(1 for a in attempts if a.is_successful) / len(attempts)
+А. Базовое задание с выбором ответа:
+-----------------------------------
+context = TaskContext(
+    text="What is the correct translation of 'database'?",
+    context_type=TaskType.TRANSLATION,
+    target_item_id=term.id,
+    target_item_type=ItemType.TERM,
+    difficulty=term.difficulty,
+    options={
+        'wrong_options': ['файл', 'таблица', 'программа'],
+        'correct_option': 'база данных'
+    }
+)
 
-2. Прогресс по типу задания:
-   attempts = session.query(LearningAttempt).filter(
-       LearningAttempt.task_type == task_type
-   ).all()
-   
-3. Сложные контексты:
-   contexts = session.query(TaskContext).join(LearningAttempt).group_by(
-       TaskContext.id
-   ).having(
-       func.avg(case([(LearningAttempt.is_successful, 1)], else_=0)) < 0.5
-   ).all()
+Б. Задание на сопоставление (matching):
+-------------------------------------
+context = TaskContext(
+    text="Match the terms with their definitions",
+    context_type=TaskType.MATCHING,
+    target_item_id=term.id,
+    target_item_type=ItemType.TERM,
+    difficulty=term.difficulty,
+    options={
+        'pairs': [
+            {'term': 'database', 'definition': 'organized collection of data'},
+            {'term': 'query', 'definition': 'request for data retrieval'},
+            {'term': 'index', 'definition': 'data structure improving search speed'}
+        ]
+    },
+    metadata={
+        'max_score': 3,  # Количество правильных пар
+        'partial_scoring': True  # Разрешаем частичные баллы
+    }
+)
 
-4. Динамика обучения:
-   attempts = session.query(
-       LearningAttempt.created_at,
-       func.avg(case([(LearningAttempt.is_successful, 1)], else_=0))
-   ).group_by(
-       func.date(LearningAttempt.created_at)
-   ).order_by(
-       LearningAttempt.created_at
-   ).all()
+В. Задание с свободным ответом:
+------------------------------
+context = TaskContext(
+    text="Write the definition of a database in your own words",
+    context_type=TaskType.WRITE,
+    target_item_id=term.id,
+    target_item_type=ItemType.TERM,
+    difficulty=term.difficulty,
+    metadata={
+        'key_points': ['data storage', 'organized', 'structured', 'retrieval'],
+        'min_words': 10,
+        'scoring_type': 'key_points_based'
+    }
+)
+
+
+3. Запись попытки выполнения:
+----------------------------
+
+А. Для заданий с четким правильным ответом:
+-----------------------------------------
+attempt = LearningAttempt(
+    user_id=user.id,
+    item_id=term.id,
+    item_type=ItemType.TERM,
+    task_type=TaskType.TRANSLATION,
+    context_id=context.id,
+    is_successful=True,
+    score=1.0
+)
+
+Б. Для заданий с частичным успехом:
+---------------------------------
+attempt = LearningAttempt(
+    user_id=user.id,
+    item_id=term.id,
+    item_type=ItemType.TERM,
+    task_type=TaskType.MATCHING,
+    context_id=context.id,
+    is_successful=matching_score >= 0.7,  # Успех, если набрано 70% баллов
+    score=matching_score  # float от 0 до 1
+)
+
+В. Для заданий с нечетким ответом:
+--------------------------------
+attempt = LearningAttempt(
+    user_id=user.id,
+    item_id=term.id,
+    item_type=ItemType.TERM,
+    task_type=TaskType.WRITE,
+    context_id=context.id,
+    is_successful=key_points_covered >= 3,  # Успех, если раскрыто достаточно ключевых моментов
+    score=calculate_writing_score(response, context.metadata)
+)
+
+
+4. Обновление прогресса пользователя:
+-----------------------------------
+async def update_user_progress(
+    session: AsyncSession,
+    user_id: int,
+    item_id: int,
+    item_type: ItemType,
+    score: float
+):
+    # Получаем или создаем статус слова для пользователя
+    status = await get_or_create_word_status(session, user_id, item_id, item_type)
+    
+    # Обновляем уровень освоения
+    status.mastery_level = calculate_new_mastery_level(
+        current_level=status.mastery_level,
+        attempt_score=score
+    )
+    
+    # Обновляем SRS параметры
+    status.last_reviewed = datetime.utcnow()
+    status.interval_level += 1 if score >= 0.8 else 0
+    status.ease_factor = calculate_new_ease_factor(
+        current_factor=status.ease_factor,
+        score=score
+    )
+    status.next_review_date = calculate_next_review_date(
+        interval_level=status.interval_level,
+        ease_factor=status.ease_factor,
+        score=score
+    )
+    
+    # Обновляем общий уровень пользователя
+    user = await session.get(UserORM, user_id)
+    user.proficiency_score = await calculate_overall_proficiency(
+        session, user_id
+    )
+    
+    await session.commit()
+
+
+5. Примеры вспомогательных функций:
+---------------------------------
+def calculate_new_mastery_level(current_level: float, attempt_score: float) -> float:
+    weight = 0.3  # Вес нового результата
+    return min(100, current_level * (1 - weight) + attempt_score * 100 * weight)
+
+def calculate_next_review_date(
+    interval_level: int,
+    ease_factor: float,
+    score: float
+) -> datetime:
+    if interval_level == 0:
+        days = 1
+    else:
+        base_interval = [1, 3, 7, 14, 30][min(interval_level - 1, 4)]
+        days = base_interval * ease_factor * (0.8 + (score * 0.4))
+    
+    return datetime.utcnow() + timedelta(days=days)
+
+async def calculate_overall_proficiency(
+    session: AsyncSession,
+    user_id: int
+) -> float:
+    # Получаем все статусы слов пользователя
+    statuses = await session.execute(
+        select(UserWordStatus).filter_by(user_id=user_id)
+    )
+    
+    # Вычисляем средний уровень освоения
+    total_mastery = 0
+    count = 0
+    for status in statuses.scalars():
+        total_mastery += status.mastery_level
+        count += 1
+    
+    return total_mastery / count if count > 0 else 50.0  # Дефолтное значение
 """

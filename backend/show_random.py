@@ -1,5 +1,4 @@
 import asyncio
-
 from orm import get_random_items
 
 
