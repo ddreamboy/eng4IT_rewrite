@@ -12,7 +12,7 @@ from core.security import (
     verify_password,
 )
 from db.models import UserORM
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -57,36 +57,33 @@ class AuthService:
     async def authenticate_user(
         self, login_data: UserLogin
     ) -> Tuple[UserORM, str, str]:
-        """
-        Аутентификация пользователя.
-
-        Args:
-            login_data: Данные для входа
-
-        Returns:
-            Tuple[UserORM, str, str]: (пользователь, access_token, refresh_token)
-
-        Raises:
-            AuthError: Если аутентификация не удалась
-        """
+        """Аутентификация пользователя."""
+        # Получаем пользователя
         user = await self.get_user_by_email(login_data.email.lower())
-
         if not user:
             raise AuthError('Invalid email or password')
 
+        # Проверяем пароль
         if not verify_password(login_data.password, user.password_hash):
             raise AuthError('Invalid email or password')
 
         if not user.is_active:
             raise AuthError('User is inactive')
 
-        # Обновляем last_login
-        user.last_login = datetime.utcnow()
+        # Важно! Получаем id до любых изменений с объектом
+        user_id = int(user.id)  # Явно конвертируем в int
+
+        # Обновляем last_login через отдельный запрос
+        await self.session.execute(
+            update(UserORM)
+            .where(UserORM.id == user_id)
+            .values(last_login=datetime.utcnow())
+        )
         await self.session.commit()
 
-        # Создаем токены
-        access_token = create_access_token(subject=user.id)
-        refresh_token = create_refresh_token(subject=user.id)
+        # Создаем токены используя сохраненный id
+        access_token = create_access_token(subject=user_id)
+        refresh_token = create_refresh_token(subject=user_id)
 
         return user, access_token, refresh_token
 
@@ -124,8 +121,8 @@ class AuthService:
         if not user.is_active:
             raise AuthError('User is inactive')
 
-        access_token = create_access_token(subject=user.id)
-        refresh_token = create_refresh_token(subject=user.id)
+        access_token = create_access_token(subject=user_id)
+        refresh_token = create_refresh_token(subject=user_id)
 
         return access_token, refresh_token
 
