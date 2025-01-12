@@ -1,7 +1,7 @@
 from api.deps import get_auth_service, oauth2_scheme
 from api.v1.schemas.auth import Token, UserCreate, UserLogin
 from api.v1.schemas.user import UserResponse
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Security, status
 from fastapi.security import OAuth2PasswordRequestForm
 from services.auth import AuthService
 
@@ -53,10 +53,9 @@ async def login(
 @router.post(
     '/refresh',
     response_model=Token,
-    security=[{'bearerAuth': []}],  # Добавляем security схему
 )
 async def refresh_token(
-    current_token: str = Depends(oauth2_scheme),
+    current_token: str = Security(oauth2_scheme),
     auth_service: AuthService = Depends(get_auth_service),
 ):
     """

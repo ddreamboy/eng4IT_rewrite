@@ -5,6 +5,8 @@ from db.database import get_session
 from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backend.api.v1.endpoints.tasks.handlers import *
+
 from .base import TaskRegistry, TaskRequest, TaskResponse
 
 router = APIRouter()
