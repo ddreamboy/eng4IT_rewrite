@@ -1,9 +1,11 @@
 from typing import Optional
 
-from backend.db.database import async_engine, async_session, get_session
-from models import Base, TermORM, WordORM
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.db.database import async_engine, get_session
+
+from .models import Base, TermORM, WordORM
 
 
 async def get_term_by_name(session: AsyncSession, term: str) -> Optional[TermORM]:

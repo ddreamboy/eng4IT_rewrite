@@ -1,10 +1,9 @@
+# backend/main.py
+
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import uvicorn
-from api.v1.endpoints import auth, tasks
-from core.config import settings
-from core.exceptions import AuthError, NotFoundError, ValidationError
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
@@ -12,6 +11,10 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from logger import setup_logger
 
+from backend.api.v1.endpoints import auth, tasks
+from backend.api.v1.endpoints.tasks.handlers import register_handlers
+from backend.core.config import settings
+from backend.core.exceptions import AuthError, NotFoundError, ValidationError
 from backend.db.database import init_db
 
 logger = setup_logger(__name__)
@@ -23,6 +26,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     # Startup
     logger.info('Starting up FastAPI application')
     await init_db()
+    register_handlers()  # Регистрируем обработчики при запуске
     yield
     # Shutdown
     logger.info('Shutting down FastAPI application')

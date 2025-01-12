@@ -26,6 +26,7 @@ class ItemType(enum.Enum):
 
 class DifficultyLevel(enum.Enum):
     BEGINNER = 'beginner'
+    BASIC = 'basic'
     INTERMEDIATE = 'intermediate'
     ADVANCED = 'advanced'
 
