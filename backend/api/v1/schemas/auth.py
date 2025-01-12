@@ -4,14 +4,16 @@ from datetime import datetime
 from typing import Optional
 
 from core.security import check_password_strength
-from pydantic import BaseModel, EmailStr, Field, constr, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class UserCreate(BaseModel):
     """Схема для создания пользователя."""
 
     username: str = Field(
-        ..., min_length=3, max_length=50,
+        ...,
+        min_length=3,
+        max_length=50,
         description='Имя пользователя (от 3 до 50 символов)',
         example='john_doe',
     )
