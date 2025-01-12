@@ -1,5 +1,7 @@
+import random
 from typing import Any, Dict
 
+from logger import setup_logger
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,50 +9,62 @@ from backend.api.v1.endpoints.tasks.base import BaseTaskHandler
 from backend.core.exceptions import ValidationError
 from backend.db.models import LearningAttempt, TaskType, TermORM, UserWordStatus
 
+logger = setup_logger(__name__)
+
 
 class TranslationTaskHandler(BaseTaskHandler):
     """Обработчик заданий на перевод."""
 
     async def generate(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Генерация задания на перевод."""
-        session: AsyncSession = params['session']
-        user_id: int = params['user_id']
+        logger.debug(f'Generating translation task with params: {params}')
+        try:
+            session: AsyncSession = params.get('session')
+            user_id: int = params.get('user_id')
 
-        # Получаем случайный термин
-        result = await session.execute(
-            select(TermORM).order_by(func.random()).limit(1)
-        )
-        term = result.scalar_one_or_none()
+            if not session:
+                raise ValidationError('Session is required')
 
-        if not term:
-            raise ValidationError('No terms available')
+            if not user_id:
+                raise ValidationError('User ID is required')
 
-        # Получаем неправильные варианты (другие переводы)
-        wrong_options = await session.execute(
-            select(TermORM.primary_translation)
-            .where(TermORM.id != term.id)
-            .order_by(func.random())
-            .limit(3)
-        )
+            # Получаем случайный термин
+            result = await session.execute(
+                select(TermORM).order_by(func.random()).limit(1)
+            )
+            term = result.scalar_one_or_none()
 
-        options = [opt[0] for opt in wrong_options.fetchall()]
-        options.append(term.primary_translation)
+            if not term:
+                raise ValidationError('No terms available')
 
-        # Перемешиваем варианты
-        import random
+            # Получаем неправильные варианты (другие переводы)
+            wrong_options = await session.execute(
+                select(TermORM.primary_translation)
+                .where(TermORM.id != term.id)
+                .order_by(func.random())
+                .limit(3)
+            )
 
-        random.shuffle(options)
+            options = [opt[0] for opt in wrong_options.fetchall()]
+            options.append(term.primary_translation)
 
-        # Создаем задание
-        task = {
-            'task_id': f'translation_{term.id}',
-            'type': 'translation',
-            'content': {'term': term.term, 'options': options},
-            'correct_answer': term.primary_translation,
-            'term_id': term.id,
-        }
+            # Перемешиваем варианты
+            random.shuffle(options)
 
-        return task
+            # Создаем задание
+            task = {
+                'task_id': f'translation_{term.id}',
+                'type': 'translation',
+                'content': {'term': term.term, 'options': options},
+                'correct_answer': term.primary_translation,
+                'term_id': term.id,
+            }
+
+            logger.info(f'Generated translation task: {task}')
+            return task
+        except Exception as e:
+            logger.error(f'Error generating translation task: {e}', exc_info=True)
+            raise ValidationError(f'Error generating translation task: {str(e)}')
 
     async def validate(self, task_id: str, answer: Dict[str, Any]) -> bool:
         """Проверка ответа на задание."""
