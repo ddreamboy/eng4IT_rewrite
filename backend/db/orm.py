@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.db.database import async_engine, get_session
 
-from .models import Base, TermORM, WordORM
+from .models import Base, DifficultyLevel, TermORM, WordORM, WordType
 
 
 async def get_term_by_name(session: AsyncSession, term: str) -> Optional[TermORM]:
@@ -22,47 +22,71 @@ async def get_word_by_name(session: AsyncSession, word: str) -> Optional[WordORM
 
 async def create_term(session: AsyncSession, term_data: dict) -> Optional[TermORM]:
     """Создает новую запись термина в БД."""
-    # Проверяем существование термина
-    existing_term = await get_term_by_name(session, term_data['term'])
-    if existing_term:
-        return None
+    try:
+        existing_term = await get_term_by_name(session, term_data['term'])
+        if existing_term:
+            return None
 
-    # Создаем термин
-    term = TermORM(
-        term=term_data['term'],
-        primary_translation=term_data['translations']['primary'],
-        category_main=term_data['category']['main'],
-        category_sub=term_data['category'].get('sub'),
-        difficulty=term_data['difficulty'],
-        definition_en=term_data['context']['definition']['en'],
-        definition_ru=term_data['context']['definition']['ru'],
-        example_en=term_data['context'].get('example', {}).get('en'),
-        example_context=term_data['context'].get('example', {}).get('context'),
-        related_terms=term_data.get('related_terms', []),
-        alternate_translations=term_data['translations'].get('alternates', []),
-    )
+        term = TermORM(
+            term=term_data['term'],
+            primary_translation=term_data['translations']['primary'],
+            category_main=term_data['category']['main'],
+            category_sub=term_data['category'].get('sub'),
+            difficulty=DifficultyLevel[term_data['difficulty'].upper()],
+            definition_en=term_data['context']['definition']['en'],
+            definition_ru=term_data['context']['definition']['ru'],
+            example_en=term_data['context'].get('example', {}).get('en'),
+            example_context=term_data['context'].get('example', {}).get('context'),
+            related_terms=term_data.get('related_terms', []),
+            alternate_translations=term_data['translations'].get('alternates', []),
+        )
 
-    session.add(term)
-    return term
+        session.add(term)
+        await session.flush()
+        return term
+
+    except Exception:
+        await session.rollback()
+        raise
 
 
 async def create_word(session: AsyncSession, word_data: dict) -> Optional[WordORM]:
     """Создает новую запись слова в БД."""
-    existing_word = await get_word_by_name(session, word_data['word'])
-    if existing_word:
-        return None
+    try:
+        existing_word = await get_word_by_name(session, word_data['word'])
+        if existing_word:
+            return None
 
-    word = WordORM(
-        word=word_data['word'],
-        translation=word_data['translation'],
-        context=word_data.get('context'),
-        context_translation=word_data.get('context_translation'),
-        word_type=word_data['word_type'],
-        difficulty=word_data['difficulty'],
-    )
+        # Преобразуем тип слова в формат enum
+        word_type_map = {
+            'noun': 'NOUN',
+            'verb': 'VERB',
+            'adjective': 'ADJECTIVE',
+            'adverb': 'ADVERB',
+            'phrasal verb': 'PHRASAL_VERB',
+            'common phrase': 'COMMON_PHRASE',
+        }
 
-    session.add(word)
-    return word
+        word_type = word_type_map.get(word_data['word_type'].lower())
+        if not word_type:
+            raise ValueError(f'Неизвестный тип слова: {word_data["word_type"]}')
+
+        word = WordORM(
+            word=word_data['word'],
+            translation=word_data['translation'],
+            context=word_data.get('context'),
+            context_translation=word_data.get('context_translation'),
+            word_type=WordType[word_type],
+            difficulty=DifficultyLevel[word_data['difficulty'].upper()],
+        )
+
+        session.add(word)
+        await session.flush()
+        return word
+
+    except Exception:
+        await session.rollback()
+        raise
 
 
 async def init_db_tables() -> None:

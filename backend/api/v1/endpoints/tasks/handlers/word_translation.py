@@ -1,3 +1,5 @@
+# backend/api/v1/endpoints/tasks/handlers/word_translation.py
+
 import random
 from typing import Any, Dict
 
@@ -7,12 +9,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.v1.endpoints.tasks.base import BaseTaskHandler
 from backend.core.exceptions import ValidationError
-from backend.db.models import LearningAttempt, TaskType, TermORM, UserWordStatus
+from backend.db.models import (
+    ItemType,
+    LearningAttempt,
+    TaskType,
+    UserWordStatus,
+    WordORM,
+)
 
 logger = setup_logger(__name__)
 
 
-class TranslationTaskHandler(BaseTaskHandler):
+class WordTranslationTaskHandler(BaseTaskHandler):
     """Обработчик заданий на перевод."""
 
     async def generate(self, params: Dict[str, Any]) -> Dict[str, Any]:
@@ -28,36 +36,42 @@ class TranslationTaskHandler(BaseTaskHandler):
             if not user_id:
                 raise ValidationError('User ID is required')
 
-            # Получаем случайный термин
+            # Получаем случайное слово
             result = await session.execute(
-                select(TermORM).order_by(func.random()).limit(1)
+                select(WordORM).order_by(func.random()).limit(1)
             )
-            term = result.scalar_one_or_none()
+            word = result.scalar_one_or_none()
 
-            if not term:
-                raise ValidationError('No terms available')
+            if not word:
+                raise ValidationError('No words available')
 
             # Получаем неправильные варианты (другие переводы)
             wrong_options = await session.execute(
-                select(TermORM.primary_translation)
-                .where(TermORM.id != term.id)
+                select(WordORM.translation)
+                .where(WordORM.id != word.id)
                 .order_by(func.random())
                 .limit(3)
             )
 
             options = [opt[0] for opt in wrong_options.fetchall()]
-            options.append(term.primary_translation)
+            options.append(word.translation)
 
             # Перемешиваем варианты
             random.shuffle(options)
 
             # Создаем задание
             task = {
-                'task_id': f'translation_{term.id}',
-                'type': 'translation',
-                'content': {'term': term.term, 'options': options},
-                'correct_answer': term.primary_translation,
-                'term_id': term.id,
+                'type': 'word_translation',
+                'content': {
+                    'word': word.word,
+                    'options': options,
+                    'context': word.context,  # Добавляем контекст
+                    'context_translation': word.context_translation,  # И его перевод
+                    'word_type': word.word_type,
+                    'difficulty': word.difficulty
+                },
+                'correct_answer': word.translation,
+                'word_id': word.id,
             }
 
             logger.info(f'Generated translation task: {task}')
@@ -72,22 +86,22 @@ class TranslationTaskHandler(BaseTaskHandler):
         user_id: int = answer['user_id']
         user_answer: str = answer['answer']
 
-        # Получаем term_id из task_id
-        term_id = int(task_id.split('_')[1])
+        # Получаем word_id из task_id
+        word_id = int(task_id.split('_')[1])
 
-        # Получаем термин
-        term = await session.get(TermORM, term_id)
-        if not term:
-            raise ValidationError('Term not found')
+        # Получаем слово
+        word = await session.get(WordORM, word_id)
+        if not word:
+            raise ValidationError('Word not found')
 
         # Проверяем ответ
-        is_correct = user_answer == term.primary_translation
+        is_correct = user_answer == word.translation
 
         # Создаем запись о попытке
         attempt = LearningAttempt(
             user_id=user_id,
-            item_id=term.id,
-            item_type='term',
+            item_id=word.id,
+            item_type=ItemType.WORD,  # Используем WORD вместо term
             task_type=TaskType.TRANSLATION,
             is_successful=is_correct,
             score=1.0 if is_correct else 0.0,
@@ -98,8 +112,8 @@ class TranslationTaskHandler(BaseTaskHandler):
         status = await session.execute(
             select(UserWordStatus).where(
                 UserWordStatus.user_id == user_id,
-                UserWordStatus.item_id == term.id,
-                UserWordStatus.item_type == 'term',
+                UserWordStatus.item_id == word.id,
+                UserWordStatus.item_type == ItemType.WORD,  # Используем WORD
             )
         )
         word_status = status.scalar_one_or_none()
@@ -117,8 +131,8 @@ class TranslationTaskHandler(BaseTaskHandler):
             # Создаем новый статус
             word_status = UserWordStatus(
                 user_id=user_id,
-                item_id=term.id,
-                item_type='term',
+                item_id=word.id,
+                item_type=ItemType.WORD,  # Используем WORD
                 mastery_level=10.0 if is_correct else 0.0,
                 ease_factor=2.5,
             )

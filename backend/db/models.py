@@ -32,10 +32,10 @@ class DifficultyLevel(enum.Enum):
 
 
 class TaskType(enum.Enum):
-    TRANSLATION = 'translation'  # Перевод слова
-    DEFINITION = 'definition'  # Выбор определения
+    WORD_TRANSLATION = 'word_translation'  # Перевод слова
+    TERM_DEFINITION = 'term_definition'  # Выбор определения
     CONTEXT = 'context'  # Заполнение пропуска в контексте
-    MATCHING = 'matching'  # Сопоставление слов/определений
+    WORD_MATCHING = 'word_matching'  # Сопоставление слов/определений
     WRITE = 'write'  # Написание слова по определению
 
 
@@ -49,11 +49,12 @@ class AchievementType(enum.Enum):
 
 
 class WordType(enum.Enum):
-    NOUN = 'noun'
-    VERB = 'verb'
-    ADJECTIVE = 'adjective'
-    ADVERB = 'adverb'
-    PHRASAL_VERB = 'phrasal_verb'
+    NOUN = 'NOUN'
+    VERB = 'VERB'
+    ADJECTIVE = 'ADJECTIVE'
+    ADVERB = 'ADVERB'
+    PHRASAL_VERB = 'PHRASAL_VERB'
+    COMMON_PHRASE = 'COMMON_PHRASE'
 
 
 class UserORM(Base):
