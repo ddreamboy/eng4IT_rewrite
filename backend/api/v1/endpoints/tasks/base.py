@@ -85,6 +85,7 @@ class TaskRegistry:
             task_type: Тип задания
             handler: Обработчик задания
         """
+        print(f'Регистрируем обработчик {task_type}')
         cls._handlers[task_type] = handler
 
     @classmethod
@@ -98,4 +99,5 @@ class TaskRegistry:
         Returns:
             Optional[BaseTaskHandler]: Обработчик задания или None
         """
+        print(f'Доступные обработчики: {list(cls._handlers.keys())}')
         return cls._handlers.get(task_type)

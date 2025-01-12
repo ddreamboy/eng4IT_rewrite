@@ -1,6 +1,5 @@
 import asyncio
 import json
-import os
 import re
 from collections import deque
 from datetime import datetime, timedelta
@@ -8,9 +7,10 @@ from typing import Dict, Optional
 
 import google.generativeai as genai
 from logger import setup_logger
-from prompt_loader import PromptLoader
 
 from backend.core.config import settings
+
+from .prompt_loader import PromptLoader
 
 logger = setup_logger(__name__)
 
@@ -101,23 +101,17 @@ class GeminiService:
         try:
             genai.configure(api_key=settings.GEMINI_API_KEY)
             self.prompt_loader = PromptLoader()
-            self.model = self._create_model_with_system_instruction()
+            self.model = genai.GenerativeModel(
+                model_name=settings.GEMINI_MODEL_NAME,
+            )
             self.rate_limiter = RateLimiter(
                 requests_per_minute=settings.REQUESTS_PER_MINUTE,
                 min_interval=settings.MIN_REQUEST_INTERVAL,
             )
-            os.makedirs(settings.TEMP_DIR, exist_ok=True)
+
             logger.info('GeminiService initialized successfully')
         except Exception as e:
             logger.error(f'Error initializing GeminiService: {e}', exc_info=True)
-
-    def _create_model_with_system_instruction(self):
-        system_template = self.prompt_loader.get_template('system_instruction')
-        system_instruction = system_template.prompt if system_template else ''
-        return genai.GenerativeModel(
-            model_name=settings.GEMINI_MODEL_NAME,
-            system_instruction=system_instruction,
-        )
 
     def _clean_json_string(self, json_str: str) -> str:
         logger.debug(f'_clean_json_string called with: {json_str}')

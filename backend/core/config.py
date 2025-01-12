@@ -2,20 +2,26 @@
 
 from datetime import timedelta
 from typing import Optional
-from typing import Any
 
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # Existing settings
+    # Database settings
     DB_USER: str
     DB_PASSWORD: str
     DB_HOST: str
     DB_PORT: int
     DB_NAME: str
+
+    # AI settings
     GEMINI_API_KEY: str
+    GEMINI_MODEL_NAME: str
+    REQUESTS_PER_MINUTE: int
+    MIN_REQUEST_INTERVAL: float
+    DEFAULT_TEMPERATURE: float
+    DEFAULT_TOP_P: float
 
     # API Settings
     API_V1_STR: str = '/api/v1'
