@@ -4,6 +4,7 @@ from typing import Dict
 
 from ..base import BaseTaskHandler, TaskRegistry
 from .activity_name import ActivityNameHandler
+from .chat_dialog import ChatDialogHandler
 from .term_definition import TermDefinitionTaskHandler
 from .word_matching import WordMatchingTaskHandler
 from .word_translation import WordTranslationTaskHandler
@@ -13,6 +14,7 @@ _handlers: Dict[str, BaseTaskHandler] = {
     'word_translation': WordTranslationTaskHandler(),
     'word_matching': WordMatchingTaskHandler(),
     'term_definition': TermDefinitionTaskHandler(),
+    'chat_dialog': ChatDialogHandler(),
 }
 
 

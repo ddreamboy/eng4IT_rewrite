@@ -1,0 +1,253 @@
+chat_dialog: |
+  Task: Chat Dialog Generation
+  Generate a realistic work chat dialog focusing on software development and IT topics.
+  
+  Input parameters:
+  - messages_count: {messages_count}
+  - terms: {terms}
+  - words: {words}
+  - difficulty: {difficulty}
+  
+  Requirements:
+  1. Create natural conversation between TWO people only:
+     - ONE colleague (same person throughout the dialog)
+     - "You" as the responder
+  2. ONLY "Your" messages should have gaps for filling
+  3. Colleague's messages must be complete without any gaps
+  4. Each message must specify is_user_message flag
+  5. Create natural conversation between IT professionals
+  6. Include gap-fill exercises using provided terms and words
+  7. Maintain professional but friendly tone
+  8. Keep messages concise and realistic
+  9. Each gap should have 4 options where one is correct
+  10. Provide translations for context and all options
+  11. Calculate difficulty metrics
+  
+  Output format should match the following JSON structure with double curly braces:
+  ```json
+  {{
+    "context": "string - brief description of work situation",
+    "translation": "string - translation of context",
+    "messages": [
+      {{
+        "author": "string - sender name",
+        "text": "string - message with {{gap1}} placeholders",
+        "translation": "string - message translation",
+        "gaps": [
+          {{
+            "id": "unique_number",
+            "correct": "string - correct answer",
+            "correct_translation": "string - translation of correct answer",
+            "options": [
+              {{
+                "word": "string - option text",
+                "translation": "string - option translation"
+              }}
+            ]
+          }}
+        ]
+      }}
+    ],
+    "metrics": {{
+      "technical_terms_count": "number - count of technical terms",
+      "complex_words_count": "number - count of complex words",
+      "difficulty_score": "number between 0 and 1"
+    }}
+  }}
+  ```
+
+    Example input:
+  {{
+    "messages_count": 3,
+    "terms": ["deployment", "continuous integration", "API"],
+    "words": ["implement", "schedule", "update"],
+    "difficulty": "intermediate"
+  }}
+
+    Requirements:
+  1. Create natural conversation between TWO people only:
+     - ONE colleague (same person throughout the dialog)
+     - "You" as the responder
+  2. ONLY "Your" messages should have gaps for filling
+  3. Colleague's messages must be complete without any gaps
+  4. Each message must specify is_user_message flag
+
+  Example output:
+  ```json
+  {{
+    "context": "Discussion about deploying a new feature to production",
+    "translation": "Обсуждение развертывания новой функции в продакшен",
+    "messages": [
+      {{
+        "author": "Alex (Team Lead)",
+        "text": "Hi! Can you help with the new authentication service deployment? We need to push it to production by Friday.",
+        "translation": "Привет! Можешь помочь с развертыванием нового сервиса аутентификации? Нам нужно выпустить его в продакшен к пятнице.",
+        "is_user_message": false
+      }},
+      {{
+        "author": "You",
+        "text": "Sure! I'll {{gap1}} it in the {{gap2}} pipeline first.",
+        "translation": "Конечно! Я {{gap1}} это в {{gap2}} пайплайн сначала.",
+        "is_user_message": true,
+        "gaps": [
+          {{
+            "id": 1,
+            "correct": "implement",
+            "correct_translation": "реализую",
+            "options": [
+              {{
+                "word": "implement",
+                "translation": "реализую"
+              }},
+              {{
+                "word": "deploy",
+                "translation": "разверну"
+              }},
+              {{
+                "word": "update",
+                "translation": "обновлю"
+              }},
+              {{
+                "word": "check",
+                "translation": "проверю"
+              }}
+            ]
+          }},
+          {{
+            "id": 2,
+            "correct": "continuous integration",
+            "correct_translation": "непрерывной интеграции",
+            "options": [
+              {{
+                "word": "continuous integration",
+                "translation": "непрерывной интеграции"
+              }},
+              {{
+                "word": "deployment",
+                "translation": "развертывания"
+              }},
+              {{
+                "word": "testing",
+                "translation": "тестирования"
+              }},
+              {{
+                "word": "staging",
+                "translation": "стейджинг"
+              }}
+            ]
+          }}
+        ]
+      }},
+      {{
+        "author": "Alex (Team Lead)",
+        "text": "Great! Don't forget to update the API documentation after deployment.",
+        "translation": "Отлично! Не забудь обновить документацию API после развертывания.",
+        "is_user_message": false
+      }}
+    ],
+    "metrics": {{
+      "technical_terms_count": 5,
+      "complex_words_count": 3,
+      "difficulty_score": 0.7,
+      "grammar_complexity": 0.5
+    }}
+  }}
+  ```
+
+    Example input:
+  {{
+    "messages_count": 3,
+    "terms": ["deployment", "continuous integration", "API"],
+    "words": ["implement", "schedule", "update"],
+    "difficulty": "intermediate"
+  }}
+  
+  Requirements:
+  1. Create natural conversation between TWO people only:
+     - ONE colleague (same person throughout the dialog)
+     - "You" as the responder
+  2. ONLY "Your" messages should have gaps for filling
+  3. Colleague's messages must be complete without any gaps
+  4. Each message must specify is_user_message flag
+  
+  Example output:
+  ```json
+  {{
+    "context": "Discussion about updating the authentication service",
+    "translation": "Обсуждение обновления сервиса аутентификации",
+    "messages": [
+      {{
+        "author": "John (Team Lead)",
+        "text": "Hey! We need to update the authentication service API by Friday. Can you help with this?",
+        "translation": "Привет! Нам нужно обновить API сервиса аутентификации к пятнице. Можешь помочь с этим?",
+        "is_user_message": false
+      }},
+      {{
+        "author": "You",
+        "text": "Sure! I'll {{gap1}} it in the {{gap2}} first to make sure everything works.",
+        "translation": "Конечно! Я {{gap1}} это в {{gap2}} сначала, чтобы убедиться, что все работает.",
+        "is_user_message": true,
+        "gaps": [
+          {{
+            "id": 1,
+            "correct": "deploy",
+            "correct_translation": "разверну",
+            "options": [
+              {{
+                "word": "deploy",
+                "translation": "разверну"
+              }},
+              {{
+                "word": "implement",
+                "translation": "внедрю"
+              }},
+              {{
+                "word": "update",
+                "translation": "обновлю"
+              }},
+              {{
+                "word": "check",
+                "translation": "проверю"
+              }}
+            ]
+          }},
+          {{
+            "id": 2,
+            "correct": "continuous integration",
+            "correct_translation": "непрерывную интеграцию",
+            "options": [
+              {{
+                "word": "continuous integration",
+                "translation": "непрерывную интеграцию"
+              }},
+              {{
+                "word": "deployment",
+                "translation": "развертывание"
+              }},
+              {{
+                "word": "testing",
+                "translation": "тестирование"
+              }},
+              {{
+                "word": "staging",
+                "translation": "стейджинг"
+              }}
+            ]
+          }}
+        ]
+      }},
+      {{
+        "author": "John (Team Lead)",
+        "text": "Perfect! Don't forget to update the documentation afterwards.",
+        "translation": "Отлично! Не забудь обновить документацию после этого.",
+        "is_user_message": false
+      }}
+    ],
+    "metrics": {{
+      "technical_terms_count": 5,
+      "complex_words_count": 3,
+      "difficulty_score": 0.7,
+      "grammar_complexity": 0.5
+    }}
+  }}
+  ```
