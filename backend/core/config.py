@@ -1,6 +1,7 @@
 # core/config.py
 
 from datetime import timedelta
+from pathlib import Path
 from typing import Optional
 
 from pydantic import AnyHttpUrl, field_validator
@@ -8,6 +9,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # Получаем базовый путь проекта
+    BASE_DIR: Path = Path(__file__).parent.parent
+
+    # Piper TTS settings
+    PIPER_PATH: str = str(BASE_DIR / 'ai' / 'piper')
+    PIPER_AUDIO_PATH: str = str(BASE_DIR / 'static' / 'audio')
+    PIPER_DEFAULT_VOICE: str = 'rayn'  # Голос по умолчанию
+
     # Database settings
     DB_USER: str
     DB_PASSWORD: str
