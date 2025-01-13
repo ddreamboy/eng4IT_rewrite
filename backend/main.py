@@ -11,7 +11,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from logger import setup_logger
 
-from backend.api.v1.endpoints import auth, tasks
+from backend.api.v1.endpoints import auth, tasks, audio
 from backend.api.v1.endpoints.tasks.handlers import register_handlers
 from backend.core.config import settings
 from backend.core.exceptions import AuthError, NotFoundError, ValidationError
@@ -48,6 +48,10 @@ app = FastAPI(
         {
             'name': 'tasks',
             'description': 'Операции с заданиями',
+        },
+        {
+            'name': 'audio',
+            'description': 'Озвучивание текста',
         },
     ],
     openapi_security=[
@@ -144,6 +148,9 @@ app.include_router(
 )
 app.include_router(
     tasks.router, prefix=f'{settings.API_V1_STR}/tasks', tags=['tasks']
+)
+app.include_router(
+    audio.router, prefix=f'{settings.API_V1_STR}/audio', tags=['audio']
 )
 
 
