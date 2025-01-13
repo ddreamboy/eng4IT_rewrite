@@ -1,0 +1,119 @@
+email_structure: |
+  Task: Email Structure Generation
+  Generate blocks for a business email with correct and incorrect versions.
+  
+  Input parameters:
+  - style: {style}  # formal/semi-formal/informal
+  - difficulty: {difficulty}  # basic/intermediate/advanced
+  - topic: {topic}  # meeting/report/request/update
+  - terms: {terms}  # technical terms to include
+  - words: {words}  # business words to include
+  
+  Requirements:
+  1. Follow email structure rules:
+     - Each block must serve its purpose
+     - Style must match requested formality
+     - Technical terms must be used appropriately
+  2. Generate both correct and incorrect versions
+  3. Provide clear explanations for incorrect versions
+  4. Include translations for all content
+  5. Maintain consistent style throughout
+  6. Use appropriate business language
+  7. Follow email etiquette rules
+  8. Include technical context where appropriate
+  
+  Output format should match the following JSON structure with double curly braces:
+  ```json
+  {{
+    "context": "string - email situation description",
+    "translation": "string - context translation",
+    "correct_blocks": [
+      {{
+        "id": "number",
+        "type": "string - subject/greeting/opening/body/request/closing/sign-off/signature",
+        "content": "string - correct content for this block",
+        "translation": "string - translation",
+        "requirements": ["string - rules for this block"]
+      }}
+    ],
+    "incorrect_blocks": [
+      {{
+        "id": "number",
+        "type": "string - block type",
+        "content": "string - incorrect content",
+        "translation": "string - translation",
+        "why_wrong": "string - explanation why this is incorrect"
+      }}
+    ],
+    "metrics": {{
+      "technical_terms_count": "number",
+      "formal_expressions_count": "number",
+      "difficulty_score": "number between 0 and 1",
+      "style_consistency": "number between 0 and 1"
+    }}
+  }}
+  ```
+
+  Example input:
+  {{
+    "style": "formal",
+    "difficulty": "intermediate",
+    "topic": "meeting",
+    "terms": ["API integration", "deployment schedule", "testing environment"]
+  }}
+
+  Example output:
+  ```json
+  {{
+    "context": "You need to write an email to schedule an important meeting about API integration project",
+    "translation": "Вам нужно написать письмо для планирования важной встречи по проекту интеграции API",
+    "correct_blocks": [
+      {{
+        "id": 1,
+        "type": "subject",
+        "content": "API Integration Project - Planning Meeting Request",
+        "translation": "Проект интеграции API - Запрос на планирование встречи",
+        "requirements": [
+          "Clear and specific subject line",
+          "Includes key topic (API Integration)",
+          "Indicates email purpose (meeting)"
+        ]
+      }},
+      {{
+        "id": 2,
+        "type": "greeting",
+        "content": "Dear Development Team,",
+        "translation": "Уважаемая команда разработки,",
+        "requirements": [
+          "Formal greeting appropriate for team",
+          "Professional tone",
+          "Followed by comma"
+        ]
+      }},
+      // Additional blocks for opening, body, request, closing, sign-off, signature
+    ],
+    "incorrect_blocks": [
+      {{
+        "id": 101,
+        "type": "subject",
+        "content": "Quick meeting about API stuff",
+        "translation": "Быстрая встреча про API",
+        "why_wrong": "Too informal, vague, and unprofessional. Missing specific project context and purpose."
+      }},
+      {{
+        "id": 102,
+        "type": "greeting",
+        "content": "Hey guys!",
+        "translation": "Привет ребята!",
+        "why_wrong": "Informal greeting inappropriate for business email. Exclamation mark too casual."
+      }}
+      // Additional incorrect blocks with explanations
+    ],
+    "metrics": {{
+      "technical_terms_count": 3,
+      "formal_expressions_count": 5,
+      "difficulty_score": 0.7,
+      "style_consistency": 0.9
+    }}
+  }}
+  ```

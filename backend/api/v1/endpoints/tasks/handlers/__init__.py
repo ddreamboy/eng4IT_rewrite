@@ -8,6 +8,7 @@ from .chat_dialog import ChatDialogHandler
 from .term_definition import TermDefinitionTaskHandler
 from .word_matching import WordMatchingTaskHandler
 from .word_translation import WordTranslationTaskHandler
+from .email_structure import EmailStructureHandler
 
 _handlers: Dict[str, BaseTaskHandler] = {
     'activity_name': ActivityNameHandler(),
@@ -15,6 +16,7 @@ _handlers: Dict[str, BaseTaskHandler] = {
     'word_matching': WordMatchingTaskHandler(),
     'term_definition': TermDefinitionTaskHandler(),
     'chat_dialog': ChatDialogHandler(),
+    'email_structure': EmailStructureHandler(),
 }
 
 
