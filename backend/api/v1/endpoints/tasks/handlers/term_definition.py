@@ -184,7 +184,7 @@ class TermDefinitionTaskHandler(BaseTaskHandler):
             user_id=user_id,
             item_id=term.id,
             item_type=ItemType.TERM,
-            task_type=TaskType.DEFINITION,  # Нужно добавить этот тип в enum
+            task_type=TaskType.TERM_DEFINITION,  # Нужно добавить этот тип в enum
             is_successful=is_correct,
             score=1.0 if is_correct else 0.0,
         )

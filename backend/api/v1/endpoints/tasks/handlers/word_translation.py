@@ -173,7 +173,7 @@ class WordTranslationTaskHandler(BaseTaskHandler):
             user_id=user_id,
             item_id=word.id,
             item_type=ItemType.WORD,  # Используем WORD вместо term
-            task_type=TaskType.TRANSLATION,
+            task_type=TaskType.WORD_TRANSLATION,
             is_successful=is_correct,
             score=1.0 if is_correct else 0.0,
         )
