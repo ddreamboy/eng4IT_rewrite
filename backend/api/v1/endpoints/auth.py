@@ -1,12 +1,9 @@
-from api.deps import get_auth_service, oauth2_scheme
+from api.deps import get_auth_service, get_current_user_id
 from api.v1.schemas.auth import Token, UserCreate, UserLogin
 from api.v1.schemas.user import UserResponse
-from fastapi import APIRouter, Depends, Security, status
+from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 from services.auth import AuthService
-
-from backend.core.exceptions import AuthError
-from backend.core.security import verify_token
 
 router = APIRouter()
 
@@ -50,22 +47,16 @@ async def login(
     return Token(access_token=access_token, refresh_token=refresh_token)
 
 
-@router.post(
-    '/refresh',
-    response_model=Token,
-)
+@router.post('/refresh', response_model=Token)
 async def refresh_token(
-    current_token: str = Security(oauth2_scheme),
+    current_user_id: int = Depends(get_current_user_id),
     auth_service: AuthService = Depends(get_auth_service),
 ):
     """
     Обновление токенов доступа.
     """
-    try:
-        user_id = verify_token(current_token, token_type='refresh')
-        access_token, refresh_token = await auth_service.refresh_tokens(
-            int(user_id)
-        )
-        return Token(access_token=access_token, refresh_token=refresh_token)
-    except Exception:
-        raise AuthError('Could not refresh token')
+    access_token, refresh_token = await auth_service.refresh_tokens(
+        current_user_id
+    )
+
+    return Token(access_token=access_token, refresh_token=refresh_token)

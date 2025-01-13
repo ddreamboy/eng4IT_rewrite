@@ -10,11 +10,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.api.v1.endpoints.tasks.base import BaseTaskHandler
 from backend.core.exceptions import ValidationError
 from backend.db.models import (
+    DifficultyLevel,
     ItemType,
     LearningAttempt,
     TaskType,
     UserWordStatus,
     WordORM,
+    WordType,
 )
 
 logger = setup_logger(__name__)
@@ -29,6 +31,11 @@ class WordTranslationTaskHandler(BaseTaskHandler):
         try:
             session: AsyncSession = params.get('session')
             user_id: int = params.get('user_id')
+            word_type: str = params.get('params', {}).get('word_type')
+            difficulty: str = params.get('params', {}).get('difficulty')
+            incorrect_options: int = params.get('params', {}).get(
+                'incorrect_options', 3
+            )
 
             if not session:
                 raise ValidationError('Session is required')
@@ -36,25 +43,95 @@ class WordTranslationTaskHandler(BaseTaskHandler):
             if not user_id:
                 raise ValidationError('User ID is required')
 
+            if not word_type:
+                word_type = random.choice(list(WordType)).name
+
+            if word_type.upper() not in [wordType.value for wordType in WordType]:
+                raise ValidationError('Word type is invalid')
+
+            if not difficulty:
+                difficulty = random.choice(list(DifficultyLevel)).name.lower()
+            print('='*100)
+            print(difficulty, type(difficulty))
+            
+            difficulty = random.choice(list(DifficultyLevel)).name.lower()
+            
+            print('='*100)
+            print(difficulty, type(difficulty))
+            if difficulty not in [level.value for level in DifficultyLevel]:
+                raise ValidationError('Invalid difficulty level')
+
+            word_type = word_type.upper()
+            difficulty = difficulty.upper()
+
             # Получаем случайное слово
             result = await session.execute(
-                select(WordORM).order_by(func.random()).limit(1)
+                select(WordORM)
+                .where(
+                    WordORM.word_type == word_type,
+                    WordORM.difficulty == difficulty,
+                )
+                .order_by(func.random())
+                .limit(1)
             )
             word = result.scalar_one_or_none()
 
             if not word:
-                raise ValidationError('No words available')
+                # Пробуем получить слово любой сложности для данного типа
+                result = await session.execute(
+                    select(WordORM)
+                    .where(WordORM.word_type == word_type)
+                    .order_by(func.random())
+                    .limit(1)
+                )
+                word = result.scalar_one_or_none()
+
+                if not word:
+                    # Пробуем получить любое слово
+                    result = await session.execute(
+                        select(WordORM).order_by(func.random()).limit(1)
+                    )
+                    word = result.scalar_one_or_none()
+
+                    if not word:
+                        raise ValidationError('No words available')
 
             # Получаем неправильные варианты (другие переводы)
             wrong_options = await session.execute(
                 select(WordORM.translation)
-                .where(WordORM.id != word.id)
+                .where(
+                    WordORM.id != word.id,
+                    WordORM.word_type == word_type,
+                    WordORM.difficulty == difficulty,
+                )
                 .order_by(func.random())
-                .limit(3)
+                .limit(incorrect_options)
             )
 
             options = [opt[0] for opt in wrong_options.fetchall()]
-            options.append(word.translation)
+            if len(options) != incorrect_options:
+                wrong_options = await session.execute(
+                    select(WordORM.translation)
+                    .where(
+                        WordORM.id != word.id,
+                        WordORM.word_type == word_type,
+                    )
+                    .order_by(func.random())
+                    .limit(incorrect_options)
+                )
+
+                if len(options) != incorrect_options:
+                    wrong_options = await session.execute(
+                        select(WordORM.translation)
+                        .where(
+                            WordORM.id != word.id,
+                        )
+                        .order_by(func.random())
+                        .limit(incorrect_options)
+                    )
+                    options = [opt[0].lower() for opt in wrong_options.fetchall()]
+
+            options.append(word.translation.lower())
 
             # Перемешиваем варианты
             random.shuffle(options)
@@ -68,7 +145,7 @@ class WordTranslationTaskHandler(BaseTaskHandler):
                     'context': word.context,  # Добавляем контекст
                     'context_translation': word.context_translation,  # И его перевод
                     'word_type': word.word_type,
-                    'difficulty': word.difficulty
+                    'difficulty': word.difficulty,
                 },
                 'correct_answer': word.translation,
                 'word_id': word.id,
