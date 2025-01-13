@@ -6,3 +6,4 @@ logs/
 TODO.md
 backend/ai/piper/
 *.wav
+.vscode/
