@@ -127,16 +127,16 @@ def custom_openapi():
 
     # Настраиваем security schemes
     openapi_schema['components']['securitySchemes'] = {
-        'OAuth2PasswordBearer': {
-            'type': 'oauth2',
-            'flows': {
-                'password': {
-                    'tokenUrl': f'{settings.API_V1_STR}/auth/login',
-                    'scopes': {},
-                }
-            },
-        },
-        'Bearer': {'type': 'http', 'scheme': 'bearer'},
+        # 'OAuth2PasswordBearer': {
+        #     'type': 'oauth2',
+        #     'flows': {
+        #         'password': {
+        #             'tokenUrl': f'{settings.API_V1_STR}/auth/login',
+        #             'scopes': {},
+        #         }
+        #     },
+        # },
+        'OAuth2PasswordBearer': {'type': 'http', 'scheme': 'bearer'},
     }
 
     app.openapi_schema = openapi_schema

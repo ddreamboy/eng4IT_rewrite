@@ -1,9 +1,8 @@
 # backend/api/v1/app.py
 
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api.deps import get_current_user_id
 from backend.core.config import settings
 
 from .endpoints import auth, tasks  # импортируем роутеры
