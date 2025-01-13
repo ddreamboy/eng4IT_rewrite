@@ -98,7 +98,6 @@ class EmailStructureRequest(BaseTaskRequest):
     {
       "task_type": "chat_dialog",
       "params": {
-        "user_id": 1,
         "messages_count": 3,
         "terms": ["API", "deployment"],
         "words": ["implement", "schedule"],
@@ -136,7 +135,6 @@ async def generate_chat_dialog(
     {
       "task_type": "word_matching",
       "params": {
-        "user_id": 1,
         "pairs_count": 5,
         "category": "databases",
         "difficulty": "intermediate"
@@ -173,7 +171,6 @@ async def generate_word_matching(
     {
       "task_type": "term_definition",
       "params": {
-        "user_id": 1,
         "category": "backend",
         "with_context": true,
         "difficulty": "intermediate"
@@ -210,7 +207,6 @@ async def generate_term_definition(
     {
       "task_type": "word_translation",
       "params": {
-        "user_id": 1,
         "word_type": "verb",
         "with_context": true,
         "difficulty": "basic"
@@ -247,7 +243,6 @@ async def generate_word_translation(
     {
       "task_type": "email_structure",
       "params": {
-        "user_id": 1,
         "style": "formal",
         "topic": "meeting",
         "terms": ["API integration"],
