@@ -4,14 +4,15 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from logger import setup_logger
 
-from backend.api.v1.endpoints import auth, tasks, audio
+from backend.api.deps import get_current_user_id
+from backend.api.v1.endpoints import audio, auth, tasks
 from backend.api.v1.endpoints.tasks.handlers import register_handlers
 from backend.core.config import settings
 from backend.core.exceptions import AuthError, NotFoundError, ValidationError
@@ -147,7 +148,10 @@ app.include_router(
     auth.router, prefix=f'{settings.API_V1_STR}/auth', tags=['auth']
 )
 app.include_router(
-    tasks.router, prefix=f'{settings.API_V1_STR}/tasks', tags=['tasks']
+    tasks.router,
+    prefix=f'{settings.API_V1_STR}/tasks',
+    tags=['tasks'],
+    dependencies=[Depends(get_current_user_id)],
 )
 app.include_router(
     audio.router, prefix=f'{settings.API_V1_STR}/audio', tags=['audio']

@@ -47,4 +47,16 @@ class ChatDialog(BaseOperation):
             raise
 
 
+class EmailStructure(BaseOperation):
+    async def execute(self, input_data: Dict) -> Dict[str, Any]:
+        try:
+            response = await self.gemini_service.execute_prompt(
+                'email_structure', input_data
+            )
+            return response
+        except Exception as e:
+            logger.error(f'Error: {str(e)}')
+            raise
+
+
 logger.info('Program completed successfully.')

@@ -38,6 +38,7 @@ class TaskType(enum.Enum):
     WORD_MATCHING = 'word_matching'  # Сопоставление слов/определений
     WRITE = 'write'  # Написание слова по определению
     CHAT_DIALOG = 'chat_dialog'
+    EMAIL_STRUCTURE = 'email_structure'
 
 
 class AchievementType(enum.Enum):
