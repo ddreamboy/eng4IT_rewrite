@@ -51,13 +51,7 @@ class WordTranslationTaskHandler(BaseTaskHandler):
 
             if not difficulty:
                 difficulty = random.choice(list(DifficultyLevel)).name.lower()
-            print('='*100)
-            print(difficulty, type(difficulty))
-            
-            difficulty = random.choice(list(DifficultyLevel)).name.lower()
-            
-            print('='*100)
-            print(difficulty, type(difficulty))
+
             if difficulty not in [level.value for level in DifficultyLevel]:
                 raise ValidationError('Invalid difficulty level')
 
