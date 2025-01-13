@@ -37,6 +37,7 @@ class TaskType(enum.Enum):
     CONTEXT = 'context'  # Заполнение пропуска в контексте
     WORD_MATCHING = 'word_matching'  # Сопоставление слов/определений
     WRITE = 'write'  # Написание слова по определению
+    CHAT_DIALOG = 'chat_dialog'
 
 
 class AchievementType(enum.Enum):

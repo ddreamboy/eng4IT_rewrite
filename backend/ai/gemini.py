@@ -197,6 +197,7 @@ class GeminiService:
 
             template = self.prompt_loader.get_template(template_name)
             prompt = template.prompt.format_map(input_data)
+            prompt = prompt.replace('{{', '{').replace('}}', '}')
 
             generation_parts = []
 
@@ -206,6 +207,7 @@ class GeminiService:
                 temperature=settings.DEFAULT_TEMPERATURE,
                 top_p=settings.DEFAULT_TOP_P,
             )
+            logger.debug(f'Prompt: {prompt}')
             logger.debug(
                 f'Generation parts length: {len(generation_parts)} and types: {[type(element) for element in generation_parts]}'
             )

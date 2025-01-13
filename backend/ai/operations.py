@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
-from .gemini import GeminiServiceSinglethon as GeminiService
 from logger import setup_logger
+
+from .gemini import GeminiServiceSinglethon as GeminiService
 
 logger = setup_logger(__name__)
 
@@ -26,8 +27,19 @@ class ActivityName(BaseOperation):
     async def execute(self, input_data: Dict) -> Dict[str, Any]:
         try:
             response = await self.gemini_service.execute_prompt(
-                'activity_name',
-                input_data
+                'activity_name', input_data
+            )
+            return response
+        except Exception as e:
+            logger.error(f'Error: {str(e)}')
+            raise
+
+
+class ChatDialog(BaseOperation):
+    async def execute(self, input_data: Dict) -> Dict[str, Any]:
+        try:
+            response = await self.gemini_service.execute_prompt(
+                'chat_dialog', input_data
             )
             return response
         except Exception as e:
