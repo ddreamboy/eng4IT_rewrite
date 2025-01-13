@@ -4,8 +4,8 @@ from typing import List, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.api.deps import get_current_user_id
 
+from backend.api.deps import get_current_user_id
 from backend.core.exceptions import ValidationError
 from backend.db.database import get_session
 
@@ -116,7 +116,7 @@ async def generate_chat_dialog(
     session: AsyncSession = Depends(get_session),
 ):
     """Генерация задания с диалогом."""
-    return await _generate_task('chat_dialog', request, session)
+    return await _generate_task('chat_dialog', request, current_user_id, session)
 
 
 @router.post(
@@ -153,7 +153,7 @@ async def generate_word_matching(
     session: AsyncSession = Depends(get_session),
 ):
     """Генерация задания на сопоставление."""
-    return await _generate_task('word_matching', request, session)
+    return await _generate_task('word_matching', request, current_user_id, session)
 
 
 @router.post(
@@ -190,7 +190,7 @@ async def generate_term_definition(
     session: AsyncSession = Depends(get_session),
 ):
     """Генерация задания на определение термина."""
-    return await _generate_task('term_definition', request, session)
+    return await _generate_task('term_definition', request, current_user_id, session)
 
 
 @router.post(
@@ -227,7 +227,7 @@ async def generate_word_translation(
     session: AsyncSession = Depends(get_session),
 ):
     """Генерация задания на перевод."""
-    return await _generate_task('word_translation', request, session)
+    return await _generate_task('word_translation', request, current_user_id, session)
 
 
 @router.post(
@@ -265,13 +265,16 @@ async def generate_email_structure(
     session: AsyncSession = Depends(get_session),
 ):
     """Генерация задания по структуре email."""
-    return await _generate_task('email_structure', request, session)
+    return await _generate_task(
+        'email_structure', request, current_user_id, session
+    )
 
 
 # Вспомогательная функция для генерации заданий
 async def _generate_task(
     task_type: str,
     request: BaseTaskRequest,
+    current_user_id: int,
     session: AsyncSession,
 ) -> TaskResponse:
     """Общая функция генерации заданий."""
@@ -281,7 +284,11 @@ async def _generate_task(
         raise ValidationError(f'{task_type} task handler not found')
 
     try:
-        params = {**request.dict(exclude_none=True), 'session': session}
+        params = {
+            **request.model_dump(exclude_none=True),
+            'session': session,
+            'user_id': current_user_id,
+        }
 
         result = await handler.generate(params)
 
