@@ -4,11 +4,15 @@ from typing import Dict
 
 from ..base import BaseTaskHandler, TaskRegistry
 from .activity_name import ActivityNameHandler
-from .translation import TranslationTaskHandler
+from .term_definition import TermDefinitionTaskHandler
+from .word_matching import WordMatchingTaskHandler
+from .word_translation import WordTranslationTaskHandler
 
 _handlers: Dict[str, BaseTaskHandler] = {
     'activity_name': ActivityNameHandler(),
-    'translation': TranslationTaskHandler(),
+    'word_translation': WordTranslationTaskHandler(),
+    'word_matching': WordMatchingTaskHandler(),
+    'term_definition': TermDefinitionTaskHandler(),
 }
 
 

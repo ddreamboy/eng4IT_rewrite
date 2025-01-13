@@ -44,11 +44,25 @@ async def load_words_data(file_path: Path) -> List[Dict[Any, Any]]:
         with open(file_path, 'r', encoding='utf-8') as file:
             words_data = json.load(file)
             print(f'\nЗагрузка слов из {file_path}:')
-            print(f'Найдено слов: {len(words_data)}')
-            if words_data:
+            valid_words = []
+
+            for word in words_data:
+                # Проверяем обязательные поля
+                if not all(
+                    k in word
+                    for k in ['word', 'translation', 'word_type', 'difficulty']
+                ):
+                    print(
+                        f'⚠ Пропущено слово из-за отсутствия обязательных полей: {word.get("word", "Unknown")}'
+                    )
+                    continue
+                valid_words.append(word)
+
+            print(f'Найдено валидных слов: {len(valid_words)}')
+            if valid_words:
                 print('\nСтруктура первого слова:')
-                print(json.dumps(words_data[0], indent=2, ensure_ascii=False))
-            return words_data
+                print(json.dumps(valid_words[0], indent=2, ensure_ascii=False))
+            return valid_words
 
     except FileNotFoundError:
         print(f'❌ Файл не найден: {file_path}')
@@ -133,8 +147,8 @@ async def init_db_from_json() -> None:
     words_file = base_path / 'words_db.json'
 
     # Загружаем данные из JSON
-    terms_data = await load_terms_data(terms_file)
     words_data = await load_words_data(words_file)
+    terms_data = await load_terms_data(terms_file)
 
     if not terms_data and not words_data:
         print('\n❌ Нет данных для импорта')
@@ -143,16 +157,15 @@ async def init_db_from_json() -> None:
     # Импортируем данные
     async for session in get_session():
         try:
-            # Обрабатываем слова
-            if words_data:
-                w_success, w_skipped, w_errors = await process_words(
-                    session, words_data
-                )
-
             # Обрабатываем термины
             if terms_data:
                 t_success, t_skipped, t_errors = await process_terms(
                     session, terms_data
+                )
+            # Обрабатываем слова
+            if words_data:
+                w_success, w_skipped, w_errors = await process_words(
+                    session, words_data
                 )
 
             # Фиксируем изменения
