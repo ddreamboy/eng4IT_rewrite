@@ -1,34 +1,36 @@
 // src/stores/themeStore.js
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 export const useThemeStore = defineStore('theme', () => {
   const currentTheme = ref(localStorage.getItem('theme') || 'dark')
 
-  // Computed
   const isDark = ref(currentTheme.value === 'dark')
-  const isLight = ref(currentTheme.value === 'light')
 
-  // Actions
-  function setTheme(theme) {
-    currentTheme.value = theme
-    localStorage.setItem('theme', theme)
+  // Следим за изменениями темы
+  watch(currentTheme, (newTheme) => {
+    isDark.value = newTheme === 'dark'
+    localStorage.setItem('theme', newTheme)
+    updateTheme()
+  }, { immediate: true })
+
+  function updateTheme() {
+    // Удаляем все классы тем
     document.documentElement.classList.remove('dark', 'light')
-    document.documentElement.classList.add(theme)
+    // Добавляем текущий класс темы
+    document.documentElement.classList.add(currentTheme.value)
   }
 
   function toggleTheme() {
-    const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
-    setTheme(newTheme)
+    currentTheme.value = currentTheme.value === 'dark' ? 'light' : 'dark'
   }
 
-  // Initialize theme on store creation
-  setTheme(currentTheme.value)
+  // Инициализация при создании стора
+  updateTheme()
 
   return {
     currentTheme,
     isDark,
-    isLight,
     toggleTheme
   }
 })

@@ -1,0 +1,68 @@
+/* src/assets/themes.css */
+/* Базовые цвета для светлой темы */
+:root {
+  /* Основные цвета */
+  --color-primary: var(--light-primary);
+  --color-secondary: var(--light-secondary);
+  --color-accent: var(--light-accent);
+  
+  /* Текст */
+  --color-text: var(--light-text);
+  --color-text-muted: var(--light-muted);
+  --color-text-inverted: var(--dark-text); /* Для текста на тёмном фоне */
+  
+  /* Фоны */
+  --color-background: var(--light-primary);
+  --color-background-soft: var(--light-secondary);
+  --color-background-muted: var(--light-muted);
+  
+  /* Границы */
+  --color-border: var(--light-muted);
+  --color-border-hover: var(--light-accent);
+  
+  /* Состояния */
+  --color-success: #10B981; /* Зеленый */
+  --color-warning: #F59E0B; /* Оранжевый */
+  --color-error: #EF4444;   /* Красный */
+  --color-info: #3B82F6;    /* Синий */
+  
+  /* Интерактивные элементы */
+  --color-hover: rgba(0, 0, 0, 0.05);
+  --color-focus: rgba(0, 0, 0, 0.1);
+  --color-active: var(--light-accent);
+  --color-disabled: var(--light-muted);
+}
+
+/* Темная тема */
+:root.dark {
+  /* Основные цвета */
+  --color-primary: var(--dark-primary);
+  --color-secondary: var(--dark-secondary);
+  --color-accent: var(--dark-accent);
+  
+  /* Текст */
+  --color-text: var(--dark-text);
+  --color-text-muted: var(--dark-muted);
+  --color-text-inverted: var(--light-text);
+  
+  /* Фоны */
+  --color-background: var(--dark-primary);
+  --color-background-soft: var(--dark-secondary);
+  --color-background-muted: var(--dark-muted);
+  
+  /* Границы */
+  --color-border: var(--dark-muted);
+  --color-border-hover: var(--dark-accent);
+  
+  /* Состояния - немного приглушенные для темной темы */
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
+  --color-info: #2563EB;
+  
+  /* Интерактивные элементы */
+  --color-hover: rgba(255, 255, 255, 0.05);
+  --color-focus: rgba(255, 255, 255, 0.1);
+  --color-active: var(--dark-accent);
+  --color-disabled: var(--dark-muted);
+}

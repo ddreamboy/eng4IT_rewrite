@@ -1,14 +1,14 @@
 // src/views/AuthPage.vue
 <template>
-    <div class="min-h-screen w-full flex items-center justify-center bg-dark-primary">
-        <div class="w-full max-w-md p-6 m-4 rounded-lg bg-dark-secondary">
+    <div class="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div class="w-full max-w-md p-6 m-4 rounded-lg bg-white dark:bg-gray-800 shadow-lg">
             <!-- Переключатель форм -->
-            <div class="flex p-1 mb-6 rounded-lg bg-dark-primary/10">
+            <div class="flex p-1 mb-6 rounded-lg bg-gray-100 dark:bg-gray-700">
                 <button v-for="tab in ['login', 'register']" :key="tab" @click="activeTab = tab"
                     class="flex-1 py-2 text-center rounded-md transition-colors" :class="[
                         activeTab === tab
-                            ? 'bg-dark-accent text-white'
-                            : 'text-gray-400 hover:bg-dark-primary/20'
+                            ? 'bg-indigo-600 text-white'
+                            : 'text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
                     ]">
                     {{ tab === 'login' ? 'Вход' : 'Регистрация' }}
                 </button>
@@ -18,33 +18,33 @@
             <form @submit.prevent="handleSubmit" class="space-y-4">
                 <!-- Username для регистрации -->
                 <div v-if="activeTab === 'register'" class="space-y-1">
-                    <label class="block text-sm text-gray-200">Имя пользователя</label>
-                    <input v-model="form.username" type="text"
-                        class="w-full p-2 rounded bg-dark-primary/50 border border-dark-primary/10 text-gray-200"
-                        :class="{ 'border-red-500': errors.username }" placeholder="john_doe" />
+                    <label class="block text-sm text-gray-700 dark:text-gray-200">Имя пользователя</label>
+                    <input v-model="form.username" type="text" class="w-full p-2 rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                               text-gray-900 dark:text-gray-100" :class="{ 'border-red-500': errors.username }"
+                        placeholder="john_doe" />
                     <p v-if="errors.username" class="text-sm text-red-500">{{ errors.username }}</p>
                 </div>
 
                 <!-- Email -->
                 <div class="space-y-1">
-                    <label class="block text-sm text-gray-200">Email</label>
-                    <input v-model="form.email" type="email"
-                        class="w-full p-2 rounded bg-dark-primary/50 border border-dark-primary/10 text-gray-200"
-                        :class="{ 'border-red-500': errors.email }" placeholder="user@example.com" />
+                    <label class="block text-sm text-gray-700 dark:text-gray-200">Email</label>
+                    <input v-model="form.email" type="email" class="w-full p-2 rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                               text-gray-900 dark:text-gray-100" :class="{ 'border-red-500': errors.email }"
+                        placeholder="user@example.com" />
                     <p v-if="errors.email" class="text-sm text-red-500">{{ errors.email }}</p>
                 </div>
 
                 <!-- Password -->
                 <div class="space-y-1">
-                    <label class="block text-sm text-gray-200">Пароль</label>
-                    <input v-model="form.password" type="password"
-                        class="w-full p-2 rounded bg-dark-primary/50 border border-dark-primary/10 text-gray-200"
-                        :class="{ 'border-red-500': errors.password }" placeholder="••••••••" />
+                    <label class="block text-sm text-gray-700 dark:text-gray-200">Пароль</label>
+                    <input v-model="form.password" type="password" class="w-full p-2 rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                               text-gray-900 dark:text-gray-100" :class="{ 'border-red-500': errors.password }"
+                        placeholder="••••••••" />
                     <p v-if="errors.password" class="text-sm text-red-500">{{ errors.password }}</p>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-2 text-white rounded-lg bg-dark-accent hover:opacity-90 transition-opacity disabled:opacity-50"
+                <button type="submit" class="w-full py-2 text-white rounded-lg bg-indigo-600 hover:bg-indigo-700 
+                           dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50"
                     :disabled="isLoading">
                     <template v-if="isLoading">
                         <span class="flex items-center justify-center">
