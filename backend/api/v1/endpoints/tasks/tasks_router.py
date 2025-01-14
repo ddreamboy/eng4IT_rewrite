@@ -1,8 +1,10 @@
 # backend/api/v1/endpoints/tasks/router.py
 
-from typing import List, Optional
+from enum import Enum
+from typing import Dict, List, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.deps import get_current_user_id
@@ -12,6 +14,26 @@ from backend.db.database import get_session
 from .base import TaskRegistry, TaskRequest, TaskResponse
 
 router = APIRouter()
+
+
+class TaskLevel(str, Enum):
+    BEGINNER = 'beginner'
+    BASIC = 'basic'
+    INTERMEDIATE = 'intermediate'
+    ADVANCED = 'advanced'
+
+
+class TaskInfo(BaseModel):
+    """Информация о типе задания"""
+
+    id: str = Field(..., description='Уникальный идентификатор типа задания')
+    title: str = Field(..., description='Название задания')
+    description: str = Field(..., description='Описание задания')
+    difficulty_levels: List[TaskLevel] = Field(
+        ..., description='Доступные уровни сложности'
+    )
+    skills: List[str] = Field(..., description='Развиваемые навыки')
+    example: Optional[Dict] = Field(None, description='Пример задания')
 
 
 # Базовые модели для запросов
@@ -301,3 +323,125 @@ async def _generate_task(
 
     except Exception as e:
         return TaskResponse(task_id='error', status='error', error=str(e))
+
+
+@router.get(
+    '/info',
+    response_model=List[TaskInfo],
+    summary='Get available tasks info',
+    description='Получение информации о всех доступных типах заданий',
+    tags=['tasks'],
+)
+async def get_tasks_info():
+    """
+    Возвращает информацию о всех доступных типах заданий.
+    Включает описание, уровни сложности, примерное время выполнения и развиваемые навыки.
+    """
+    return [
+        {
+            'id': 'chat_dialog',
+            'title': 'Chat Dialog',
+            'description': 'Practice IT communication through realistic chat conversations. Fill in gaps with appropriate technical terms and common expressions.',
+            'difficulty_levels': [
+                TaskLevel.BASIC,
+                TaskLevel.INTERMEDIATE,
+                TaskLevel.ADVANCED,
+            ],
+            'skills': [
+                'Technical Communication',
+                'Context Understanding',
+                'Professional Vocabulary',
+            ],
+            'example': {
+                'context': 'Discussing API integration project',
+                'messages': [
+                    {
+                        'author': 'Team Lead',
+                        'text': 'We need to update the API documentation. Can you help?',
+                    },
+                    {
+                        'author': 'You',
+                        'text': "Sure! I'll [implement] the changes in the [continuous integration] pipeline.",
+                    },
+                ],
+            },
+        },
+        {
+            'id': 'word_matching',
+            'title': 'Word Matching',
+            'description': 'Match technical terms with their translations or definitions. Improve your tech vocabulary through association.',
+            'difficulty_levels': [
+                TaskLevel.BEGINNER,
+                TaskLevel.BASIC,
+                TaskLevel.INTERMEDIATE,
+            ],
+            'skills': [
+                'Technical Vocabulary',
+                'Term Recognition',
+                'Memory Development',
+            ],
+            'example': {
+                'terms': ['API', 'Database', 'Framework'],
+                'definitions': [
+                    'Application Programming Interface',
+                    'Organized collection of data',
+                    'Software development platform',
+                ],
+            },
+        },
+        {
+            'id': 'term_definition',
+            'title': 'Term Definition',
+            'description': 'Learn technical terms through their definitions. Choose the correct term that matches the given technical description.',
+            'difficulty_levels': [
+                TaskLevel.BASIC,
+                TaskLevel.INTERMEDIATE,
+                TaskLevel.ADVANCED,
+            ],
+            'skills': [
+                'Technical Reading',
+                'Term Understanding',
+                'Professional Terminology',
+            ],
+        },
+        {
+            'id': 'word_translation',
+            'title': 'Word Translation',
+            'description': 'Practice translating technical and professional vocabulary between English and Russian.',
+            'difficulty_levels': [
+                TaskLevel.BEGINNER,
+                TaskLevel.BASIC,
+                TaskLevel.INTERMEDIATE,
+            ],
+            'skills': [
+                'Vocabulary Translation',
+                'Technical Terms',
+                'Language Switching',
+            ],
+        },
+        {
+            'id': 'email_structure',
+            'title': 'Email Structure',
+            'description': 'Learn to write professional emails in English. Practice organizing email components and using appropriate business language.',
+            'difficulty_levels': [
+                TaskLevel.BASIC,
+                TaskLevel.INTERMEDIATE,
+                TaskLevel.ADVANCED,
+            ],
+            'skills': [
+                'Business Writing',
+                'Email Etiquette',
+                'Professional Communication',
+            ],
+            'example': {
+                'style': 'formal',
+                'topic': 'meeting',
+                'blocks': [
+                    'Subject: Project Update Meeting Request',
+                    'Dear Team,',
+                    'I am writing to schedule...',
+                    'Best regards,',
+                ],
+            },
+        },
+    ]
