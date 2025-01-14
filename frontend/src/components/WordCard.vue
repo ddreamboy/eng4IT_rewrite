@@ -113,15 +113,18 @@ function formatWordType(type) {
         'NOUN': 'Существительное',
         'VERB': 'Глагол',
         'ADJECTIVE': 'Прилагательное',
-        'ADVERB': 'Наречие',
-        'COMMON_PHRASE': 'Фраза'
+        'ADVERB': 'Наречие'
     }
     return types[type] || type
 }
 
 // Добавление/удаление из избранного
 async function toggleFavorite() {
-    await wordsStore.toggleFavorite(props.word.id)
+    try {
+        await wordsStore.toggleFavorite(props.word.id)
+    } catch (error) {
+        console.error('Не удалось добавить в избранное', error)
+    }
 }
 
 // Воспроизведение аудио

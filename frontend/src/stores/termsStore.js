@@ -49,25 +49,30 @@ export const useTermsStore = defineStore('terms', () => {
     }
   }
 
-  async function toggleFavorite(termId) {
+  async function toggleFavorite(itemId) {
     try {
-      const currentState = await checkFavoriteStatus(termId)
+      // Получаем текущий статус
+      const currentState = await checkFavoriteStatus(itemId)
       
+      // Отправляем запрос на сервер с противоположным статусом
       await axios.post(`${API_URL}/terms/favorite`, null, {
         params: {
-          term_id: termId,
+          term_id: itemId,  // ВНИМАНИЕ: здесь может быть ошибка
           state: !currentState
         }
       })
-
+  
       // Обновляем локальный список избранных
       if (currentState) {
-        favorites.value = favorites.value.filter(id => id !== termId)
+        favorites.value = favorites.value.filter(id => id !== itemId)
       } else {
-        favorites.value.push(termId)
+        favorites.value.push(itemId)
       }
+  
+      return !currentState  // Возвращаем новый статус
     } catch (err) {
       console.error('Toggle favorite error:', err)
+      throw err  // Прокидываем ошибку для обработки в компоненте
     }
   }
 

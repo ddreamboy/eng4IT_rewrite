@@ -73,17 +73,16 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { storeToRefs } from 'pinia'
 import { BookmarkIcon, VolumeIcon } from 'lucide-vue-next'
 import { useTermsStore } from '@/stores/termsStore'
 import { useThemeStore } from '@/stores/themeStore'
 import TermDetailModal from './TermDetailModal.vue'
 
 const props = defineProps({
-    term: {
-        type: Object,
-        required: true
-    }
+  term: {
+    type: Object,
+    required: true
+  }
 })
 
 const termsStore = useTermsStore()
@@ -93,37 +92,41 @@ const themeStore = useThemeStore()
 const isDetailModalOpen = ref(false)
 
 // Проверка избранного
-const isFavorite = computed(() =>
-    termsStore.favorites.includes(props.term.id)
+const isFavorite = computed(() => 
+  termsStore.favorites.includes(props.term.id)
 )
 
 // Форматирование сложности
 function formatDifficulty(difficulty) {
-    const difficulties = {
-        'beginner': 'Начинающий',
-        'basic': 'Базовый',
-        'intermediate': 'Средний',
-        'advanced': 'Сложный'
-    }
-    return difficulties[difficulty] || difficulty
+  const difficulties = {
+    'beginner': 'Начинающий',
+    'basic': 'Базовый',
+    'intermediate': 'Средний',
+    'advanced': 'Сложный'
+  }
+  return difficulties[difficulty] || difficulty
 }
 
 // Добавление/удаление из избранного
 async function toggleFavorite() {
+  try {
     await termsStore.toggleFavorite(props.term.id)
+  } catch (error) {
+    console.error('Не удалось добавить в избранное', error)
+  }
 }
 
 // Воспроизведение аудио
 async function playAudio() {
-    await termsStore.fetchTermAudio(props.term.id)
+  await termsStore.fetchTermAudio(props.term.id)
 }
 
 // Открытие/закрытие модалки
 function openDetailModal() {
-    isDetailModalOpen.value = true
+  isDetailModalOpen.value = true
 }
 
 function closeDetailModal() {
-    isDetailModalOpen.value = false
+  isDetailModalOpen.value = false
 }
 </script>
