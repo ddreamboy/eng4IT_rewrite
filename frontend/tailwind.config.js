@@ -10,35 +10,36 @@ export default {
     extend: {
       colors: {
         // Темная тема
-        'dark-primary': '#0F172A',
-        'dark-secondary': '#1E293B',
-        'dark-accent': '#38BDF8',
-        'dark-text': '#F8FAFC',
-        'dark-muted': '#94A3B8',
+        'dark-primary': '#4B4033',  // Глубокий кофейный
+        'dark-secondary': '#6B5841', // Светлый мокка
+        'dark-accent': '#C7B29E',   // Мягкий кремовый
+        'dark-text': '#EDE3D9',     // Песочный
+        'dark-muted': '#A89787',    // Нежный серо-бежевый
         // Светлая тема
-        'light-primary': '#FFFFFF',
-        'light-secondary': '#F1F5F9',
-        'light-accent': '#0EA5E9',
-        'light-text': '#0F172A',
-        'light-muted': '#64748B',
+        'light-primary': '#FAF3E6', // Кремово-белый
+        'light-secondary': '#EFE2D1', // Светлый песочный
+        'light-accent': '#D4AF6A',   // Золотистый акцент
+        'light-text': '#5A4633',     // Тёплый кофейный для текста
+        'light-muted': '#C1A78D',    // Светло-бежевый с золотистым оттенком
         // Состояния
         'success': {
-          light: '#10B981',
-          dark: '#059669'
+          light: '#A3C4A8',  // Светлый мятный
+          dark: '#6D8B6A'    // Тёмный мятный
         },
         'warning': {
-          light: '#F59E0B',
-          dark: '#D97706'
+          light: '#D8B987',  // Светлый карамельный
+          dark: '#B08C5C'    // Тёмный карамельный
         },
         'error': {
-          light: '#EF4444',
-          dark: '#DC2626'
+          light: '#D78A89',  // Светлый терракотовый
+          dark: '#A66261'    // Тёмный терракотовый
         },
         'info': {
-          light: '#3B82F6',
-          dark: '#2563EB'
+          light: '#B3C3C8',  // Светлый голубовато-серый
+          dark: '#85979E'    // Тёмный голубовато-серый
         }
       }
+      
     }
   },
   plugins: [],
