@@ -98,11 +98,13 @@ class UserORM(Base):
     # Связи
     learning_attempts = relationship(
         'LearningAttempt',
-        backref='user',
-        primaryjoin='UserORM.id == LearningAttempt.user_id',
-        lazy='dynamic',
+        back_populates='user',
+        lazy='selectin',
     )
-    word_statuses = relationship('UserWordStatus', backref='user')
+    word_statuses = relationship(
+        'UserWordStatus',
+        back_populates='user',  # Изменено с 'backref' на 'back_populates'
+    )
 
 
 class Achievement(Base):
@@ -251,6 +253,8 @@ class UserWordStatus(Base):
         Index('idx_next_review', 'user_id', 'next_review_date'),
     )
 
+    user = relationship('UserORM', back_populates='word_statuses')  # Добавлено
+
 
 class TaskContext(Base):
     """Модель для хранения контекстов заданий"""
@@ -317,17 +321,24 @@ class LearningAttempt(Base):
         foreign_keys=[item_id],
         primaryjoin='and_(LearningAttempt.item_id == TermORM.id, '
         'LearningAttempt.item_type == "term")',
-        overlaps='learning_attempts',
+        back_populates='learning_attempts',
+        overlaps="learning_attempts,word"
     )
     word = relationship(
         'WordORM',
         foreign_keys=[item_id],
         primaryjoin='and_(LearningAttempt.item_id == WordORM.id, '
         'LearningAttempt.item_type == "word")',
-        overlaps='learning_attempts,term',
+        back_populates='learning_attempts',
+        overlaps="learning_attempts,term"
     )
 
     timing = relationship('TaskTiming', uselist=False, back_populates='attempt')
+    user = relationship(
+        'UserORM',
+        back_populates='learning_attempts',
+        foreign_keys=[user_id],
+    )
 
 
 class TaskTiming(Base):
