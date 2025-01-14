@@ -5,37 +5,41 @@ export default {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
-  darkMode: 'class', // Важно для работы темы
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        'dark': {
-          'primary': '#1a1a1a',
-          'secondary': '#2D2D2D',
-          'accent': '#4ADE80',
+        // Темная тема
+        'dark-primary': '#0F172A',
+        'dark-secondary': '#1E293B',
+        'dark-accent': '#38BDF8',
+        'dark-text': '#F8FAFC',
+        'dark-muted': '#94A3B8',
+        // Светлая тема
+        'light-primary': '#FFFFFF',
+        'light-secondary': '#F1F5F9',
+        'light-accent': '#0EA5E9',
+        'light-text': '#0F172A',
+        'light-muted': '#64748B',
+        // Состояния
+        'success': {
+          light: '#10B981',
+          dark: '#059669'
         },
-        'light': {
-          'primary': '#ffffff',
-          'secondary': '#f3f4f6',
-          'accent': '#059669',
+        'warning': {
+          light: '#F59E0B',
+          dark: '#D97706'
         },
-        'candy': {
-          'primary': '#FFF5E6',
-          'secondary': '#FFE8CC',
-          'accent': '#FFB6C1',
+        'error': {
+          light: '#EF4444',
+          dark: '#DC2626'
+        },
+        'info': {
+          light: '#3B82F6',
+          dark: '#2563EB'
         }
-      },
-      container: {
-        center: true,
-        padding: {
-          DEFAULT: '1rem',
-          sm: '2rem',
-          lg: '4rem',
-          xl: '5rem',
-          '2xl': '6rem',
-        },
       }
-    },
+    }
   },
   plugins: [],
 }
