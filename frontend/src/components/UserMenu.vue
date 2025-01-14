@@ -1,102 +1,50 @@
-<!-- frontend/src/components/UserMenu.vue -->
+// src/components/UserMenu.vue
 <template>
-  <Menu as="div" class="relative">
-    <!-- Аватар/кнопка меню -->
-    <MenuButton
-      class="flex items-center justify-center w-8 h-8 rounded-full focus:outline-none"
-      :class="
-        authStore.isAuthenticated
-          ? 'bg-light-accent dark:bg-dark-accent'
-          : 'bg-light-secondary dark:bg-dark-secondary'
-      "
-    >
-      <span v-if="authStore.isAuthenticated" class="text-sm font-medium text-white">
-        {{ authStore.userInitials }}
-      </span>
-      <User v-else class="w-5 h-5 text-light-accent dark:text-dark-accent" />
-    </MenuButton>
+    <div class="relative">
+        <button @click="isOpen = !isOpen"
+            class="flex items-center space-x-1 p-2 rounded-lg hover:bg-light-primary/10 dark:hover:bg-dark-primary/10">
+            <div v-if="authStore.isAuthenticated"
+                class="w-8 h-8 rounded-full bg-light-accent dark:bg-dark-accent flex items-center justify-center text-white">
+                {{ authStore.userInitials }}
+            </div>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+        </button>
 
-    <transition
-      enter-active-class="transition duration-100 ease-out"
-      enter-from-class="transform scale-95 opacity-0"
-      enter-to-class="transform scale-100 opacity-100"
-      leave-active-class="transition duration-75 ease-in"
-      leave-from-class="transform scale-100 opacity-100"
-      leave-to-class="transform scale-95 opacity-0"
-    >
-      <MenuItems
-        class="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-light-secondary dark:bg-dark-secondary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-      >
-        <div class="py-1">
-          <!-- Меню для авторизованного пользователя -->
-          <template v-if="authStore.isAuthenticated">
-            <MenuItem v-slot="{ active }">
-              <RouterLink
-                to="/profile"
-                :class="[
-                  active ? 'bg-light-primary/50 dark:bg-dark-primary/50' : '',
-                  'block px-4 py-2 text-sm',
-                ]"
-              >
-                Профиль
-              </RouterLink>
-            </MenuItem>
-            <MenuItem v-slot="{ active }">
-              <RouterLink
-                to="/settings"
-                :class="[
-                  active ? 'bg-light-primary/50 dark:bg-dark-primary/50' : '',
-                  'block px-4 py-2 text-sm',
-                ]"
-              >
-                Настройки
-              </RouterLink>
-            </MenuItem>
-            <div class="border-t border-light-primary/10 dark:border-dark-primary/10" />
-            <MenuItem v-slot="{ active }">
-              <button
-                @click="handleLogout"
-                :class="[
-                  active ? 'bg-light-primary/50 dark:bg-dark-primary/50' : '',
-                  'block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400',
-                ]"
-              >
-                Выйти
-              </button>
-            </MenuItem>
-          </template>
-
-          <!-- Меню для гостя -->
-          <template v-else>
-            <MenuItem v-slot="{ active }">
-              <RouterLink
-                to="/auth"
-                :class="[
-                  active ? 'bg-light-primary/50 dark:bg-dark-primary/50' : '',
-                  'block px-4 py-2 text-sm',
-                ]"
-              >
-                Войти
-              </RouterLink>
-            </MenuItem>
-          </template>
+        <!-- Выпадающее меню -->
+        <div v-if="isOpen"
+            class="absolute right-0 mt-2 w-48 rounded-lg bg-light-secondary dark:bg-dark-secondary shadow-lg py-1">
+            <template v-if="authStore.isAuthenticated">
+                <button @click="handleLogout"
+                    class="block w-full text-left px-4 py-2 hover:bg-light-primary/10 dark:hover:bg-dark-primary/10 text-red-500">
+                    Выйти
+                </button>
+            </template>
+            <template v-else>
+                <router-link to="/auth" class="block px-4 py-2 hover:bg-light-primary/10 dark:hover:bg-dark-primary/10"
+                    @click="isOpen = false">
+                    Войти
+                </router-link>
+            </template>
         </div>
-      </MenuItems>
-    </transition>
-  </Menu>
+    </div>
 </template>
 
 <script setup>
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { User } from 'lucide-vue-next'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/authStore'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const isOpen = ref(false)
 
 async function handleLogout() {
-  authStore.logout()
-  await router.push('/auth')
+    authStore.logout()
+    isOpen.value = false
+    router.push('/auth')
 }
 </script>

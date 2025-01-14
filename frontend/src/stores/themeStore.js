@@ -1,37 +1,34 @@
-// frontend/src/stores/themeStore.js
+// src/stores/themeStore.js
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useThemeStore = defineStore('theme', {
-  state: () => ({
-    currentTheme: localStorage.getItem('theme') || 'dark', // dark | light | candy
-  }),
+export const useThemeStore = defineStore('theme', () => {
+  const currentTheme = ref(localStorage.getItem('theme') || 'dark')
 
-  getters: {
-    isDark: (state) => state.currentTheme === 'dark',
-    isLight: (state) => state.currentTheme === 'light',
-    isCandy: (state) => state.currentTheme === 'candy',
-  },
+  // Computed
+  const isDark = ref(currentTheme.value === 'dark')
+  const isLight = ref(currentTheme.value === 'light')
 
-  actions: {
-    setTheme(theme) {
-      this.currentTheme = theme
-      localStorage.setItem('theme', theme)
+  // Actions
+  function setTheme(theme) {
+    currentTheme.value = theme
+    localStorage.setItem('theme', theme)
+    document.documentElement.classList.remove('dark', 'light')
+    document.documentElement.classList.add(theme)
+  }
 
-      // Управляем классами для Tailwind
-      const root = document.documentElement
-      root.classList.remove('dark', 'light', 'candy')
-      root.classList.add(theme)
-    },
+  function toggleTheme() {
+    const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
+    setTheme(newTheme)
+  }
 
-    toggleTheme() {
-      const themes = ['dark', 'light', 'candy']
-      const currentIndex = themes.indexOf(this.currentTheme)
-      const nextIndex = (currentIndex + 1) % themes.length
-      this.setTheme(themes[nextIndex])
-    },
+  // Initialize theme on store creation
+  setTheme(currentTheme.value)
 
-    initTheme() {
-      this.setTheme(this.currentTheme)
-    },
-  },
+  return {
+    currentTheme,
+    isDark,
+    isLight,
+    toggleTheme
+  }
 })
