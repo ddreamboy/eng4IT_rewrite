@@ -18,6 +18,11 @@
         <div v-if="isOpen"
             class="absolute right-0 mt-2 w-48 rounded-lg bg-light-secondary dark:bg-dark-secondary shadow-lg py-1">
             <template v-if="authStore.isAuthenticated">
+                <router-link to="/profile"
+                    class="block px-4 py-2 hover:bg-light-primary/10 dark:hover:bg-dark-primary/10"
+                    @click="isOpen = false">
+                    Профиль
+                </router-link>
                 <button @click="handleLogout"
                     class="block w-full text-left px-4 py-2 hover:bg-light-primary/10 dark:hover:bg-dark-primary/10 text-red-500">
                     Выйти

@@ -16,6 +16,12 @@ const router = createRouter({
       name: 'auth',
       component: () => import('@/views/AuthPage.vue'),
       meta: { requiresGuest: true }
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/ProfilePage.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })

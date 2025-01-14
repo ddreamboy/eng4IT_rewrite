@@ -25,5 +25,6 @@ const route = useRoute()
 
 const navigation = [
     { name: 'Главная', path: '/', icon: HomeIcon },
+    { name: 'Профиль', path: '/profile', icon: UserIcon },
 ]
 </script>
