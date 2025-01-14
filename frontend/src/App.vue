@@ -68,5 +68,6 @@ const isAuthPage = computed(() => route.name === 'auth')
 
 const navigation = [
   { name: 'Главная', path: '/' },
+  { name: 'Профиль', path: '/profile' },
 ]
 </script>

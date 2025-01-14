@@ -7,7 +7,7 @@ from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.deps import get_current_user_id, get_session
-from backend.db.models import LearningAttempt, UserORM, UserWordStatus
+from backend.db.models import LearningAttempt, TermORM, UserORM, UserWordStatus
 
 from ..schemas.profile import UserProfileResponse, UserStatistics
 
@@ -37,13 +37,26 @@ async def get_user_statistics(
     favorite_words_result = await session.execute(favorite_words_query)
     favorite_words = [word.item_id for word in favorite_words_result.scalars()]
 
-    # Прогресс по категориям (упрощенно)
-    category_progress = {
-        'backend': 75.5,
-        'frontend': 60.2,
-        'database': 85.0,
-        'network': 45.8,
-    }
+    category_progress_query = (
+        select(
+            TermORM.category_main,
+            (
+                func.sum(case((LearningAttempt.is_successful, 1), else_=0))
+                * 100.0
+                / func.count(LearningAttempt.id)
+            ).label('progress'),
+        )
+        .join(TermORM, TermORM.id == LearningAttempt.item_id)
+        .where(LearningAttempt.user_id == user_id)
+        .group_by(TermORM.category_main)
+    )
+    category_results = await session.execute(category_progress_query)
+    category_progress_rows = category_results.all()
+    category_progress = (
+        {row.category_main: float(row.progress) for row in category_progress_rows}
+        if category_progress_rows
+        else {}
+    )
 
     return UserStatistics(
         total_tasks=attempts_stats.total or 0,
