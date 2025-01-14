@@ -10,7 +10,17 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token'))
   const refreshToken = ref(localStorage.getItem('refreshToken'))
 
-  const isAuthenticated = computed(() => !!token.value)
+  if (token.value && !isTokenValid(token.value)) {
+    token.value = null
+    refreshToken.value = null
+    localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
+  }
+
+  const isAuthenticated = computed(() => {
+    if (!token.value) return false
+    return isTokenValid(token.value)
+  })
   const userInitials = computed(() => {
     if (!user.value?.username) return '?'
     return user.value.username
@@ -19,6 +29,16 @@ export const useAuthStore = defineStore('auth', () => {
       .join('')
       .toUpperCase()
   })
+
+  function isTokenValid(token) {
+    if (!token) return false
+    try {
+      const tokenData = JSON.parse(atob(token.split('.')[1]))
+      return tokenData.exp * 1000 > Date.now()
+    } catch (e) {
+      return false
+    }
+  }
 
   // Настройка axios с токеном
   function setAuthHeader() {
@@ -65,14 +85,17 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function register(credentials) {
     try {
-      // Создаем FormData для отправки
-      const formData = new FormData()
-      formData.append('username', credentials.username)
-      formData.append('email', credentials.email)
-      formData.append('password', credentials.password)
-
-      const response = await axios.post(`${API_URL}/auth/register`, formData)
-
+      // Отправляем данные как JSON объект напрямую
+      const response = await axios.post(`${API_URL}/auth/register`, {
+        username: credentials.username,
+        email: credentials.email,
+        password: credentials.password
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+  
       return response.data
     } catch (error) {
       console.error('Register error:', error)
