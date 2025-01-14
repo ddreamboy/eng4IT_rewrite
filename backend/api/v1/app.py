@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.core.config import settings
 
-from .endpoints import auth, tasks  # импортируем роутеры
+from .endpoints import auth, tasks, users  # импортируем роутеры
 
 
 def create_app() -> FastAPI:
@@ -15,9 +15,15 @@ def create_app() -> FastAPI:
         title=settings.PROJECT_NAME,
         version='1.0.0',
         description='API для системы изучения технического английского',
-        docs_url=None,
-        redoc_url=None,
+        docs_url='/docs',  # Добавляем явно
+        redoc_url='/redoc',  # Добавляем явно
     )
+
+    app.swagger_ui_init_oauth = {
+        'usePkceWithAuthorizationCodeGrant': True,
+        'clientId': '',
+        'clientSecret': '',
+    }
 
     # Настройка CORS
     app.add_middleware(
@@ -33,7 +39,10 @@ def create_app() -> FastAPI:
         auth.router, prefix=f'{settings.API_V1_STR}/auth', tags=['auth']
     )
     app.include_router(
-        tasks.router, prefix=f'{settings.API_V1_STR}/tasks', tags=['tasks']
+        tasks.tasks_router.router,
+        prefix=f'{settings.API_V1_STR}/tasks',
+        tags=['tasks'],
     )
+    app.include_router(users.router, prefix="/users", tags=["users"])
 
     return app

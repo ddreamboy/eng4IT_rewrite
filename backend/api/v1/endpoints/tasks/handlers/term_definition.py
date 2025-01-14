@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.api.v1.endpoints.tasks.base import BaseTaskHandler
 from backend.core.exceptions import ValidationError
 from backend.db.models import (
+    DifficultyLevel,
     ItemType,
     LearningAttempt,
     TaskType,
@@ -29,31 +30,68 @@ class TermDefinitionTaskHandler(BaseTaskHandler):
         try:
             session: AsyncSession = params.get('session')
             user_id: int = params.get('user_id')
+            category: str = params.get('params', {}).get('category')
+            difficulty: str = params.get('params', {}).get('difficulty')
+            incorrect_options: int = params.get('params', {}).get(
+                'incorrect_options', 3
+            )
 
             if not session:
                 raise ValidationError('Session is required')
             if not user_id:
                 raise ValidationError('User ID is required')
 
+            result = await session.execute(
+                select(TermORM.category_main).distinct()
+            )
+            categories = [row[0] for row in result.fetchall()]
+
+            if not category:
+                category = random.choice(categories)
+
+            if not difficulty:
+                difficulty = random.choice(list(DifficultyLevel)).name.lower()
+
+            if difficulty not in [level.value for level in DifficultyLevel]:
+                raise ValidationError('Invalid difficulty level')
+
+            difficulty = difficulty.upper()
+
             # Получаем случайный термин
             result = await session.execute(
-                select(TermORM).order_by(func.random()).limit(1)
+                select(TermORM)
+                .where(
+                    TermORM.category_main == category,
+                    TermORM.difficulty == difficulty,
+                )
+                .order_by(func.random())
+                .limit(1)
             )
             term = result.scalar_one_or_none()
 
             if not term:
-                raise ValidationError('No terms available')
+                # Получаем случайный термин
+                result = await session.execute(
+                    select(TermORM)
+                    .where(TermORM.category_main == category)
+                    .order_by(func.random())
+                    .limit(1)
+                )
+                term = result.scalar_one_or_none()
+
+                if not term:
+                    raise ValidationError('No terms available')
 
             # Получаем неправильные варианты (другие термины из той же категории)
             wrong_options = await session.execute(
                 select(TermORM)
                 .where(
                     TermORM.id != term.id,
-                    TermORM.category_main
-                    == term.category_main,  # Берем термины из той же категории
+                    TermORM.category_main == term.category_main,
+                    TermORM.difficulty == difficulty,
                 )
                 .order_by(func.random())
-                .limit(3)
+                .limit(incorrect_options)
             )
 
             # Формируем варианты ответов
@@ -65,6 +103,25 @@ class TermDefinitionTaskHandler(BaseTaskHandler):
                 }
                 for opt in wrong_options.scalars()
             ]
+
+            if len(options) != incorrect_options:
+                wrong_options = await session.execute(
+                    select(TermORM)
+                    .where(
+                        TermORM.id != term.id,
+                        TermORM.category_main == term.category_main,
+                    )
+                    .order_by(func.random())
+                    .limit(incorrect_options)
+                )
+                options = [
+                    {
+                        'id': opt.id,
+                        'term': opt.term,
+                        'translation': opt.primary_translation,
+                    }
+                    for opt in wrong_options.scalars()
+                ]
 
             # Добавляем правильный вариант
             options.append(
@@ -127,7 +184,7 @@ class TermDefinitionTaskHandler(BaseTaskHandler):
             user_id=user_id,
             item_id=term.id,
             item_type=ItemType.TERM,
-            task_type=TaskType.DEFINITION,  # Нужно добавить этот тип в enum
+            task_type=TaskType.TERM_DEFINITION,  # Нужно добавить этот тип в enum
             is_successful=is_correct,
             score=1.0 if is_correct else 0.0,
         )

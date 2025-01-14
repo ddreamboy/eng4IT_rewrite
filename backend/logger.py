@@ -13,9 +13,6 @@ class BriefFormatter(logging.Formatter):
         # Сначала получаем отформатированное сообщение
         message = super().format(record)
 
-        # Обрезаем если слишком длинное
-        if len(message) > self.max_length:
-            return message[: self.max_length] + '... [truncated]'
         return message
 
 

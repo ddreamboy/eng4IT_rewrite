@@ -8,6 +8,7 @@ class TaskRequest(BaseModel):
     """Базовая модель запроса для всех типов заданий."""
 
     task_type: str
+    user_id: int
     params: Dict[str, Any]
 
 

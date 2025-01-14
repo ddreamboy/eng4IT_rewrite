@@ -97,8 +97,8 @@ class EmailStructureRequest(BaseTaskRequest):
     ```json
     {
       "task_type": "chat_dialog",
+      "user_id": 1,
       "params": {
-        "user_id": 1,
         "messages_count": 3,
         "terms": ["API", "deployment"],
         "words": ["implement", "schedule"],
@@ -135,8 +135,8 @@ async def generate_chat_dialog(
     ```json
     {
       "task_type": "word_matching",
+      "user_id": 1,
       "params": {
-        "user_id": 1,
         "pairs_count": 5,
         "category": "databases",
         "difficulty": "intermediate"
@@ -172,8 +172,8 @@ async def generate_word_matching(
     ```json
     {
       "task_type": "term_definition",
+      "user_id": 1,
       "params": {
-        "user_id": 1,
         "category": "backend",
         "with_context": true,
         "difficulty": "intermediate"
@@ -190,7 +190,9 @@ async def generate_term_definition(
     session: AsyncSession = Depends(get_session),
 ):
     """Генерация задания на определение термина."""
-    return await _generate_task('term_definition', request, current_user_id, session)
+    return await _generate_task(
+        'term_definition', request, current_user_id, session
+    )
 
 
 @router.post(
@@ -209,8 +211,8 @@ async def generate_term_definition(
     ```json
     {
       "task_type": "word_translation",
+      "user_id": 1,
       "params": {
-        "user_id": 1,
         "word_type": "verb",
         "with_context": true,
         "difficulty": "basic"
@@ -227,7 +229,9 @@ async def generate_word_translation(
     session: AsyncSession = Depends(get_session),
 ):
     """Генерация задания на перевод."""
-    return await _generate_task('word_translation', request, current_user_id, session)
+    return await _generate_task(
+        'word_translation', request, current_user_id, session
+    )
 
 
 @router.post(
@@ -246,8 +250,8 @@ async def generate_word_translation(
     ```json
     {
       "task_type": "email_structure",
+      "user_id": 1,
       "params": {
-        "user_id": 1,
         "style": "formal",
         "topic": "meeting",
         "terms": ["API integration"],
@@ -287,7 +291,6 @@ async def _generate_task(
         params = {
             **request.model_dump(exclude_none=True),
             'session': session,
-            'user_id': current_user_id,
         }
 
         result = await handler.generate(params)
