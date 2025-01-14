@@ -11,7 +11,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from logger import setup_logger
 
-from backend.api.v1.endpoints import audio, auth, tasks
+from backend.api.v1.endpoints import audio, auth, tasks, terms, words, users
 from backend.api.v1.endpoints.tasks.handlers import register_handlers
 from backend.core.config import settings
 from backend.core.exceptions import AuthError, NotFoundError, ValidationError
@@ -53,6 +53,18 @@ app = FastAPI(
             'name': 'audio',
             'description': 'Озвучивание текста',
         },
+        {
+            'name': 'users',
+            'description': 'Операции с пользователями',
+        },
+        {
+            'name': 'terms',
+            'description': 'Операции с терминами',
+        },
+        {
+            'name': 'words',
+            'description': 'Операции с словами',
+        },
     ],
     openapi_security=[
         {'bearerAuth': {'type': 'http', 'scheme': 'bearer', 'bearerFormat': 'JWT'}}
@@ -62,7 +74,8 @@ app = FastAPI(
 # Настройка CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS] + ['http://localhost:5173'],
+    allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS]
+    + ['http://localhost:5173'],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],
@@ -156,6 +169,15 @@ app.include_router(
 )
 app.include_router(
     audio.router, prefix=f'{settings.API_V1_STR}/audio', tags=['audio']
+)
+app.include_router(
+    terms.router, prefix=f'{settings.API_V1_STR}/terms', tags=['terms']
+)
+app.include_router(
+    words.router, prefix=f'{settings.API_V1_STR}/words', tags=['words']
+)
+app.include_router(
+    users.router, prefix=f'{settings.API_V1_STR}/users', tags=['users']
 )
 
 

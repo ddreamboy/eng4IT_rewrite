@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.core.config import settings
 
-from .endpoints import auth, tasks, users  # импортируем роутеры
+from .endpoints import auth, tasks, terms, users, words
 
 
 def create_app() -> FastAPI:
@@ -43,6 +43,8 @@ def create_app() -> FastAPI:
         prefix=f'{settings.API_V1_STR}/tasks',
         tags=['tasks'],
     )
-    app.include_router(users.router, prefix="/users", tags=["users"])
+    app.include_router(
+        users.router, prefix=f'{settings.API_V1_STR}/users', tags=['users']
+    )
 
     return app

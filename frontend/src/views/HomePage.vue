@@ -74,6 +74,8 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
+import TaskCard from '../components/tasks/TaskCard.vue'
+
 
 const router = useRouter()
 const authStore = useAuthStore()

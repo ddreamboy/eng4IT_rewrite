@@ -1,10 +1,11 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends
-from sqlalchemy import case, func, select
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import case, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from backend.api.deps import get_current_user, get_db
+from backend.api.deps import get_current_user_id, get_session
 from backend.db.models import LearningAttempt, UserORM, UserWordStatus
 
 from ..schemas.profile import UserProfileResponse, UserStatistics
@@ -57,17 +58,36 @@ async def get_user_statistics(
 
 @router.get('/profile', response_model=UserProfileResponse)
 async def get_user_profile(
-    current_user: UserORM = Depends(get_current_user),
-    session: AsyncSession = Depends(get_db),
+    current_user_id: int = Depends(get_current_user_id),
+    session: AsyncSession = Depends(get_session),
 ):
     """Получает полный профиль пользователя с статистикой"""
+    # Получаем пользователя
+    stmt = (
+        select(UserORM)
+        .where(UserORM.id == current_user_id)
+        .options(
+            selectinload(UserORM.learning_attempts),
+            selectinload(UserORM.word_statuses)
+        )
+    )
+    result = await session.execute(stmt) 
+    current_user = result.scalar_one_or_none()
+
+    if not current_user:
+        raise HTTPException(status_code=404, detail='User not found')
 
     # Обновляем информацию о последнем входе
-    current_user.last_login = func.now()
-    session.add(current_user)
+    stmt = (
+        update(UserORM)
+        .where(UserORM.id == current_user_id)
+        .values(last_login=func.now())
+    )
+    await session.execute(stmt)
+    await session.commit()
 
     # Получаем статистику
-    statistics = await get_user_statistics(session, current_user.id)
+    statistics = await get_user_statistics(session, current_user_id)
 
     return UserProfileResponse(
         username=current_user.username,

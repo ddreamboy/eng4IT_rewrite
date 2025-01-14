@@ -14,11 +14,11 @@ const router = createRouter({
       name: 'tasks',
       component: () => import('../views/TasksPage.vue'),
     },
-    // {
-    //   path: '/terms',
-    //   name: 'terms',
-    //   component: () => import('../views/TermsPage.vue'),
-    // },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../views/TermsPage.vue'),
+    },
     {
       path: '/profile',
       name: 'profile',
