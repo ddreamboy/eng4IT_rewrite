@@ -1,14 +1,16 @@
 // src/views/AuthPage.vue
 <template>
-    <div class="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div class="w-full max-w-md p-6 m-4 rounded-lg bg-white dark:bg-gray-800 shadow-lg">
+    <div class="min-h-screen w-full flex items-center justify-center"
+        :class="[themeStore.isDark ? 'bg-dark-primary' : 'bg-light-primary']">
+        <div class="w-full max-w-md p-6 m-4 rounded-lg shadow-lg"
+            :class="[themeStore.isDark ? 'bg-dark-secondary' : 'bg-light-secondary']">
             <!-- Переключатель форм -->
-            <div class="flex p-1 mb-6 rounded-lg bg-gray-100 dark:bg-gray-700">
+            <div class="flex p-1 mb-6 rounded-lg" :class="[themeStore.isDark ? 'bg-dark-primary' : 'bg-light-primary']">
                 <button v-for="tab in ['login', 'register']" :key="tab" @click="activeTab = tab"
                     class="flex-1 py-2 text-center rounded-md transition-colors" :class="[
                         activeTab === tab
-                            ? 'bg-indigo-600 text-white'
-                            : 'text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            ? [themeStore.isDark ? 'bg-dark-accent text-dark-text' : 'bg-light-accent text-light-text']
+                            : [themeStore.isDark ? 'text-dark-text hover:bg-dark-primary/50' : 'text-light-text hover:bg-light-primary/50']
                     ]">
                     {{ tab === 'login' ? 'Вход' : 'Регистрация' }}
                 </button>
@@ -18,33 +20,50 @@
             <form @submit.prevent="handleSubmit" class="space-y-4">
                 <!-- Username для регистрации -->
                 <div v-if="activeTab === 'register'" class="space-y-1">
-                    <label class="block text-sm text-gray-700 dark:text-gray-200">Имя пользователя</label>
-                    <input v-model="form.username" type="text" class="w-full p-2 rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
-                               text-gray-900 dark:text-gray-100" :class="{ 'border-red-500': errors.username }"
-                        placeholder="john_doe" />
+                    <label class="block text-sm" :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
+                        Имя пользователя
+                    </label>
+                    <input v-model="form.username" type="text" class="w-full p-2 rounded border transition-colors"
+                        :class="[
+                            themeStore.isDark
+                                ? 'bg-dark-primary border-dark-secondary text-dark-text focus:border-dark-accent'
+                                : 'bg-light-primary border-light-secondary text-light-text focus:border-light-accent',
+                            errors.username ? 'border-red-500' : ''
+                        ]" placeholder="john_doe" />
                     <p v-if="errors.username" class="text-sm text-red-500">{{ errors.username }}</p>
                 </div>
 
                 <!-- Email -->
                 <div class="space-y-1">
-                    <label class="block text-sm text-gray-700 dark:text-gray-200">Email</label>
-                    <input v-model="form.email" type="email" class="w-full p-2 rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
-                               text-gray-900 dark:text-gray-100" :class="{ 'border-red-500': errors.email }"
-                        placeholder="user@example.com" />
+                    <label class="block text-sm" :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
+                        Email
+                    </label>
+                    <input v-model="form.email" type="email" class="w-full p-2 rounded border transition-colors" :class="[
+                        themeStore.isDark
+                            ? 'bg-dark-primary border-dark-secondary text-dark-text focus:border-dark-accent'
+                            : 'bg-light-primary border-light-secondary text-light-text focus:border-light-accent',
+                        errors.email ? 'border-red-500' : ''
+                    ]" placeholder="user@example.com" />
                     <p v-if="errors.email" class="text-sm text-red-500">{{ errors.email }}</p>
                 </div>
 
                 <!-- Password -->
                 <div class="space-y-1">
-                    <label class="block text-sm text-gray-700 dark:text-gray-200">Пароль</label>
-                    <input v-model="form.password" type="password" class="w-full p-2 rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
-                               text-gray-900 dark:text-gray-100" :class="{ 'border-red-500': errors.password }"
-                        placeholder="••••••••" />
+                    <label class="block text-sm" :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
+                        Пароль
+                    </label>
+                    <input v-model="form.password" type="password" class="w-full p-2 rounded border transition-colors"
+                        :class="[
+                            themeStore.isDark
+                                ? 'bg-dark-primary border-dark-secondary text-dark-text focus:border-dark-accent'
+                                : 'bg-light-primary border-light-secondary text-light-text focus:border-light-accent',
+                            errors.password ? 'border-red-500' : ''
+                        ]" placeholder="••••••••" />
                     <p v-if="errors.password" class="text-sm text-red-500">{{ errors.password }}</p>
                 </div>
 
-                <button type="submit" class="w-full py-2 text-white rounded-lg bg-indigo-600 hover:bg-indigo-700 
-                           dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50"
+                <button type="submit" class="w-full py-2 text-white rounded-lg transition-colors disabled:opacity-50"
+                    :class="[themeStore.isDark ? 'bg-dark-accent hover:bg-dark-accent/90' : 'bg-light-accent hover:bg-light-accent/90']"
                     :disabled="isLoading">
                     <template v-if="isLoading">
                         <span class="flex items-center justify-center">
@@ -74,9 +93,11 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
+import { useThemeStore } from '@/stores/themeStore'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const themeStore = useThemeStore()
 
 // State
 const activeTab = ref('login')
