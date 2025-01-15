@@ -13,12 +13,12 @@ export const useTermsStore = defineStore('terms', () => {
   const pagination = ref({
     page: 1,
     pageSize: 10,
-    total: 0
+    total: 0,
   })
   const filters = ref({
     difficulty: null,
     category: null,
-    search: ''
+    search: '',
   })
   const favorites = ref([])
 
@@ -34,8 +34,8 @@ export const useTermsStore = defineStore('terms', () => {
           page_size: pagination.value.pageSize,
           difficulty: filters.value.difficulty,
           category: filters.value.category,
-          search: filters.value.search
-        }
+          search: filters.value.search,
+        },
       })
 
       terms.value = response.data
@@ -48,43 +48,38 @@ export const useTermsStore = defineStore('terms', () => {
       loading.value = false
     }
   }
-  
 
   async function toggleFavorite(itemId) {
     try {
       // Получаем текущий статус
       const currentState = await checkFavoriteStatus(itemId)
-      
-      // Отправляем запрос на сервер 
+
+      // Отправляем запрос на сервер
       await axios.post(`${API_URL}/terms/favorite`, null, {
         params: {
           term_id: itemId,
-          state: !currentState
-        }
+          state: !currentState,
+        },
       })
-  
+
       // Обновляем локальный список избранных
       if (!currentState) {
         favorites.value.push(itemId)
       } else {
-        favorites.value = favorites.value.filter(id => id !== itemId)
+        favorites.value = favorites.value.filter((id) => id !== itemId)
       }
-  
+
       return !currentState
     } catch (err) {
       console.error('Toggle favorite error:', err)
-      throw err 
+      throw err
     }
   }
 
   async function fetchFavorites() {
-    const promises = terms.value.map(term => 
-      checkFavoriteStatus(term.id)
-    )
+    const promises = terms.value.map((term) => checkFavoriteStatus(term.id))
     const statuses = await Promise.all(promises)
-    favorites.value = terms.value
-      .filter((_, index) => statuses[index])
-      .map(term => term.id)
+    favorites.value = terms.value.filter((_, index) => statuses[index]).map((term) => term.id)
   }
 
   async function checkFavoriteStatus(termId) {
@@ -100,14 +95,14 @@ export const useTermsStore = defineStore('terms', () => {
   async function fetchTermAudio(termId) {
     try {
       const response = await axios.get(`${API_URL}/audio/terms/${termId}`, {
-        responseType: 'blob'
+        responseType: 'blob',
       })
-      
+
       // Создаем URL для воспроизведения аудио
       const audioUrl = URL.createObjectURL(response.data)
       const audio = new Audio(audioUrl)
       audio.play()
-      
+
       return audioUrl
     } catch (err) {
       console.error('Term audio fetch error:', err)
@@ -120,7 +115,7 @@ export const useTermsStore = defineStore('terms', () => {
     filters.value = {
       difficulty: null,
       category: null,
-      search: ''
+      search: '',
     }
     pagination.value.page = 1
     fetchTerms()
@@ -138,6 +133,6 @@ export const useTermsStore = defineStore('terms', () => {
     fetchFavorites,
     checkFavoriteStatus,
     fetchTermAudio,
-    resetFilters
+    resetFilters,
   }
 })

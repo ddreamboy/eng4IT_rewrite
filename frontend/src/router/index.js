@@ -9,39 +9,39 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/HomePage.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/auth',
       name: 'auth',
       component: () => import('@/views/AuthPage.vue'),
-      meta: { requiresGuest: true }
+      meta: { requiresGuest: true },
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/ProfilePage.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/dictionary',
       name: 'dictionary',
       component: () => import('@/views/TermsWordsPage.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/exercise/term-definition',
       name: 'termDefinition',
       component: () => import('@/views/TermDefinitionExercise.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/exercise/word-matching',
-      name: 'termMatching',
+      name: 'wordMatching',
       component: () => import('@/views/WordMatchingExercise.vue'),
-      meta: { requiresAuth: true }
-    }
-  ]
+      meta: { requiresAuth: true },
+    },
+  ],
 })
 
 router.beforeEach((to, from) => {

@@ -13,72 +13,68 @@ export const useWordsStore = defineStore('words', () => {
   const pagination = ref({
     page: 1,
     pageSize: 10,
-    total: 0
+    total: 0,
   })
   const filters = ref({
     difficulty: null,
     wordType: null,
-    search: ''
+    search: '',
   })
   const favorites = ref([])
 
   // Actions
-async function fetchWords() {
+  async function fetchWords() {
     loading.value = true
     error.value = null
 
     try {
-        const response = await axios.get(`${API_URL}/words/`, {
-            params: {
-                page: pagination.value.page,
-                page_size: pagination.value.pageSize,
-                difficulty: filters.value.difficulty,
-                word_type: filters.value.wordType,
-                search: filters.value.search
-            }
-        })
-        console.log('Words response:', response.data) // Для отладки
-        words.value = response.data || []
+      const response = await axios.get(`${API_URL}/words/`, {
+        params: {
+          page: pagination.value.page,
+          page_size: pagination.value.pageSize,
+          difficulty: filters.value.difficulty,
+          word_type: filters.value.wordType,
+          search: filters.value.search,
+        },
+      })
+      console.log('Words response:', response.data) // Для отладки
+      words.value = response.data || []
     } catch (err) {
-        error.value = err.response?.data?.detail || 'Не удалось загрузить слова'
-        console.error('Words fetch error:', err)
+      error.value = err.response?.data?.detail || 'Не удалось загрузить слова'
+      console.error('Words fetch error:', err)
     } finally {
-        loading.value = false
+      loading.value = false
     }
-}
+  }
 
   async function toggleFavorite(itemId) {
     try {
       const currentState = await checkFavoriteStatus(itemId)
-      
+
       const response = await axios.post(`${API_URL}/words/favorite`, null, {
         params: {
           word_id: itemId,
-          state: !currentState
-        }
+          state: !currentState,
+        },
       })
-  
+
       if (!currentState) {
-        favorites.value.push(itemId) 
+        favorites.value.push(itemId)
       } else {
-        favorites.value = favorites.value.filter(id => id !== itemId)
+        favorites.value = favorites.value.filter((id) => id !== itemId)
       }
-  
+
       return !currentState
     } catch (err) {
       console.error('Toggle favorite error:', err)
       throw err
     }
   }
-  
+
   async function fetchFavorites() {
-    const promises = words.value.map(word => 
-      checkFavoriteStatus(word.id)
-    )
+    const promises = words.value.map((word) => checkFavoriteStatus(word.id))
     const statuses = await Promise.all(promises)
-    favorites.value = words.value
-      .filter((_, index) => statuses[index])
-      .map(word => word.id)
+    favorites.value = words.value.filter((_, index) => statuses[index]).map((word) => word.id)
   }
 
   async function checkFavoriteStatus(wordId) {
@@ -94,14 +90,14 @@ async function fetchWords() {
   async function fetchWordAudio(wordId) {
     try {
       const response = await axios.get(`${API_URL}/audio/words/${wordId}`, {
-        responseType: 'blob'
+        responseType: 'blob',
       })
-      
+
       // Создаем URL для воспроизведения аудио
       const audioUrl = URL.createObjectURL(response.data)
       const audio = new Audio(audioUrl)
       audio.play()
-      
+
       return audioUrl
     } catch (err) {
       console.error('Word audio fetch error:', err)
@@ -114,7 +110,7 @@ async function fetchWords() {
     filters.value = {
       difficulty: null,
       wordType: null,
-      search: ''
+      search: '',
     }
     pagination.value.page = 1
     fetchWords()
@@ -132,6 +128,6 @@ async function fetchWords() {
     fetchFavorites,
     checkFavoriteStatus,
     fetchWordAudio,
-    resetFilters
+    resetFilters,
   }
 })

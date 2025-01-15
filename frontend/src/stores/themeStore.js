@@ -8,11 +8,15 @@ export const useThemeStore = defineStore('theme', () => {
   const isDark = ref(currentTheme.value === 'dark')
 
   // Следим за изменениями темы
-  watch(currentTheme, (newTheme) => {
-    isDark.value = newTheme === 'dark'
-    localStorage.setItem('theme', newTheme)
-    updateTheme()
-  }, { immediate: true })
+  watch(
+    currentTheme,
+    (newTheme) => {
+      isDark.value = newTheme === 'dark'
+      localStorage.setItem('theme', newTheme)
+      updateTheme()
+    },
+    { immediate: true },
+  )
 
   function updateTheme() {
     // Удаляем все классы тем
@@ -31,6 +35,6 @@ export const useThemeStore = defineStore('theme', () => {
   return {
     currentTheme,
     isDark,
-    toggleTheme
+    toggleTheme,
   }
 })
