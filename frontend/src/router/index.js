@@ -22,7 +22,13 @@ const router = createRouter({
       name: 'profile',
       component: () => import('@/views/ProfilePage.vue'),
       meta: { requiresAuth: true }
-    }
+    },
+    {
+      path: '/dictionary',
+      name: 'dictionary',
+      component: () => import('@/views/TermsWordsPage.vue'),
+      meta: { requiresAuth: true }
+    },
   ]
 })
 

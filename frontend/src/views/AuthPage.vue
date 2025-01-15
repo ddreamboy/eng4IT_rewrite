@@ -156,7 +156,7 @@ function validateForm() {
     if (!form.password) {
         errors.password = 'Введите пароль'
         isValid = false
-    } else if (form.password.length < 8) {
+    } else if (form.password.length < 4) {
         errors.password = 'Пароль должен быть не менее 8 символов'
         isValid = false
     }

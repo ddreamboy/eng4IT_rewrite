@@ -61,13 +61,20 @@ import { useThemeStore } from '@/stores/themeStore'
 import ThemeSwitcher from './components/ThemeSwitcher.vue'
 import UserMenu from './components/UserMenu.vue'
 import MobileNavigation from './components/MobileNavigation.vue'
+import {
+  HomeIcon,
+  BookOpenIcon,
+  AcademicCapIcon,
+  UserIcon
+} from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const themeStore = useThemeStore()
 const isAuthPage = computed(() => route.name === 'auth')
 
 const navigation = [
-  { name: 'Главная', path: '/' },
-  { name: 'Профиль', path: '/profile' },
+  { name: 'Главная', path: '/', icon: HomeIcon },
+  { name: 'Профиль', path: '/profile', icon: UserIcon },
+  { name: 'Словарь', path: '/dictionary', icon: BookOpenIcon },
 ]
 </script>
