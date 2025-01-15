@@ -9,10 +9,13 @@
 }
 
 body {
-  overflow: hidden;
+  overflow: auto; /* разрешаем на мобильных */
 }
-
 @media (min-width: 1024px) {
+  body {
+    overflow: hidden; /* запрещаем на десктопе */
+  }
+
   #app {
     width: 100%;
   }

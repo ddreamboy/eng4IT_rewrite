@@ -33,7 +33,7 @@ class DifficultyLevel(enum.Enum):
 
 class TaskType(enum.Enum):
     WORD_TRANSLATION = 'word_translation'  # Перевод слова
-    TERM_DEFINITION = 'term_definition'  # Выбор определения
+    TERM_DEFINITION = 'TERM_DEFINITION' # Выбор определения
     CONTEXT = 'context'  # Заполнение пропуска в контексте
     WORD_MATCHING = 'word_matching'  # Сопоставление слов/определений
     WRITE = 'write'  # Написание слова по определению
