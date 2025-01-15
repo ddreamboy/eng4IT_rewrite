@@ -48,32 +48,43 @@ export const useTermsStore = defineStore('terms', () => {
       loading.value = false
     }
   }
+  
 
   async function toggleFavorite(itemId) {
     try {
       // Получаем текущий статус
       const currentState = await checkFavoriteStatus(itemId)
       
-      // Отправляем запрос на сервер с противоположным статусом
+      // Отправляем запрос на сервер 
       await axios.post(`${API_URL}/terms/favorite`, null, {
         params: {
-          term_id: itemId,  // ВНИМАНИЕ: здесь может быть ошибка
+          term_id: itemId,
           state: !currentState
         }
       })
   
       // Обновляем локальный список избранных
-      if (currentState) {
-        favorites.value = favorites.value.filter(id => id !== itemId)
-      } else {
+      if (!currentState) {
         favorites.value.push(itemId)
+      } else {
+        favorites.value = favorites.value.filter(id => id !== itemId)
       }
   
-      return !currentState  // Возвращаем новый статус
+      return !currentState
     } catch (err) {
       console.error('Toggle favorite error:', err)
-      throw err  // Прокидываем ошибку для обработки в компоненте
+      throw err 
     }
+  }
+
+  async function fetchFavorites() {
+    const promises = terms.value.map(term => 
+      checkFavoriteStatus(term.id)
+    )
+    const statuses = await Promise.all(promises)
+    favorites.value = terms.value
+      .filter((_, index) => statuses[index])
+      .map(term => term.id)
   }
 
   async function checkFavoriteStatus(termId) {
@@ -124,6 +135,7 @@ export const useTermsStore = defineStore('terms', () => {
     favorites,
     fetchTerms,
     toggleFavorite,
+    fetchFavorites,
     checkFavoriteStatus,
     fetchTermAudio,
     resetFilters

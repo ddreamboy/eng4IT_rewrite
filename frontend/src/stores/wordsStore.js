@@ -23,55 +23,62 @@ export const useWordsStore = defineStore('words', () => {
   const favorites = ref([])
 
   // Actions
-  async function fetchWords() {
+async function fetchWords() {
     loading.value = true
     error.value = null
 
     try {
-      const response = await axios.get(`${API_URL}/words/`, {
-        params: {
-          page: pagination.value.page,
-          page_size: pagination.value.pageSize,
-          difficulty: filters.value.difficulty,
-          word_type: filters.value.wordType,
-          search: filters.value.search
-        }
-      })
-
-      words.value = response.data
+        const response = await axios.get(`${API_URL}/words/`, {
+            params: {
+                page: pagination.value.page,
+                page_size: pagination.value.pageSize,
+                difficulty: filters.value.difficulty,
+                word_type: filters.value.wordType,
+                search: filters.value.search
+            }
+        })
+        console.log('Words response:', response.data) // Для отладки
+        words.value = response.data || []
     } catch (err) {
-      error.value = err.response?.data?.detail || 'Не удалось загрузить слова'
-      console.error('Words fetch error:', err)
+        error.value = err.response?.data?.detail || 'Не удалось загрузить слова'
+        console.error('Words fetch error:', err)
     } finally {
-      loading.value = false
+        loading.value = false
     }
-  }
+}
 
   async function toggleFavorite(itemId) {
     try {
-      // Получаем текущий статус
       const currentState = await checkFavoriteStatus(itemId)
       
-      // Отправляем запрос на сервер с противоположным статусом
-      await axios.post(`${API_URL}/terms/favorite`, null, {
+      const response = await axios.post(`${API_URL}/words/favorite`, null, {
         params: {
-          term_id: itemId,  // ВНИМАНИЕ: здесь может быть ошибка
+          word_id: itemId,
           state: !currentState
         }
       })
   
-      // Обновляем локальный список избранных
-      if (currentState) {
-        favorites.value = favorites.value.filter(id => id !== itemId)
+      if (!currentState) {
+        favorites.value.push(itemId) 
       } else {
-        favorites.value.push(itemId)
+        favorites.value = favorites.value.filter(id => id !== itemId)
       }
   
-      return !currentState  // Возвращаем новый статус
+      return !currentState
     } catch (err) {
       console.error('Toggle favorite error:', err)
-      throw err  // Прокидываем ошибку для обработки в компоненте
+      throw err
     }
+  }
+  
+  async function fetchFavorites() {
+    const promises = words.value.map(word => 
+      checkFavoriteStatus(word.id)
+    )
+    const statuses = await Promise.all(promises)
+    favorites.value = words.value
+      .filter((_, index) => statuses[index])
+      .map(word => word.id)
   }
 
   async function checkFavoriteStatus(wordId) {
@@ -122,6 +129,7 @@ export const useWordsStore = defineStore('words', () => {
     favorites,
     fetchWords,
     toggleFavorite,
+    fetchFavorites,
     checkFavoriteStatus,
     fetchWordAudio,
     resetFilters
