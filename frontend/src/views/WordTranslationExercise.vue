@@ -75,6 +75,8 @@ async function generateExercise() {
             user_id: authStore.user?.id,
             params: params,
         }
+        console.log('User ID:', authStore.user?.id)
+        console.log('Request params:', request_params)
 
         const response = await axios.post('/api/v1/tasks/generate/word-translation', request_params)
         exercise.value = response.data
@@ -101,11 +103,18 @@ async function checkAnswer() {
     loading.value = true
 
     try {
+        console.log('Validating answer:', selectedAnswer.value)
+        console.log('Exercise:', exercise.value.task_id)
+        console.log('User ID:', authStore.user?.id)
+        console.log('Word ID:', exercise.value.result.word_id,)
         const response = await axios.post('/api/v1/tasks/generate/word-translation/validate', {
             task_id: exercise.value.task_id,
             answer: selectedAnswer.value,
+            word_id: exercise.value.result.word_id,
             user_id: authStore.user?.id,
         })
+
+        console.log('Answer validation response:', response.data)
 
         isCorrect.value = response.data.is_correct
         attempts.value++
@@ -217,6 +226,10 @@ onMounted(async () => {
                             {{ exercise.result.content.word }}
                         </p>
 
+                        <p class="italic" :class="[themeStore.isDark ? 'text-dark-text/80' : 'text-light-text/80']">
+                            {{ exercise.result.content.context }}
+                        </p>
+
                         <!-- Контекст -->
                         <button v-if="exercise.result.content.context" @click="toggleContext"
                             class="mt-2 px-4 py-2 text-sm rounded-lg transition-all duration-300 transform hover:scale-105"
@@ -225,15 +238,12 @@ onMounted(async () => {
                                     ? 'bg-dark-accent/20 text-dark-text hover:bg-dark-accent/30'
                                     : 'bg-light-accent/20 text-light-text hover:bg-light-accent/30',
                             ]">
-                            {{ showContext ? 'Скрыть контекст' : 'Показать контекст' }}
+                            {{ showContext ? 'Скрыть контекст' : 'Показать перевод контекста' }}
                         </button>
 
                         <!-- Контекст использования -->
                         <div v-if="showContext && exercise.result.content.context"
                             class="mt-2 transition-all duration-300">
-                            <p class="italic" :class="[themeStore.isDark ? 'text-dark-text/80' : 'text-light-text/80']">
-                                {{ exercise.result.content.context }}
-                            </p>
                             <p class="italic mt-1"
                                 :class="[themeStore.isDark ? 'text-dark-text/60' : 'text-light-text/60']">
                                 {{ exercise.result.content.context_translation }}

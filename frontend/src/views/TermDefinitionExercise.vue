@@ -73,7 +73,8 @@ async function generateExercise() {
       user_id: authStore.user?.id,
       params: params,
     }
-
+  
+    console.log('User ID:', authStore.user?.id)
     const response = await axios.post('/api/v1/tasks/generate/term-definition', request_params)
     exercise.value = response.data
 

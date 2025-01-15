@@ -145,6 +145,74 @@ async def generate_chat_dialog(
 
 
 @router.post(
+    '/generate/chat-dialog/validate',
+    response_model=Dict[str, Any],
+    summary='Validate chat dialog answer',
+    description='Validates user answers for chat dialog task and returns detailed statistics',
+    tags=['tasks'],
+)
+async def validate_chat_dialog(
+    task_id: str = Body(..., description='ID of the task'),
+    user_answers: Dict[str, str] = Body(..., description='User answers for gaps'),
+    correct_answers: Dict[str, str] = Body(
+        ..., description='Correct answers for gaps'
+    ),
+    used_items: List[int] = Body(..., description='List of used word/term IDs'),
+    item_types: Dict[str, str] = Body(
+        ..., description='Types of used items (word/term)'
+    ),
+    current_user_id: int = Depends(get_current_user_id),
+    session: AsyncSession = Depends(get_session),
+):
+    """
+    Валидация ответов для задания с чат-диалогом.
+
+    Args:
+        task_id: ID задания
+        user_answers: Ответы пользователя для пропусков
+        correct_answers: Правильные ответы для пропусков
+        used_items: Список использованных слов/терминов
+        item_types: Типы использованных элементов (word/term)
+        current_user_id: ID текущего пользователя
+        session: Сессия базы данных
+    """
+    handler = TaskRegistry.get_handler('chat_dialog')
+
+    if not handler:
+        raise ValidationError('Chat dialog task handler not found')
+
+    try:
+        result = await handler.validate(
+            {
+                'session': session,
+                'user_id': current_user_id,
+                'user_answers': user_answers,
+                'correct_answers': correct_answers,
+                'used_items': used_items,
+                'item_types': item_types,
+                'task_id': task_id,
+            }
+        )
+
+        return {
+            'is_successful': result,
+            'statistics': {
+                'correct_answers': len(
+                    [
+                        k
+                        for k, v in user_answers.items()
+                        if v == correct_answers.get(k)
+                    ]
+                ),
+                'total_answers': len(correct_answers),
+            },
+        }
+
+    except Exception as e:
+        raise ValidationError(f'Error validating answer: {str(e)}')
+
+
+@router.post(
     '/generate/word-matching',
     response_model=TaskResponse,
     summary='Generate word matching task',
@@ -434,6 +502,7 @@ async def generate_word_translation(
 async def validate_word_translation(
     task_id: str = Body(..., description='ID of the task'),
     answer: str = Body(..., description='Selected translation'),
+    word_id: int = Body(..., description='ID of the word'),
     current_user_id: int = Depends(get_current_user_id),
     session: AsyncSession = Depends(get_session),
 ):
@@ -451,6 +520,7 @@ async def validate_word_translation(
                 'session': session,
                 'user_id': current_user_id,
                 'answer': answer,
+                'word_id': word_id,
                 'task_id': task_id,
             }
         )

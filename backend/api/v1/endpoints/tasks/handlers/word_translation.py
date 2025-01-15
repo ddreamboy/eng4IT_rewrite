@@ -164,15 +164,15 @@ class WordTranslationTaskHandler(BaseTaskHandler):
         session: AsyncSession = answer['session']
         user_id: int = answer['user_id']
         user_answer: str = answer.get('answer')
-        task_id: str = answer.get('task_id')
-
-        # Извлекаем word_id из task_id (как в предыдущих реализациях)
-        word_id = int(task_id.split('_')[1])
+        word_id: int = answer.get('word_id')
+        
+        logger.debug(f'Word ID: {word_id}')
 
         # Получаем слово
-        word = await session.get(WordORM, word_id)
-        if not word:
-            raise ValidationError('Word not found')
+        if word_id:
+            word = await session.get(WordORM, word_id)
+            if not word:
+                raise ValidationError('Word not found')
 
         # Проверяем ответ
         is_correct = user_answer.lower() == word.translation.lower()
