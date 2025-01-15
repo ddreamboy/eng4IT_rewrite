@@ -48,13 +48,32 @@ import { useThemeStore } from '@/stores/themeStore'
 import TaskCard from '@/components/TaskCard.vue'
 import axios from 'axios'
 
+const profile = ref(null)
+
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
-const username = computed(() => authStore.user?.username || 'Гость')
 
 const tasks = ref([])
 const loading = ref(true)
 const error = ref(null)
+
+// Изменяем computed свойство для username
+const username = computed(() => {
+    if (profile.value?.username) {
+        return profile.value.username
+    }
+    return authStore.user?.username || 'Гость'
+})
+
+// Добавляем загрузку профиля
+async function fetchProfile() {
+    try {
+        const response = await axios.get('/api/v1/users/profile')
+        profile.value = response.data
+    } catch (err) {
+        console.error('Error fetching profile:', err)
+    }
+}
 
 async function fetchTasks() {
     loading.value = true
@@ -74,5 +93,6 @@ async function fetchTasks() {
 
 onMounted(() => {
     fetchTasks()
+    fetchProfile()
 })
 </script>
