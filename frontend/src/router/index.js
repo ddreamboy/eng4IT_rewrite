@@ -47,6 +47,12 @@ const router = createRouter({
       component: () => import('@/views/WordTranslationExercise.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/exercise/chat-dialog',
+      name: 'chatDialog',
+      component: () => import('@/views/ChatDialogExercise.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
