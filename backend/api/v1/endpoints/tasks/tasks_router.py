@@ -4,6 +4,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Body, Depends, Query
+from logger import setup_logger
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,6 +13,8 @@ from backend.core.exceptions import ValidationError
 from backend.db.database import get_session
 
 from .base import TaskRegistry, TaskRequest, TaskResponse
+
+logger = setup_logger(__name__)
 
 router = APIRouter()
 
@@ -188,7 +191,8 @@ async def generate_word_matching(
 async def validate_word_matching(
     task_id: str = Body(..., description='ID of the task'),
     pairs: Dict[str, str] = Body(..., description='Matched word pairs'),
-    wrong_attempts: List[Dict[str, str]] = Body(
+    correct_pairs: Dict[str, str] = Body(..., description='Matched word pairs'),
+    wrong_attempts: List = Body(
         ..., description='Wrong match attempts'
     ),
     time_spent: int = Body(..., description='Time spent in seconds'),
@@ -214,6 +218,15 @@ async def validate_word_matching(
     """
     handler = TaskRegistry.get_handler('word_matching')
 
+    logger.debug(f'Task ID: {task_id}')
+    logger.debug(f'Pairs: {pairs}')
+    logger.debug(f'Correct: {correct_pairs}')
+    logger.debug(f'Wrong attempts: {wrong_attempts}')
+    logger.debug(f'Time spent: {time_spent}')
+    logger.debug(f'Level: {level}')
+    logger.debug(f'Lives: {lives}')
+    logger.debug(f'Current score: {current_score}')
+
     if not handler:
         raise ValidationError('Word matching task handler not found')
 
@@ -234,7 +247,8 @@ async def validate_word_matching(
             {
                 'session': session,
                 'user_id': current_user_id,
-                'pairs': pairs,
+                'user_pairs': pairs,
+                'correct_pairs': correct_pairs,
                 'wrong_attempts': wrong_attempts,
                 'time_spent': time_spent,
                 'task_id': task_id,

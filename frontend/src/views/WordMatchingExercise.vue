@@ -70,14 +70,14 @@
                 <TransitionGroup name="word-card">
                     <template v-for="(batch, batchIndex) in russianWordBatches" :key="batchIndex">
                         <div v-if="currentBatch === batchIndex" class="grid grid-cols-1 gap-4">
-                            <button v-for="word in batch" :key="word.id" @click="selectWord(word, 'en')"
+                            <button v-for="word in batch" :key="word.id" @click="selectWord(word, 'ru')"
                                 :data-word-id="word.id"
                                 class="h-24 p-4 rounded-lg text-center transition-all duration-300 relative flex items-center justify-center"
                                 :class="[
                                     // Базовые стили
                                     themeStore.isDark ? 'bg-dark-secondary' : 'bg-light-secondary',
                                     // Стили выделения
-                                    selectedEnWord?.id === word.id ? 'ring-4 ring-green-500 animate-pulse' : '',
+                                    selectedRuWord?.id === word.id ? 'ring-4 ring-green-500 animate-pulse' : '',
                                     // Стили для завершенных пар
                                     completedPairs[word.id]
                                         ? [
@@ -345,32 +345,22 @@ async function loadWords() {
         const response = await axios.post('/api/v1/tasks/generate/word-matching', request_params)
         const data = response.data.result.content
 
-        // Получаем все пары слов
-        const allPairs = data.originals.map((original, index) => ({
-            original,
-            translation: data.translations[index],
-        }))
+        console.log('Loaded words', data)
 
-        // Перемешиваем все пары вместе
-        const shuffledPairs = shuffleArray([...allPairs])
-
-        // Разделяем слова на английские и русские массивы
-        currentEnglishWords.value = shuffledPairs.map(pair => pair.original)
-
-        // Создаем копию пар для русских слов и перемешиваем их В ПРЕДЕЛАХ КАЖДОГО БАТЧА
-        const batchSize = 5
-        const batches = []
-
-        // Разбиваем на батчи
-        for (let i = 0; i < shuffledPairs.length; i += batchSize) {
-            const batch = shuffledPairs.slice(i, i + batchSize)
-            // Перемешиваем только русские слова внутри батча
-            const shuffledTranslations = shuffleArray(batch.map(pair => pair.translation))
-            batches.push(shuffledTranslations)
+        // Разбиваем на батчи сразу
+        let batches = []
+        for (let i = 0; i < data.originals.length; i += batchSize) {
+            const batchOriginals = data.originals.slice(i, i + batchSize)
+            const batchTranslations = data.translations.slice(i, i + batchSize)
+            batches.push({
+                originals: batchOriginals,
+                translations: shuffleArray([...batchTranslations]) // Перемешиваем только переводы в батче
+            })
         }
 
-        // Объединяем батчи в один массив
-        currentRussianWords.value = batches.flat()
+        // Теперь формируем финальные массивы
+        currentEnglishWords.value = batches.map(batch => batch.originals).flat()
+        currentRussianWords.value = batches.map(batch => batch.translations).flat()
 
         // Сбрасываем состояние
         currentBatch.value = 0
@@ -415,6 +405,7 @@ async function selectWord(word, type) {
 // Проверка выбранной пары
 // Модифицированная функция проверки пары
 async function checkPair() {
+    // Проверяем соответствие ID
     const isCorrect = selectedEnWord.value.id === selectedRuWord.value.id
 
     if (isCorrect) {
@@ -425,7 +416,6 @@ async function checkPair() {
         const allBatchWordsCompleted = currentBatchWords.every(word => completedPairs.value[word.id])
 
         if (allBatchWordsCompleted) {
-            // Если есть следующий батч, переходим к нему
             if (currentBatch.value < englishWordBatches.value.length - 1) {
                 setTimeout(() => {
                     currentBatch.value++
@@ -462,15 +452,33 @@ async function checkPair() {
 async function validateLevel() {
     const timeSpent = Math.floor((Date.now() - levelStartTime.value) / 1000)
     try {
-        const response = await axios.post('/api/v1/tasks/generate/word-matching/validate', {
+        const validate_request = {
             task_id: `word_matching_${currentLevel.value}`,
-            pairs: completedPairs.value,
-            wrong_attempts: wrongAttempts.value,
+            pairs: Object.fromEntries(
+                Object.entries(completedPairs.value)
+                    .map(([wordId, _]) => {
+                        const translation = currentRussianWords.value.find((word) => word.id === parseInt(wordId))?.text;
+                        return translation ? [parseInt(wordId), translation] : null;
+                    })
+                    .filter((entry) => entry !== null)
+            ),
+            correct_pairs: Object.fromEntries(
+                currentEnglishWords.value.map((word) => [
+                    word.id,
+                    currentRussianWords.value.find((w) => w.id === word.id)?.text || '',
+                ])
+            ),
+            wrong_attempts: [...wrongAttempts.value],
             time_spent: timeSpent,
             level: currentLevel.value,
             lives: lives.value,
             current_score: score.value,
-        })
+            user_id: authStore.user?.id, // Добавляем user_id
+        };
+
+        console.log('Validating level:', validate_request)
+
+        const response = await axios.post('/api/v1/tasks/generate/word-matching/validate', validate_request)
 
         // Обновляем статистику уровня
         levelStats.value = {

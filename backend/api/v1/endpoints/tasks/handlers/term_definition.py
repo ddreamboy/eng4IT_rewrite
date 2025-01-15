@@ -1,7 +1,7 @@
 # backend/api/v1/endpoints/tasks/handlers/term_definition.py
 
 import random
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from logger import setup_logger
 from sqlalchemy import func, select
@@ -162,61 +162,127 @@ class TermDefinitionTaskHandler(BaseTaskHandler):
                 f'Error generating term definition task: {str(e)}'
             )
 
-    async def validate(self, answer: Dict[str, Any]) -> bool:
-        """Проверка ответа на задание."""
+    async def validate(
+        self, answer: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Расширенная валидация задания на сопоставление слов.
+
+        Args:
+            task_id: ID задания
+            answer: Словарь с параметрами валидации
+
+        Returns:
+            Dict[str, Any]: Результаты валидации
+        """
         session: AsyncSession = answer['session']
         user_id: int = answer['user_id']
-        user_answer_id: int = answer.get('term_id')
+        user_pairs: Dict[str, str] = answer.get('pairs', {})
+        correct_pairs: Dict[str, str] = answer.get('correct_pairs', {})
+        wrong_attempts: List[Dict[str, Any]] = answer.get('wrong_attempts', [])
+        time_spent: int = answer.get('time_spent', 0)
+        level: int = answer.get('level', 1)
+        lives: int = answer.get('lives', 0)
+        current_score: int = answer.get('score', 0)
+        total_multiplier: float = answer.get('multiplier', 1.0)
 
-        if not user_answer_id:
+        if not user_pairs or not correct_pairs:
             raise ValidationError('Invalid answer format')
 
-        # Получаем термин
-        term = await session.get(TermORM, user_answer_id)
-        if not term:
-            raise ValidationError('Term not found')
+        # Подсчет правильных и неправильных попыток
+        correct_count = 0
+        total_pairs = len(correct_pairs)
+        word_stats = {}
 
-        # Проверяем ответ
-        is_correct = str(user_answer_id) == str(answer.get('correct_term_id'))
+        # Анализ попыток сопоставления
+        for word_id, translation in user_pairs.items():
+            is_correct = correct_pairs.get(word_id) == translation.lower()
 
-        # Создаем запись о попытке
-        attempt = LearningAttempt(
-            user_id=user_id,
-            item_id=term.id,
-            item_type=ItemType.TERM,
-            task_type=TaskType.TERM_DEFINITION,  # Нужно добавить этот тип в enum
-            is_successful=is_correct,
-            score=1.0 if is_correct else 0.0,
-        )
-        session.add(attempt)
-
-        # Обновляем статистику термина для пользователя
-        status = await session.execute(
-            select(UserWordStatus).where(
-                UserWordStatus.user_id == user_id,
-                UserWordStatus.item_id == term.id,
-                UserWordStatus.item_type == ItemType.TERM,
-            )
-        )
-        term_status = status.scalar_one_or_none()
-
-        if term_status:
             if is_correct:
-                term_status.mastery_level = min(
-                    100, term_status.mastery_level + 10
-                )
-                term_status.ease_factor = min(3.0, term_status.ease_factor + 0.1)
-            else:
-                term_status.ease_factor = max(1.3, term_status.ease_factor - 0.2)
-        else:
-            term_status = UserWordStatus(
+                correct_count += 1
+
+            # Статистика по каждому слову
+            word_stats[word_id] = {
+                'attempts': 1,
+                'wrong_attempts': 0,
+                'is_correct': is_correct,
+            }
+
+        # Анализ неправильных попыток
+        for attempt in wrong_attempts:
+            word_id = str(attempt['word_id'])
+            if word_id in word_stats:
+                word_stats[word_id]['attempts'] += 1
+                word_stats[word_id]['wrong_attempts'] += 1
+
+        # Расчет точности и успешности
+        accuracy = correct_count / total_pairs if total_pairs > 0 else 0
+        is_successful = accuracy >= 0.5 and lives > 0
+
+        # Базовый счет
+        base_score = correct_count * 10  # 10 очков за каждую правильную пару
+
+        # Финальный счет с учетом множителей
+        final_score = (
+            base_score
+            * (1 + (level - 1) * 0.2)  # Множитель уровня
+            * (1 - (len(wrong_attempts) * 0.1))  # Штраф за неправильные попытки
+        )
+
+        # Создаем записи о попытках для каждого слова
+        for word_id, translation in user_pairs.items():
+            is_correct = correct_pairs.get(word_id) == translation.lower()
+
+            attempt = LearningAttempt(
                 user_id=user_id,
-                item_id=term.id,
-                item_type=ItemType.TERM,
-                mastery_level=10.0 if is_correct else 0.0,
-                ease_factor=2.5,
+                item_id=int(word_id),
+                item_type=ItemType.WORD,
+                task_type=TaskType.WORD_MATCHING,
+                is_successful=is_correct,
+                score=1.0 if is_correct else 0.0,
             )
-            session.add(term_status)
+            session.add(attempt)
+
+            # Обновляем статистику для каждого слова
+            status = await session.execute(
+                select(UserWordStatus).where(
+                    UserWordStatus.user_id == user_id,
+                    UserWordStatus.item_id == int(word_id),
+                    UserWordStatus.item_type == ItemType.WORD,
+                )
+            )
+            word_status = status.scalar_one_or_none()
+
+            if word_status:
+                if is_correct:
+                    word_status.mastery_level = min(
+                        100, word_status.mastery_level + 5
+                    )
+                    word_status.ease_factor = min(
+                        3.0, word_status.ease_factor + 0.05
+                    )
+                else:
+                    word_status.ease_factor = max(
+                        1.3, word_status.ease_factor - 0.1
+                    )
+            else:
+                word_status = UserWordStatus(
+                    user_id=user_id,
+                    item_id=int(word_id),
+                    item_type=ItemType.WORD,
+                    mastery_level=5.0 if is_correct else 0.0,
+                    ease_factor=2.5,
+                )
+                session.add(word_status)
 
         await session.commit()
-        return is_correct
+
+        return {
+            'is_successful': is_successful,
+            'base_score': base_score,
+            'final_score': final_score,
+            'correct_pairs': correct_count,
+            'wrong_pairs': len(wrong_attempts),
+            'accuracy': accuracy,
+            'words_stats': word_stats,
+        }
