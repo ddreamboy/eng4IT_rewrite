@@ -2,7 +2,7 @@
 <template>
     <div class="relative h-full">
         <div class="h-full rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
-            :class="[themeStore.isDark ? 'bg-dark-secondary' : 'bg-light-secondary']">
+            :class="[themeStore.isDark ? 'bg-dark-secondary' : 'bg-light-secondary']" @click="handleCardClick">
 
             <!-- Кнопка информации -->
             <button @click.stop="toggleInfo" class="absolute top-3 right-3 p-2 rounded-full transition-colors z-10"
@@ -108,6 +108,16 @@ const router = useRouter()
 const themeStore = useThemeStore()
 const expanded = ref(false)
 
+// Маппинг типов заданий на маршруты
+const taskRoutes = {
+    'term_definition': 'termDefinition',
+    // Здесь можно добавить другие типы заданий по мере добавления их компонентов
+    // 'word_matching': 'wordMatching',
+    // 'chat_dialog': 'chatDialog',
+    // 'word_translation': 'wordTranslation',
+    // 'email_structure': 'emailStructure'
+}
+
 // Маппинг иконок для разных типов заданий
 const taskIcons = {
     'chat_dialog': MessageSquare,
@@ -120,8 +130,16 @@ const taskIcons = {
 // Получаем иконку для текущего типа задания
 const taskIcon = computed(() => taskIcons[props.task.id] || MessageSquare)
 
-// Простое переключение expanded состояния
-function toggleInfo() {
+// Обработка клика по карточке
+function handleCardClick() {
+    const routeName = taskRoutes[props.task.id]
+    if (routeName) {
+        router.push({ name: routeName })
+    }
+}
+
+function toggleInfo(event) {
+    event.stopPropagation() // Предотвращаем всплытие события
     expanded.value = !expanded.value
 }
 </script>

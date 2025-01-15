@@ -29,6 +29,12 @@ const router = createRouter({
       component: () => import('@/views/TermsWordsPage.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/exercise/term-definition',
+      name: 'termDefinition',
+      component: () => import('@/views/TermDefinitionExercise.vue'),
+      meta: { requiresAuth: true }
+    }
   ]
 })
 

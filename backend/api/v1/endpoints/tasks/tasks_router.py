@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Dict, List, Optional
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Query
+from fastapi import APIRouter, BackgroundTasks, Body, Depends, Query
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -215,6 +215,43 @@ async def generate_term_definition(
     return await _generate_task(
         'term_definition', request, current_user_id, session
     )
+
+
+@router.post(
+    '/generate/term-definition/validate',
+    response_model=Dict[str, bool],
+    summary='Validate term definition answer',
+    description='Проверяет правильность выбранного ответа для задания на определение термина',
+    tags=['tasks'],
+)
+async def validate_term_definition(
+    task_id: str = Body(..., description='ID задания'),
+    term_id: int = Body(..., description='ID выбранного термина'),
+    correct_term_id: int = Body(..., description='ID правильного термина'),
+    current_user_id: int = Depends(get_current_user_id),
+    session: AsyncSession = Depends(get_session),
+):
+    """Валидация ответа на задание по определению термина."""
+    handler = TaskRegistry.get_handler('term_definition')
+
+    if not handler:
+        raise ValidationError('Term definition task handler not found')
+
+    try:
+        is_correct = await handler.validate(
+            {
+                'session': session,
+                'user_id': current_user_id,
+                'term_id': term_id,
+                'correct_term_id': correct_term_id,
+                'task_id': task_id,
+            }
+        )
+
+        return {'is_correct': is_correct}
+
+    except Exception as e:
+        raise ValidationError(f'Error validating answer: {str(e)}')
 
 
 @router.post(
