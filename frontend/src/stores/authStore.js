@@ -8,7 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:7000/api/v1'
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
   const token = ref(localStorage.getItem('token'))
-  
+
   // Проверяем валидность токена при инициализации
   if (token.value && !isTokenValid(token.value)) {
     token.value = null
@@ -52,15 +52,19 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function register(credentials) {
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, {
-        username: credentials.username,
-        email: credentials.email,
-        password: credentials.password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      const response = await axios.post(
+        `${API_URL}/auth/register`,
+        {
+          username: credentials.username,
+          email: credentials.email,
+          password: credentials.password,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
       return response.data
     } catch (error) {
       console.error('Register error:', error)
@@ -77,28 +81,28 @@ export const useAuthStore = defineStore('auth', () => {
       formData.append('scope', '')
       formData.append('client_id', '')
       formData.append('client_secret', '')
-  
+
       const response = await axios.post(`${API_URL}/auth/login`, formData, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       })
-  
+
       if (!response?.data?.access_token) {
         throw new Error('Invalid server response - no token received')
       }
-  
+
       token.value = response.data.access_token
       localStorage.setItem('token', response.data.access_token)
-      
+
       setAuthHeader()
-  
+
       const tokenData = JSON.parse(atob(response.data.access_token.split('.')[1]))
       user.value = {
         id: tokenData.sub,
-        username: tokenData.username || tokenData.email
+        username: tokenData.username || tokenData.email,
       }
-  
+
       return true
     } catch (error) {
       console.error('Login error:', error)
