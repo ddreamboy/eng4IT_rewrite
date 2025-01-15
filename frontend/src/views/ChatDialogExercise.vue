@@ -46,6 +46,7 @@
                         :class="[message.is_user_message ? 'flex justify-end' : '']">
                         <div class="max-w-[80%]">
                             <!-- Bot message -->
+                            <!-- Bot message -->
                             <template v-if="!message.is_user_message">
                                 <div class="flex items-start space-x-4">
                                     <div class="space-y-2">
@@ -70,6 +71,21 @@
                                                 :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
                                                 {{ message.text }}
                                             </p>
+
+                                            <!-- Translation toggle for bot messages -->
+                                            <button @click="toggleTranslation(index)"
+                                                class="mt-2 inline-flex items-center space-x-1 opacity-50 hover:opacity-100 transition-opacity text-xs"
+                                                :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
+                                                <Languages class="w-4 h-4" />
+                                            </button>
+
+                                            <!-- Translation text for bot messages -->
+                                            <Transition name="fade">
+                                                <p v-if="showTranslations[index]" class="mt-2 text-sm opacity-70"
+                                                    :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
+                                                    {{ message.translation }}
+                                                </p>
+                                            </Transition>
                                         </div>
                                     </div>
                                 </div>
@@ -119,12 +135,17 @@
                         :class="[themeStore.isDark ? 'bg-dark-primary' : 'bg-light-primary']">
                         <div v-if="currentUserMessage" class="pr-20">
                             <!-- Text before gap -->
-                            <TypeWriter :text="getMessagePartBeforeGap(currentUserMessage)" :typing-speed="50"
-                                @complete="onInputTypingComplete" />
+                            <template v-if="currentUserMessage">
+                                <div class="relative">
+                                    <TypeWriter :key="`before-${currentGapIndex}`"
+                                        :text="getMessagePartBeforeGap(currentUserMessage, false, currentGapIndex)"
+                                        :typing-speed="50" @complete="onInputTypingComplete" />
+                                </div>
+                            </template>
 
                             <!-- Current gap -->
                             <span v-if="currentGapIndex !== null" :class="[
-                                'px-2 py-1 rounded mx-1 transition-all duration-300',
+                                'px-2 py-1 rounded mx-1 inline-block transition-all duration-300',
                                 getGapHighlightClass(currentUserMessage.gaps[currentGapIndex].id)
                             ]">
                                 {{ selectedAnswers[currentUserMessage.gaps[currentGapIndex].id] || '...' }}
@@ -155,7 +176,16 @@
                     <Transition name="fade">
                         <p v-if="showInputTranslation && currentUserMessage" class="mt-2 text-sm opacity-70 px-3"
                             :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
-                            {{ getMessagePartBeforeGap(currentUserMessage, true) }}
+                            {{ getMessagePartBeforeGap(currentUserMessage, true, currentGapIndex + 1) }}
+                            <span v-if="selectedAnswers[currentUserMessage.gaps[currentGapIndex]?.id]"
+                                class="px-1 rounded bg-green-500/10">
+                                {{ currentUserMessage.gaps[currentGapIndex].options.find(
+                                    o => o.word === selectedAnswers[currentUserMessage.gaps[currentGapIndex].id]
+                                )?.translation }}
+                            </span>
+                            <span v-if="shouldShowNextPart">
+                                {{ getMessagePartBetweenGaps(currentUserMessage, currentGapIndex) }}
+                            </span>
                         </p>
                     </Transition>
                 </div>
@@ -227,17 +257,27 @@ const TypeWriter = defineComponent({
     setup(props, { emit }) {
         const displayedText = ref('')
         let timeoutId = null
+        const isTyping = ref(false)
+        const lastText = ref('')
 
-        function typeText(text) {
-            let currentIndex = 0
-            displayedText.value = ''
+        function typeText(text, startFrom = '') {
+            if (isTyping.value || text === lastText.value) {
+                emit('complete')
+                return
+            }
+
+            let currentIndex = startFrom.length
+            displayedText.value = startFrom
+            isTyping.value = true
+            lastText.value = text
 
             function typeNextCharacter() {
                 if (currentIndex < text.length) {
-                    displayedText.value += text[currentIndex]
+                    displayedText.value = text.slice(0, currentIndex + 1)
                     currentIndex++
                     timeoutId = setTimeout(typeNextCharacter, props.typingSpeed)
                 } else {
+                    isTyping.value = false
                     emit('complete')
                 }
             }
@@ -245,17 +285,22 @@ const TypeWriter = defineComponent({
             typeNextCharacter()
         }
 
-        watch(() => props.text, (newText) => {
+        watch(() => props.text, (newText, oldText) => {
             if (timeoutId) {
                 clearTimeout(timeoutId)
             }
-            typeText(newText)
+
+            // Проверяем, является ли новый текст продолжением старого
+            if (oldText && newText.includes(oldText) && oldText !== newText) {
+                typeText(newText, oldText)
+            } else {
+                typeText(newText)
+            }
         }, { immediate: true })
 
         onBeforeUnmount(() => {
             if (timeoutId) {
                 clearTimeout(timeoutId)
-                timeoutId = null
             }
         })
 
@@ -263,35 +308,76 @@ const TypeWriter = defineComponent({
     }
 })
 
-// Methods
-function getMessagePartBeforeGap(message, isTranslation = false) {
+function getMessagePartBeforeGap(message, isTranslation = false, upToIndex = 0) {
     if (!message.gaps || !message.gaps.length) return isTranslation ? message.translation : message.text
 
     const text = isTranslation ? message.translation : message.text
-    const firstGap = message.gaps[0]
-    const parts = text.split(`{gap${firstGap.id}}`)
+    let result = text
 
-    return parts[0]
+    // Заменяем все заполненные пропуски
+    for (let i = 0; i < upToIndex; i++) {
+        const gap = message.gaps[i]
+        const answer = selectedAnswers.value[gap.id]
+        if (answer) {
+            result = result.replace(`{gap${gap.id}}`, answer)
+        }
+    }
+
+    // Обрезаем до следующего пропуска
+    const nextGap = message.gaps[upToIndex]
+    if (nextGap) {
+        const parts = result.split(`{gap${nextGap.id}}`)
+        return parts[0]
+    }
+
+    return result
 }
 
 function getMessagePartBetweenGaps(message, currentIndex) {
-    if (!message.gaps || !message.gaps.length) return ''
+    if (!message.gaps || !message.gaps.length || currentIndex === null) return ''
 
     const currentGap = message.gaps[currentIndex]
-    const parts = message.text.split(`{gap${currentGap.id}}`)
+    const nextGap = message.gaps[currentIndex + 1]
 
-    if (currentIndex >= message.gaps.length - 1) {
-        return parts[1] || ''
+    let text = message.text
+
+    // Заменяем все предыдущие пропуски
+    for (let i = 0; i <= currentIndex; i++) {
+        const gap = message.gaps[i]
+        const answer = selectedAnswers.value[gap.id]
+        if (answer) {
+            text = text.replace(`{gap${gap.id}}`, answer)
+        }
     }
 
-    const nextGap = message.gaps[currentIndex + 1]
-    const textAfterCurrentGap = parts[1] || ''
-    const nextParts = textAfterCurrentGap.split(`{gap${nextGap.id}}`)
-    return nextParts[0] || ''
-}
+    if (!nextGap) {
+        // Если это последний gap, берем весь оставшийся текст
+        const parts = text.split(`{gap${currentGap.id}}`)
+        if (parts.length < 2) return ''
 
-function toggleInputTranslation() {
-    showInputTranslation.value = !showInputTranslation.value
+        const remainingText = parts[1]
+        // Для артиклей и союзов добавляем следующее слово
+        const words = remainingText.trim().split(/\s+/)
+        const nextWord = words[0]
+        if (['a', 'an', 'the', 'that', 'this', 'those', 'these'].includes(nextWord?.toLowerCase())) {
+            return `${nextWord} ${words[1] || ''}`
+        }
+        return nextWord || ''
+    }
+
+    const parts = text.split(`{gap${currentGap.id}}`)
+    if (parts.length < 2) return ''
+
+    const textAfterGap = parts[1]
+    const nextParts = textAfterGap.split(`{gap${nextGap.id}}`)
+
+    // Добавляем следующее слово для контекста
+    const words = nextParts[0].trim().split(/\s+/)
+    const nextWord = words[0]
+    if (['a', 'an', 'the', 'that', 'this', 'those', 'these'].includes(nextWord?.toLowerCase())) {
+        return `${nextWord} ${words[1] || ''}`
+    }
+    return nextWord || ''
 }
 
 async function selectAnswer(gapId, answer) {
@@ -302,12 +388,18 @@ async function selectAnswer(gapId, answer) {
 
     if (isCorrect) {
         selectedAnswers.value[gapId] = answer
+
+        // Ждем завершения анимации
         await new Promise(resolve => setTimeout(resolve, 500))
 
         if (currentGapIndex.value < currentUserMessage.value.gaps.length - 1) {
-            currentGapIndex.value++
             shouldShowNextPart.value = true
+            await nextTick()
+            currentGapIndex.value++
         } else {
+            // Показываем оставшийся текст после последнего gap
+            shouldShowNextPart.value = true
+            await nextTick()
             isMessageComplete.value = true
         }
     } else {
@@ -315,18 +407,24 @@ async function selectAnswer(gapId, answer) {
         attemptsCount.value[gapId] = (attemptsCount.value[gapId] || 0) + 1
 
         if (attemptsCount.value[gapId] >= 2) {
-            selectedAnswers.value
             selectedAnswers.value[gapId] = gap.correct
             await new Promise(resolve => setTimeout(resolve, 500))
 
             if (currentGapIndex.value < currentUserMessage.value.gaps.length - 1) {
-                currentGapIndex.value++
                 shouldShowNextPart.value = true
+                await nextTick()
+                currentGapIndex.value++
             } else {
+                shouldShowNextPart.value = true
+                await nextTick()
                 isMessageComplete.value = true
             }
         }
     }
+}
+
+function toggleInputTranslation() {
+    showInputTranslation.value = !showInputTranslation.value
 }
 
 async function sendMessage() {
@@ -334,53 +432,56 @@ async function sendMessage() {
 
     // Собираем финальный текст сообщения
     let finalText = currentUserMessage.value.text
-    for (const gap of currentUserMessage.value.gaps) {
-        finalText = finalText.replace(
-            `{gap${gap.id}}`,
-            selectedAnswers.value[gap.id]
-        )
-    }
-
     let finalTranslation = currentUserMessage.value.translation
+
     for (const gap of currentUserMessage.value.gaps) {
-        finalTranslation = finalTranslation.replace(
-            `{gap${gap.id}}`,
-            currentUserMessage.value.gaps.find(g => g.id === gap.id).options.find(
-                o => o.word === selectedAnswers.value[gap.id]
-            ).translation
-        )
+        const answer = selectedAnswers.value[gap.id]
+        finalText = finalText.replace(`{gap${gap.id}}`, answer)
+
+        const translation = currentUserMessage.value.gaps
+            .find(g => g.id === gap.id).options
+            .find(o => o.word === answer).translation
+        finalTranslation = finalTranslation.replace(`{gap${gap.id}}`, translation)
     }
 
     // Добавляем сообщение в чат
-    messages.value.push({
+    messages.value = [...messages.value, {
         ...currentUserMessage.value,
         text: finalText,
         translation: finalTranslation
-    })
+    }]
 
-    // Показываем "печатает" для следующего сообщения
-    const nextMessageIndex = exercise.value.content.messages.indexOf(currentUserMessage.value) + 1
-    if (exercise.value.content.messages[nextMessageIndex]) {
-        await showNextMessage(nextMessageIndex)
-    }
-
-    // Сбрасываем состояния
+    // Сбрасываем состояния перед следующим сообщением
     currentUserMessage.value = null
     currentGapIndex.value = null
     isMessageComplete.value = false
     shouldShowNextPart.value = false
     showInputTranslation.value = false
+    selectedAnswers.value = {}
+    wrongAttempts.value = {}
+
+    // Находим и показываем следующее сообщение
+    const currentIndex = messages.value.length
+    if (exercise.value.content.messages[currentIndex]) {
+        await showNextMessage(currentIndex)
+    }
 }
 
 async function showNextMessage(index) {
-    if (!exercise.value?.content.messages[index]) return
+    console.log('showNextMessage called with index:', index);
+    if (!exercise.value?.content.messages[index]) {
+        console.log('No message found for index:', index);
+        return;
+    }
 
     const message = { ...exercise.value.content.messages[index] }
+    console.log('Processing message:', message);
 
     if (!message.is_user_message) {
+        console.log('Processing bot message');
         // Показываем анимацию печати
         const typingMessage = { ...message, isTyping: true }
-        messages.value = [...messages.value, typingMessage]
+        messages.value.push(typingMessage)
         scrollToBottom()
 
         // Ждем 1-2 секунды (рандомно)
@@ -388,25 +489,45 @@ async function showNextMessage(index) {
         await new Promise(resolve => setTimeout(resolve, delay))
 
         // Обновляем сообщение, убирая анимацию печати
-        messages.value = [
-            ...messages.value.slice(0, -1),
-            { ...message, isTyping: false }
-        ]
+        const messageIndex = messages.value.length - 1
+        messages.value[messageIndex] = { ...message, isTyping: false }
+        scrollToBottom()
 
         // Добавляем задержку перед следующим сообщением
         await new Promise(resolve => setTimeout(resolve, 1000))
-        await showNextMessage(index + 1)
+
+        if (index + 1 < exercise.value.content.messages.length) {
+            console.log('Moving to next message, index:', index + 1);
+            await showNextMessage(index + 1)
+        } else {
+            console.log('No more messages to show');
+        }
     } else {
-        // Сбрасываем состояния для нового сообщения пользователя
+        console.log('Processing user message');
+        // Инициализируем новое сообщение пользователя
         currentUserMessage.value = message
         currentGapIndex.value = 0
         isMessageComplete.value = false
         shouldShowNextPart.value = false
         attemptsCount.value = {}
         showInputTranslation.value = false
+        selectedAnswers.value = {}
+        wrongAttempts.value = {}
     }
+}
 
-    scrollToBottom()
+function onInputTypingComplete() {
+    console.log('Input typing complete, currentGapIndex:', currentGapIndex.value);
+    if (currentUserMessage.value?.gaps[currentGapIndex.value]) {
+        shouldShowNextPart.value = false
+    }
+}
+
+function onMiddlePartTypingComplete() {
+    console.log('Middle part typing complete, currentGapIndex:', currentGapIndex.value);
+    if (currentUserMessage.value?.gaps[currentGapIndex.value]) {
+        shouldShowNextPart.value = false
+    }
 }
 
 function getOptionClass(gapId, word) {
@@ -528,17 +649,7 @@ function toggleTranslation(index) {
     showTranslations.value[index] = !showTranslations.value[index]
 }
 
-function onInputTypingComplete() {
-    if (currentUserMessage.value?.gaps[currentGapIndex.value]) {
-        shouldShowNextPart.value = false
-    }
-}
 
-function onMiddlePartTypingComplete() {
-    if (currentUserMessage.value?.gaps[currentGapIndex.value]) {
-        shouldShowNextPart.value = false
-    }
-}
 
 onMounted(async () => {
     await loadAvailableItems()

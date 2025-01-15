@@ -24,43 +24,9 @@ chat_dialog: |
   11. Calculate difficulty metrics
   12. The dialogue must be complete and logical
 
-  Output format should match the following JSON structure with double curly braces:
-  ```json
-  {{
-    "context": "string - brief description of work situation",
-    "translation": "string - translation of context",
-    "messages": [
-      {{
-        "author": "string - sender name",
-        "text": "string - message with {{gap1}} placeholders", // GAPS ONLY IN YOUR MESSAGES (is_user_message: true)
-        "translation": "string - message translation",
-        "is_user_message": true/false,
-        "gaps": [
-          {{
-            "id": "unique_number",
-            "correct": "string - correct answer",
-            "correct_translation": "string - translation of correct answer",
-            "options": [
-              {{
-                "word": "string - option text",
-                "translation": "string - option translation"
-              }}
-            ]
-          }}
-        ]
-      }}
-    ],
-    "metrics": {{
-      "technical_terms_count": "number - count of technical terms",
-      "complex_words_count": "number - count of complex words",
-      "difficulty_score": "number between 0 and 1"
-    }}
-  }}
-  ```
-
     Example input:
   {{
-    "messages_count": 3,
+    "messages_count": 5,
     "terms": ["deployment", "continuous integration", "API"],
     "words": ["implement", "schedule", "update"],
     "difficulty": "intermediate"
