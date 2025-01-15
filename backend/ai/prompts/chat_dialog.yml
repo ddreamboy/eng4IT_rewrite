@@ -22,7 +22,8 @@ chat_dialog: |
   9. Each gap should have 4 options where one is correct
   10. Provide translations for context and all options
   11. Calculate difficulty metrics
-  
+  12. The dialogue must be complete and logical
+
   Output format should match the following JSON structure with double curly braces:
   ```json
   {{
@@ -31,8 +32,9 @@ chat_dialog: |
     "messages": [
       {{
         "author": "string - sender name",
-        "text": "string - message with {{gap1}} placeholders",
+        "text": "string - message with {{gap1}} placeholders", // GAPS ONLY IN YOUR MESSAGES (is_user_message: true)
         "translation": "string - message translation",
+        "is_user_message": true/false,
         "gaps": [
           {{
             "id": "unique_number",
