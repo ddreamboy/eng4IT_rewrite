@@ -7,7 +7,14 @@ from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.deps import get_current_user_id, get_session
-from backend.db.models import LearningAttempt, TermORM, UserORM, UserWordStatus
+from backend.db.models import (
+    ItemType,
+    LearningAttempt,
+    TermORM,
+    UserORM,
+    UserWordStatus,
+    WordORM,
+)
 
 from ..schemas.profile import UserProfileResponse, UserStatistics
 
@@ -30,12 +37,17 @@ async def get_user_statistics(
 
     # Получаем любимые слова
     favorite_words_query = (
-        select(UserWordStatus)
-        .where(UserWordStatus.user_id == user_id, UserWordStatus.is_favorite)
+        select(WordORM.word)  # Получаем само слово вместо ID
+        .join(UserWordStatus, UserWordStatus.item_id == WordORM.id)
+        .where(
+            UserWordStatus.user_id == user_id,
+            UserWordStatus.is_favorite,
+            UserWordStatus.item_type == ItemType.WORD,
+        )
         .limit(5)
     )
     favorite_words_result = await session.execute(favorite_words_query)
-    favorite_words = [word.item_id for word in favorite_words_result.scalars()]
+    favorite_words = [word[0] for word in favorite_words_result]
 
     category_progress_query = (
         select(

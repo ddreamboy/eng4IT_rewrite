@@ -9,6 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
   const token = ref(localStorage.getItem('token'))
   const refreshToken = ref(localStorage.getItem('refreshToken'))
+  console.log('Initial token:', token.value)
 
   if (token.value && !isTokenValid(token.value)) {
     token.value = null
@@ -149,13 +150,22 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function refreshTokens() {
     try {
+      console.log('Refreshing tokens, current token:', token.value)
+      // Обрати внимание - здесь не нужно передавать refresh_token в теле запроса
+      // Достаточно только Bearer token в заголовке
       const response = await axios.post(
         `${API_URL}/auth/refresh`,
-        {},
+        {}, // пустое тело запроса
         {
-          headers: { Authorization: `Bearer ${token.value}` },
-        },
+          headers: { 
+            Authorization: `Bearer ${token.value}`,
+            accept: 'application/json'
+          },
+        }
       )
+      console.log('Refresh response:', response.data)
+      
+      // Обновляем токены из ответа
       token.value = response.data.access_token
       refreshToken.value = response.data.refresh_token
       localStorage.setItem('token', response.data.access_token)
@@ -164,7 +174,6 @@ export const useAuthStore = defineStore('auth', () => {
       return true
     } catch (error) {
       console.error('Token refresh error:', error)
-      logout()
       throw error
     }
   }
