@@ -116,7 +116,8 @@ function formatWordType(type) {
         'NOUN': 'Существительное',
         'VERB': 'Глагол',
         'ADJECTIVE': 'Прилагательное',
-        'ADVERB': 'Наречие'
+        'ADVERB': 'Наречие',
+        'COMMON_PHRASE': 'Фраза'
     }
     return types[type] || type
 }

@@ -40,7 +40,7 @@
                         ? 'bg-dark-secondary text-dark-text border-dark-primary'
                         : 'bg-light-secondary text-light-text border-light-primary'
                 ]">
-                <option value="">Сложность</option>
+                <option value="">Уровень</option>
                 <option value="beginner">Начинающий</option>
                 <option value="basic">Базовый</option>
                 <option value="intermediate">Средний</option>

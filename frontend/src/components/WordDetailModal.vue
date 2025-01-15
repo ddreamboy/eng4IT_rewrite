@@ -57,7 +57,7 @@
 
                 <div class="mb-4 flex items-center justify-between">
                     <div>
-                        <h4 class="text-lg font-medium mb-2">Сложность</h4>
+                        <h4 class="text-lg font-medium mb-2">Уровень</h4>
                         <span class="px-2 py-1 rounded-full text-xs" :class="[
                             word.difficulty === 'basic'
                                 ? 'bg-green-200 text-green-800'
@@ -158,7 +158,8 @@ function formatWordType(type) {
         'NOUN': 'Существительное',
         'VERB': 'Глагол',
         'ADJECTIVE': 'Прилагательное',
-        'ADVERB': 'Наречие'
+        'ADVERB': 'Наречие',
+        'COMMON_PHRASE': 'Фраза'
     }
     return types[type] || type
 }
