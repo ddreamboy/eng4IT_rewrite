@@ -11,7 +11,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from logger import setup_logger
 
-from backend.api.v1.endpoints import audio, auth, tasks, terms, words, users
+from backend.api.v1.endpoints import audio, auth, tasks, terms, users, words
 from backend.api.v1.endpoints.tasks.handlers import register_handlers
 from backend.core.config import settings
 from backend.core.exceptions import AuthError, NotFoundError, ValidationError
@@ -104,13 +104,21 @@ async def not_found_error_handler(
 
 
 @app.exception_handler(ValidationError)
-async def validation_error_handler(
-    request: Request, exc: ValidationError
-) -> JSONResponse:
-    """Обработчик ошибок валидации."""
-    logger.warning(f'Validation error: {exc.detail}')
+async def validation_exception_handler(request: Request, exc: ValidationError):
+    # Логируем полную информацию об ошибке
+    logger.error(f'Validation Error: {exc}')
+
+    # Получаем тело запроса для детального анализа
+    body = await request.json()
+    logger.error(f'Request Body: {body}')
+
     return JSONResponse(
-        status_code=exc.status_code, content={'detail': exc.detail}
+        status_code=422,
+        content={
+            'error': 'Validation Error',
+            'details': str(exc),
+            'request_body': body,
+        },
     )
 
 

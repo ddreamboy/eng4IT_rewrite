@@ -32,13 +32,13 @@ class DifficultyLevel(enum.Enum):
 
 
 class TaskType(enum.Enum):
-    WORD_TRANSLATION = 'word_translation'  # Перевод слова
+    WORD_TRANSLATION = 'WORD_TRANSLATION'  # Перевод слова
     TERM_DEFINITION = 'TERM_DEFINITION' # Выбор определения
-    CONTEXT = 'context'  # Заполнение пропуска в контексте
-    WORD_MATCHING = 'word_matching'  # Сопоставление слов/определений
-    WRITE = 'write'  # Написание слова по определению
-    CHAT_DIALOG = 'chat_dialog'
-    EMAIL_STRUCTURE = 'email_structure'
+    CONTEXT = 'CONTEXT'  # Заполнение пропуска в контексте
+    WORD_MATCHING = 'WORD_MATCHING'  # Сопоставление слов/определений
+    WRITE = 'WRITE'  # Написание слова по определению
+    CHAT_DIALOG = 'CHAT_DIALOG'
+    EMAIL_STRUCTURE = 'EMAIL_STRUCTURE'
 
 
 class AchievementType(enum.Enum):

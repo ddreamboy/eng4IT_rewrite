@@ -1,7 +1,6 @@
 # backend/api/v1/endpoints/tasks/handlers/word_matching.py
 
-import random
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from logger import setup_logger
 from sqlalchemy import func, select
@@ -55,12 +54,13 @@ class WordMatchingTaskHandler(BaseTaskHandler):
                 {'id': w['id'], 'text': w['text'].lower()} for w in original_pairs
             ]
             translations = [
-                {'id': w['id'], 'text': w['translation'].lower()} for w in original_pairs
+                {'id': w['id'], 'text': w['translation'].lower()}
+                for w in original_pairs
             ]
 
             # Перемешиваем оба списка
-            random.shuffle(originals)
-            random.shuffle(translations)
+            # random.shuffle(originals)
+            # random.shuffle(translations)
 
             # Создаем задание
             task = {
@@ -71,7 +71,8 @@ class WordMatchingTaskHandler(BaseTaskHandler):
                     'translations': translations,
                 },
                 'correct_pairs': {
-                    str(pair['id']): pair['translation'].lower() for pair in original_pairs
+                    str(pair['id']): pair['translation'].lower()
+                    for pair in original_pairs
                 },
             }
 
@@ -82,39 +83,70 @@ class WordMatchingTaskHandler(BaseTaskHandler):
             logger.error(f'Error generating matching task: {e}', exc_info=True)
             raise ValidationError(f'Error generating matching task: {str(e)}')
 
-    async def validate(self, task_id: str, answer: Dict[str, Any]) -> bool:
+    async def validate(self, answer: Dict[str, Any]) -> Dict[str, Any]:
         """Проверка ответа на задание."""
+        task_id: str = answer.get('task_id')  # Получаем task_id из answer
         session: AsyncSession = answer['session']
         user_id: int = answer['user_id']
-        user_pairs: Dict[str, str] = answer.get('pairs', {})
+        user_pairs: Dict[str, str] = answer.get('user_pairs', {})
         correct_pairs: Dict[str, str] = answer.get('correct_pairs', {})
+        wrong_attempts: List[Dict[str, Any]] = answer.get('wrong_attempts', [])
+        time_spent: int = answer.get('time_spent', 0)
+        level: int = answer.get('level', 1)
+        lives: int = answer.get('lives', 0)
+        current_score: int = answer.get('score', 0)
+        total_multiplier: float = answer.get('multiplier', 1.0)
+        
+        logger.debug(f'Validating matching task with answer: {answer}')
 
         if not user_pairs or not correct_pairs:
             raise ValidationError('Invalid answer format')
 
-        # Подсчитываем количество правильных ответов
+        # Подсчет правильных и неправильных ответов
         correct_count = 0
         total_pairs = len(correct_pairs)
+        words_stats = {}
 
+        # Анализ попыток сопоставления
         for word_id, translation in user_pairs.items():
-            if correct_pairs.get(word_id) == translation.lower():
+            is_correct = correct_pairs.get(word_id) == translation.lower()
+
+            if is_correct:
                 correct_count += 1
 
-        # Вычисляем процент правильных ответов
-        score = correct_count / total_pairs
-        is_successful = (
-            score >= 0.5
-        )  # Успешно, если 50% или более правильных ответов
+            # Статистика по каждому слову
+            words_stats[word_id] = {
+                'attempts': 1,
+                'wrong_attempts': 0,
+                'is_correct': is_correct,
+            }
+
+        # Анализ неправильных попыток
+        for attempt in wrong_attempts:
+            word_id = str(attempt['word_id'])
+            if word_id in words_stats:
+                words_stats[word_id]['attempts'] += 1
+                words_stats[word_id]['wrong_attempts'] += 1
+
+        # Расчет точности
+        accuracy = correct_count / total_pairs if total_pairs > 0 else 0
+        is_successful = accuracy >= 0.5 and lives > 0
+
+        # Базовый счет
+        base_score = correct_count * 10  # 10 очков за каждую правильную пару
+
+        # Финальный счет с учетом множителей
+        final_score = base_score * total_multiplier
 
         # Создаем записи о попытках для каждого слова
-        for word_id, user_translation in user_pairs.items():
-            is_correct = correct_pairs.get(word_id) == user_translation.lower()
+        for word_id, translation in user_pairs.items():
+            is_correct = correct_pairs.get(word_id) == translation.lower()
 
             attempt = LearningAttempt(
                 user_id=user_id,
                 item_id=int(word_id),
                 item_type=ItemType.WORD,
-                task_type=TaskType.MATCHING,
+                task_type=TaskType.WORD_MATCHING,
                 is_successful=is_correct,
                 score=1.0 if is_correct else 0.0,
             )
@@ -153,4 +185,14 @@ class WordMatchingTaskHandler(BaseTaskHandler):
                 session.add(word_status)
 
         await session.commit()
-        return is_successful
+
+        # Возвращаем словарь с требуемыми ключами
+        return {
+            'is_successful': is_successful,
+            'base_score':  round(base_score, 1),
+            'final_score':  round(final_score, 1),
+            'correct_pairs': correct_count,
+            'wrong_pairs': len(wrong_attempts),
+            'accuracy': round(accuracy, 1),
+            'words_stats': words_stats,
+        }
