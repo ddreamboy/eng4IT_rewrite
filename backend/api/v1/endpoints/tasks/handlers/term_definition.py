@@ -162,7 +162,7 @@ class TermDefinitionTaskHandler(BaseTaskHandler):
                 f'Error generating term definition task: {str(e)}'
             )
 
-    async def validate(self, task_id: str, answer: Dict[str, Any]) -> bool:
+    async def validate(self, answer: Dict[str, Any]) -> bool:
         """Проверка ответа на задание."""
         session: AsyncSession = answer['session']
         user_id: int = answer['user_id']

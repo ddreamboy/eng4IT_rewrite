@@ -11,7 +11,6 @@ from sqlalchemy.future import select
 from backend.db.models import (
     ItemType,
     TermORM,
-    UserORM,
     UserWordStatus,  # Новый импорт модели
 )
 
@@ -32,6 +31,14 @@ async def get_terms(
         f'Fetched {len(terms)} terms'
     )  # Логирование количества полученных терминов
     return terms
+
+
+@router.get('/categories')
+async def get_term_categories(db: AsyncSession = Depends(get_session)):
+    query = select(TermORM.category_main).distinct()
+    result = await db.execute(query)
+    categories = result.scalars().all()
+    return categories
 
 
 @router.get('/favorite/{term_id}')
@@ -55,9 +62,7 @@ async def add_term_to_favorites(
     term_id: int,
     state: bool,
     db: AsyncSession = Depends(get_session),
-    user_id: int = Depends(
-        get_current_user_id
-    ),
+    user_id: int = Depends(get_current_user_id),
 ):
     # Проверка существования термина
     term = await db.get(TermORM, term_id)
