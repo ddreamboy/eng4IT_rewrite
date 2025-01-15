@@ -151,13 +151,22 @@ class WordTranslationTaskHandler(BaseTaskHandler):
             logger.error(f'Error generating translation task: {e}', exc_info=True)
             raise ValidationError(f'Error generating translation task: {str(e)}')
 
-    async def validate(self, task_id: str, answer: Dict[str, Any]) -> bool:
-        """Проверка ответа на задание."""
+    async def validate(self, answer: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Расширенная валидация задания на перевод слова.
+
+        Args:
+            answer: Словарь с параметрами валидации
+
+        Returns:
+            Dict[str, Any]: Результаты валидации
+        """
         session: AsyncSession = answer['session']
         user_id: int = answer['user_id']
-        user_answer: str = answer['answer']
+        user_answer: str = answer.get('answer')
+        task_id: str = answer.get('task_id')
 
-        # Получаем word_id из task_id
+        # Извлекаем word_id из task_id (как в предыдущих реализациях)
         word_id = int(task_id.split('_')[1])
 
         # Получаем слово
@@ -166,13 +175,13 @@ class WordTranslationTaskHandler(BaseTaskHandler):
             raise ValidationError('Word not found')
 
         # Проверяем ответ
-        is_correct = user_answer == word.translation
+        is_correct = user_answer.lower() == word.translation.lower()
 
         # Создаем запись о попытке
         attempt = LearningAttempt(
             user_id=user_id,
             item_id=word.id,
-            item_type=ItemType.WORD,  # Используем WORD вместо term
+            item_type=ItemType.WORD,
             task_type=TaskType.WORD_TRANSLATION,
             is_successful=is_correct,
             score=1.0 if is_correct else 0.0,
@@ -184,7 +193,7 @@ class WordTranslationTaskHandler(BaseTaskHandler):
             select(UserWordStatus).where(
                 UserWordStatus.user_id == user_id,
                 UserWordStatus.item_id == word.id,
-                UserWordStatus.item_type == ItemType.WORD,  # Используем WORD
+                UserWordStatus.item_type == ItemType.WORD,
             )
         )
         word_status = status.scalar_one_or_none()
@@ -203,11 +212,12 @@ class WordTranslationTaskHandler(BaseTaskHandler):
             word_status = UserWordStatus(
                 user_id=user_id,
                 item_id=word.id,
-                item_type=ItemType.WORD,  # Используем WORD
+                item_type=ItemType.WORD,
                 mastery_level=10.0 if is_correct else 0.0,
                 ease_factor=2.5,
             )
             session.add(word_status)
 
         await session.commit()
-        return is_correct
+
+        return {'is_correct': is_correct}

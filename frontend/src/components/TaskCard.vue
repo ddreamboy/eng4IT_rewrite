@@ -144,7 +144,7 @@ const taskRoutes = {
   // Здесь можно добавить другие типы заданий по мере добавления их компонентов
   word_matching: 'wordMatching',
   // 'chat_dialog': 'chatDialog',
-  // 'word_translation': 'wordTranslation',
+  word_translation: 'wordTranslation',
   // 'email_structure': 'emailStructure'
 }
 

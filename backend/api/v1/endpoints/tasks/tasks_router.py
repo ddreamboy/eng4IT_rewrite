@@ -192,9 +192,7 @@ async def validate_word_matching(
     task_id: str = Body(..., description='ID of the task'),
     pairs: Dict[str, str] = Body(..., description='Matched word pairs'),
     correct_pairs: Dict[str, str] = Body(..., description='Matched word pairs'),
-    wrong_attempts: List = Body(
-        ..., description='Wrong match attempts'
-    ),
+    wrong_attempts: List = Body(..., description='Wrong match attempts'),
     time_spent: int = Body(..., description='Time spent in seconds'),
     level: int = Body(..., description='Current game level'),
     lives: int = Body(..., description='Remaining lives'),
@@ -424,6 +422,43 @@ async def generate_word_translation(
     return await _generate_task(
         'word_translation', request, current_user_id, session
     )
+
+
+@router.post(
+    '/generate/word-translation/validate',
+    response_model=Dict[str, Any],
+    summary='Validate word translation answer',
+    description='Validates selected translation and returns result',
+    tags=['tasks'],
+)
+async def validate_word_translation(
+    task_id: str = Body(..., description='ID of the task'),
+    answer: str = Body(..., description='Selected translation'),
+    current_user_id: int = Depends(get_current_user_id),
+    session: AsyncSession = Depends(get_session),
+):
+    """
+    Валидация ответа для задания на перевод слова.
+    """
+    handler = TaskRegistry.get_handler('word_translation')
+
+    if not handler:
+        raise ValidationError('Word translation task handler not found')
+
+    try:
+        result = await handler.validate(
+            {
+                'session': session,
+                'user_id': current_user_id,
+                'answer': answer,
+                'task_id': task_id,
+            }
+        )
+
+        return {'is_correct': result}
+
+    except Exception as e:
+        raise ValidationError(f'Error validating answer: {str(e)}')
 
 
 @router.post(
