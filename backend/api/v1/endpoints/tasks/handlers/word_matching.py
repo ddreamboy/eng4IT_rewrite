@@ -52,10 +52,10 @@ class WordMatchingTaskHandler(BaseTaskHandler):
 
             # Создаем отдельные списки для слов и переводов
             originals = [
-                {'id': w['id'], 'text': w['text']} for w in original_pairs
+                {'id': w['id'], 'text': w['text'].lower()} for w in original_pairs
             ]
             translations = [
-                {'id': w['id'], 'text': w['translation']} for w in original_pairs
+                {'id': w['id'], 'text': w['translation'].lower()} for w in original_pairs
             ]
 
             # Перемешиваем оба списка
@@ -71,7 +71,7 @@ class WordMatchingTaskHandler(BaseTaskHandler):
                     'translations': translations,
                 },
                 'correct_pairs': {
-                    str(pair['id']): pair['translation'] for pair in original_pairs
+                    str(pair['id']): pair['translation'].lower() for pair in original_pairs
                 },
             }
 
@@ -97,18 +97,18 @@ class WordMatchingTaskHandler(BaseTaskHandler):
         total_pairs = len(correct_pairs)
 
         for word_id, translation in user_pairs.items():
-            if correct_pairs.get(word_id) == translation:
+            if correct_pairs.get(word_id) == translation.lower():
                 correct_count += 1
 
         # Вычисляем процент правильных ответов
         score = correct_count / total_pairs
         is_successful = (
-            score >= 0.7
-        )  # Успешно, если 70% или более правильных ответов
+            score >= 0.5
+        )  # Успешно, если 50% или более правильных ответов
 
         # Создаем записи о попытках для каждого слова
         for word_id, user_translation in user_pairs.items():
-            is_correct = correct_pairs.get(word_id) == user_translation
+            is_correct = correct_pairs.get(word_id) == user_translation.lower()
 
             attempt = LearningAttempt(
                 user_id=user_id,

@@ -34,6 +34,12 @@ const router = createRouter({
       name: 'termDefinition',
       component: () => import('@/views/TermDefinitionExercise.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/exercise/word-matching',
+      name: 'termMatching',
+      component: () => import('@/views/WordMatchingExercise.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })

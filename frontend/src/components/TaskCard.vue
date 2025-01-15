@@ -112,7 +112,7 @@ const expanded = ref(false)
 const taskRoutes = {
     'term_definition': 'termDefinition',
     // Здесь можно добавить другие типы заданий по мере добавления их компонентов
-    // 'word_matching': 'wordMatching',
+    'word_matching': 'wordMatching',
     // 'chat_dialog': 'chatDialog',
     // 'word_translation': 'wordTranslation',
     // 'email_structure': 'emailStructure'
