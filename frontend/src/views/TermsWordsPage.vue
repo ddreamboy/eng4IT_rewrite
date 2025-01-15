@@ -149,9 +149,10 @@ const loading = ref(false)
 
 // Вычисляемые свойства
 const displayItems = computed(() => {
-    return activeTab.value === 'terms'
-        ? termsStore.terms
-        : wordsStore.words
+    // Добавляем проверку на пустые данные
+    const items = activeTab.value === 'terms' ? termsStore.terms : wordsStore.words
+    console.log('Display items:', items) // Для отладки
+    return items || []
 })
 
 const hasMorePages = computed(() => {
@@ -204,11 +205,13 @@ async function fetchCurrentItems() {
             termsStore.filters.search = currentFilters.value.search
             termsStore.pagination.page = currentPage.value
             await termsStore.fetchTerms()
+            await termsStore.fetchFavorites() // Добавляем загрузку избранных
         } else {
             wordsStore.filters.difficulty = currentFilters.value.difficulty
             wordsStore.filters.search = currentFilters.value.search
             wordsStore.pagination.page = currentPage.value
             await wordsStore.fetchWords()
+            await wordsStore.fetchFavorites() // Добавляем загрузку избранных  
         }
     } catch (error) {
         console.error('Ошибка загрузки:', error)

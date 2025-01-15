@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from backend.db.models import DifficultyLevel
 
@@ -13,6 +13,10 @@ class UserStatistics(BaseModel):
     study_streak: int
     favorite_words: List[str]
     category_progress: Dict[str, float]
+
+    @field_validator('favorite_words')
+    def validate_favorite_words(cls, v):
+        return [str(word) if not isinstance(word, str) else word for word in v]
 
 
 class UserProfileResponse(BaseModel):

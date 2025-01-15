@@ -81,7 +81,8 @@ import WordDetailModal from './WordDetailModal.vue'
 const props = defineProps({
     word: {
         type: Object,
-        required: true
+        required: true,
+        default: () => ({}) // Добавляем дефолтное значение
     }
 })
 
@@ -95,6 +96,8 @@ const isDetailModalOpen = ref(false)
 const isFavorite = computed(() =>
     wordsStore.favorites.includes(props.word.id)
 )
+
+const isLoading = ref(false)
 
 // Форматирование сложности
 function formatDifficulty(difficulty) {
@@ -120,10 +123,18 @@ function formatWordType(type) {
 
 // Добавление/удаление из избранного
 async function toggleFavorite() {
+    if (!props.word?.id) {
+        console.error('No word ID provided')
+        return
+    }
+
+    isLoading.value = true
     try {
         await wordsStore.toggleFavorite(props.word.id)
     } catch (error) {
-        console.error('Не удалось добавить в избранное', error)
+        console.error('Ошибка добавления в избранное:', error)
+    } finally {
+        isLoading.value = false
     }
 }
 

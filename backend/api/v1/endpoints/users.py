@@ -7,7 +7,14 @@ from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.deps import get_current_user_id, get_session
-from backend.db.models import LearningAttempt, TermORM, UserORM, UserWordStatus
+from backend.db.models import (
+    ItemType,
+    LearningAttempt,
+    TermORM,
+    UserORM,
+    UserWordStatus,
+    WordORM,
+)
 
 from ..schemas.profile import UserProfileResponse, UserStatistics
 
@@ -29,13 +36,29 @@ async def get_user_statistics(
     attempts_stats = attempts_result.first()
 
     # Получаем любимые слова
-    favorite_words_query = (
-        select(UserWordStatus)
-        .where(UserWordStatus.user_id == user_id, UserWordStatus.is_favorite)
+    favorite_items_query = (
+        # Подзапрос для слов
+        select(WordORM.word)
+        .join(UserWordStatus, UserWordStatus.item_id == WordORM.id)
+        .where(
+            UserWordStatus.user_id == user_id,
+            UserWordStatus.is_favorite,
+            UserWordStatus.item_type == ItemType.WORD,
+        )
+        .union_all(
+            # Подзапрос для терминов
+            select(TermORM.term)
+            .join(UserWordStatus, UserWordStatus.item_id == TermORM.id)
+            .where(
+                UserWordStatus.user_id == user_id,
+                UserWordStatus.is_favorite,
+                UserWordStatus.item_type == ItemType.TERM,
+            )
+        )
         .limit(5)
     )
-    favorite_words_result = await session.execute(favorite_words_query)
-    favorite_words = [word.item_id for word in favorite_words_result.scalars()]
+    favorite_items_result = await session.execute(favorite_items_query)
+    favorite_items = [item[0] for item in favorite_items_result]
 
     category_progress_query = (
         select(
@@ -65,7 +88,7 @@ async def get_user_statistics(
         if attempts_stats.total
         else 0,
         study_streak=0,  # Будет реализовано позже
-        favorite_words=favorite_words,
+        favorite_words=favorite_items,
         category_progress=category_progress,
     )
 

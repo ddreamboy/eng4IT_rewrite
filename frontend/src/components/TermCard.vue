@@ -96,6 +96,8 @@ const isFavorite = computed(() =>
   termsStore.favorites.includes(props.term.id)
 )
 
+const isLoading = ref(false)
+
 // Форматирование сложности
 function formatDifficulty(difficulty) {
   const difficulties = {
@@ -109,10 +111,15 @@ function formatDifficulty(difficulty) {
 
 // Добавление/удаление из избранного
 async function toggleFavorite() {
+  if (isLoading.value) return
+  
+  isLoading.value = true
   try {
-    await termsStore.toggleFavorite(props.term.id)
+    await termsStore.toggleFavorite(props.term.id) // или wordsStore для WordCard
   } catch (error) {
-    console.error('Не удалось добавить в избранное', error)
+    console.error('Ошибка добавления в избранное:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
