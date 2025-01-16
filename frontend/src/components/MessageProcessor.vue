@@ -11,7 +11,8 @@
                 <div class="p-4 rounded-lg" :class="[themeStore.isDark ? 'bg-dark-primary/50' : 'bg-light-primary/50']">
                     <p class="text-base" :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
                         <!-- Текст до gap -->
-                        <TypeWriter :text="textBeforeGap" :typing-speed="50" @complete="onTypingComplete" />
+                        <TypeWriter :text="textBeforeGap" :typing-speed="10" :enabled="!isTypingLocked"
+                            новый проп @complete="onTypingComplete" />
 
                         <!-- Текущий gap -->
                         <span v-if="currentGapIndex !== null" :class="[
@@ -57,30 +58,40 @@ import { ref, computed, defineComponent, h, watch, onBeforeUnmount } from 'vue'
 import { useThemeStore } from '@/stores/themeStore'
 
 const themeStore = useThemeStore()
+const isTypingLocked = ref(false)
 
 // TypeWriter component
 const TypeWriter = defineComponent({
     props: {
         text: { type: String, required: true },
-        typingSpeed: { type: Number, default: 50 }
+        typingSpeed: { type: Number, default: 50 },
+        enabled: { type: Boolean, default: true } // Добавляем новый проп
     },
     emits: ['complete'],
     setup(props, { emit }) {
         const displayedText = ref('')
+        const isTyping = ref(false)
         let timeoutId = null
 
         function typeText(text, startIndex = 0) {
-            if (!text || startIndex >= text.length) {
+            if (!text || startIndex >= text.length || !props.enabled) {
                 emit('complete')
                 return
             }
 
+            if (isTyping.value) {
+                clearTimeout(timeoutId)
+            }
+
+            isTyping.value = true
+
             function typeNextCharacter() {
-                if (startIndex < text.length) {
+                if (startIndex < text.length && props.enabled) {
                     displayedText.value = text.slice(0, startIndex + 1)
                     startIndex++
                     timeoutId = setTimeout(typeNextCharacter, props.typingSpeed)
                 } else {
+                    isTyping.value = false
                     emit('complete')
                 }
             }
@@ -88,18 +99,28 @@ const TypeWriter = defineComponent({
             typeNextCharacter()
         }
 
-        watch(() => props.text, (newText) => {
+        watch(() => props.text, (newText, oldText) => {
+            if (newText === oldText) return
+
             if (timeoutId) {
                 clearTimeout(timeoutId)
             }
+
             displayedText.value = ''
-            typeText(newText)
+            isTyping.value = false
+
+            if (props.enabled) {
+                typeText(newText)
+            } else {
+                displayedText.value = newText
+            }
         }, { immediate: true })
 
         onBeforeUnmount(() => {
             if (timeoutId) {
                 clearTimeout(timeoutId)
             }
+            isTyping.value = false
         })
 
         return () => h('span', { class: 'inline' }, displayedText.value)
@@ -166,7 +187,7 @@ function onAfterGapComplete() {
 }
 
 async function selectAnswer(answer) {
-    if (!currentGap.value) return
+    if (!currentGap.value || isTypingLocked.value) return
 
     const isCorrect = currentGap.value.correct === answer
 
@@ -174,6 +195,7 @@ async function selectAnswer(answer) {
     attemptsCount.value[currentGap.value.id] = (attemptsCount.value[currentGap.value.id] || 0) + 1
 
     if (isCorrect) {
+        isTypingLocked.value = true
         selectedAnswers.value[currentGap.value.id] = answer
         await new Promise(resolve => setTimeout(resolve, 500))
 
@@ -186,6 +208,7 @@ async function selectAnswer(answer) {
         } else {
             isComplete.value = true
         }
+        isTypingLocked.value = false
     } else {
         wrongAttempts.value[currentGap.value.id] = answer
 
