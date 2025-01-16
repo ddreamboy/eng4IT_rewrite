@@ -21,8 +21,13 @@
                                 :data-word-id="word.id"
                                 class="h-24 p-4 rounded-lg text-center transition-all duration-300 relative flex items-center justify-center"
                                 :class="[
+                                    // Базовые стили
                                     themeStore.isDark ? 'bg-dark-secondary' : 'bg-light-secondary',
+                                    // Стили выделения при выборе
                                     selectedEnWord?.id === word.id ? 'ring-4 ring-green-500 animate-pulse' : '',
+                                    // Стили для неправильной пары
+                                    wrongPair.en === word.id ? 'ring-4 ring-red-500 animate-wrong' : '',
+                                    // Стили для завершенных пар
                                     completedPairs[word.id]
                                         ? [
                                             themeStore.isDark ? 'opacity-50 bg-green-800' : 'opacity-50 bg-green-200',
@@ -48,8 +53,13 @@
                                 :data-word-id="word.id"
                                 class="h-24 p-4 rounded-lg text-center transition-all duration-300 relative flex items-center justify-center"
                                 :class="[
+                                    // Базовые стили
                                     themeStore.isDark ? 'bg-dark-secondary' : 'bg-light-secondary',
+                                    // Стили выделения при выборе
                                     selectedRuWord?.id === word.id ? 'ring-4 ring-green-500 animate-pulse' : '',
+                                    // Стили для неправильной пары
+                                    wrongPair.ru === word.id ? 'ring-4 ring-red-500 animate-wrong' : '',
+                                    // Стили для завершенных пар
                                     completedPairs[word.id]
                                         ? [
                                             themeStore.isDark ? 'opacity-50 bg-green-800' : 'opacity-50 bg-green-200',
@@ -80,6 +90,7 @@ import axios from 'axios'
 const router = useRouter()
 const themeStore = useThemeStore()
 const authStore = useAuthStore()
+const wrongPair = ref({ en: null, ru: null })
 
 const currentBatch = ref(0)
 const completedPairs = ref({})
@@ -203,11 +214,23 @@ async function checkPair() {
             }
         }
     } else {
+        // Сохраняем неправильную пару для анимации
+        wrongPair.value = {
+            en: selectedEnWord.value.id,
+            ru: selectedRuWord.value.id
+        }
+
+        // Добавляем в статистику
         wrongAttempts.value.push({
             word_id: selectedEnWord.value.id,
             wrong_translation_id: selectedRuWord.value.id,
             timestamp: Date.now(),
         })
+
+        // Сбрасываем неправильную пару через время анимации
+        setTimeout(() => {
+            wrongPair.value = { en: null, ru: null }
+        }, 1000)
     }
 
     // Сбрасываем выбор
@@ -242,8 +265,8 @@ async function sendBatchStatistics() {
     try {
         const validationData = {
             task_id: `word_matching_batch_${currentBatch.value}`,
-            user_pairs: batchPairs,
-            correct_pairs: correctPairs,
+            pairs: batchPairs,
+            correct_pairs: correctPairs, // Добавляем correct_pairs
             wrong_attempts: batchWrongAttempts,
             time_spent: Math.floor((Date.now() - batchStartTime.value) / 1000)
         }
@@ -252,6 +275,7 @@ async function sendBatchStatistics() {
 
         const response = await axios.post(
             '/api/v1/tasks/generate/word-matching/validate',
+            validationData,
             {
                 headers: {
                     'Content-Type': 'application/json'
@@ -259,6 +283,7 @@ async function sendBatchStatistics() {
             }
         )
 
+        // Очищаем неправильные попытки для текущего батча
         wrongAttempts.value = wrongAttempts.value.filter(attempt =>
             !currentBatchWords.some(word => word.id === attempt.word_id)
         )
@@ -267,6 +292,7 @@ async function sendBatchStatistics() {
         return response.data
     } catch (error) {
         console.error('Error sending batch statistics:', error)
+        throw error
     }
 }
 
@@ -323,5 +349,26 @@ onMounted(async () => {
     50% {
         opacity: .7;
     }
+}
+
+@keyframes wrong-shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+        background-color: rgb(239 68 68 / 0.2);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.animate-wrong {
+    animation: wrong-shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 </style>

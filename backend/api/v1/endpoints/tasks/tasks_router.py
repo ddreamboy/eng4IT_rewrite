@@ -276,6 +276,10 @@ async def validate_word_matching(
         current_user_id: ID текущего пользователя
         session: Сессия базы данных
     """
+    logger.info(
+        f'Received validation request: task_id={task_id}, pairs={pairs}, correct_pairs={correct_pairs}'
+    )
+
     handler = TaskRegistry.get_handler('word_matching')
 
     if not handler:
@@ -305,6 +309,7 @@ async def validate_word_matching(
         }
 
     except Exception as e:
+        logger.error(f'Error validating answer: {str(e)}', exc_info=True)
         raise ValidationError(f'Error validating answer: {str(e)}')
 
 
