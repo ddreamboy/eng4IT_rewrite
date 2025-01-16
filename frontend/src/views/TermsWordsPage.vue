@@ -2,46 +2,36 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <!-- Переключатель вкладок -->
-    <div
-      class="flex mb-6 rounded-lg overflow-hidden"
-      :class="[themeStore.isDark ? 'bg-dark-primary' : 'bg-light-primary']"
-    >
-      <button
-        @click="activeTab = 'terms'"
-        class="flex-1 py-2 transition-colors"
-        :class="[
-          activeTab === 'terms'
-            ? [
-                themeStore.isDark
-                  ? 'bg-dark-accent text-dark-text'
-                  : 'bg-light-accent text-light-text',
-              ]
-            : [
-                themeStore.isDark
-                  ? 'text-dark-text/50 hover:bg-dark-primary/50'
-                  : 'text-light-text/50 hover:bg-light-primary/50',
-              ],
-        ]"
-      >
+    <div class="flex mb-6 rounded-lg overflow-hidden"
+      :class="[themeStore.isDark ? 'bg-dark-primary' : 'bg-light-primary']">
+      <button @click="activeTab = 'terms'" class="flex-1 py-2 transition-colors" :class="[
+        activeTab === 'terms'
+          ? [
+            themeStore.isDark
+              ? 'bg-dark-accent text-dark-text'
+              : 'bg-light-accent text-light-text',
+          ]
+          : [
+            themeStore.isDark
+              ? 'text-dark-text/50 hover:bg-dark-primary/50'
+              : 'text-light-text/50 hover:bg-light-primary/50',
+          ],
+      ]">
         Термины
       </button>
-      <button
-        @click="activeTab = 'words'"
-        class="flex-1 py-2 transition-colors"
-        :class="[
-          activeTab === 'words'
-            ? [
-                themeStore.isDark
-                  ? 'bg-dark-accent text-dark-text'
-                  : 'bg-light-accent text-light-text',
-              ]
-            : [
-                themeStore.isDark
-                  ? 'text-dark-text/50 hover:bg-dark-primary/50'
-                  : 'text-light-text/50 hover:bg-light-primary/50',
-              ],
-        ]"
-      >
+      <button @click="activeTab = 'words'" class="flex-1 py-2 transition-colors" :class="[
+        activeTab === 'words'
+          ? [
+            themeStore.isDark
+              ? 'bg-dark-accent text-dark-text'
+              : 'bg-light-accent text-light-text',
+          ]
+          : [
+            themeStore.isDark
+              ? 'text-dark-text/50 hover:bg-dark-primary/50'
+              : 'text-light-text/50 hover:bg-light-primary/50',
+          ],
+      ]">
         Слова
       </button>
     </div>
@@ -49,16 +39,12 @@
     <!-- Фильтры -->
     <div class="mb-6 flex space-x-4">
       <!-- Фильтр сложности -->
-      <select
-        v-model="currentFilters.difficulty"
-        @change="applyFilters"
-        class="px-4 py-2 rounded-lg transition-colors"
+      <select v-model="currentFilters.difficulty" @change="applyFilters" class="px-4 py-2 rounded-lg transition-colors"
         :class="[
           themeStore.isDark
             ? 'bg-dark-secondary text-dark-text border-dark-primary'
             : 'bg-light-secondary text-light-text border-light-primary',
-        ]"
-      >
+        ]">
         <option value="">Уровень</option>
         <option value="beginner">Начинающий</option>
         <option value="basic">Базовый</option>
@@ -68,91 +54,60 @@
 
       <!-- Поиск -->
       <div class="flex-grow relative">
-        <input
-          v-model="currentFilters.search"
-          @input="debouncedApplyFilters"
-          placeholder="Поиск..."
-          class="w-full px-4 py-2 rounded-lg transition-colors"
-          :class="[
+        <input v-model="currentFilters.search" @input="debouncedApplyFilters" placeholder="Поиск..."
+          class="w-full px-4 py-2 rounded-lg transition-colors" :class="[
             themeStore.isDark
               ? 'bg-dark-secondary text-dark-text border-dark-primary'
               : 'bg-light-secondary text-light-text border-light-primary',
-          ]"
-        />
+          ]" />
       </div>
 
       <!-- Сброс фильтров -->
-      <button
-        @click="resetFilters"
-        class="px-4 py-2 rounded-lg transition-colors"
-        :class="[
-          themeStore.isDark
-            ? 'bg-dark-accent text-dark-text hover:bg-dark-accent/90'
-            : 'bg-light-accent text-light-text hover:bg-light-accent/90',
-        ]"
-      >
+      <button @click="resetFilters" class="px-4 py-2 rounded-lg transition-colors" :class="[
+        themeStore.isDark
+          ? 'bg-dark-accent text-dark-text hover:bg-dark-accent/90'
+          : 'bg-light-accent text-light-text hover:bg-light-accent/90',
+      ]">
         Сбросить
       </button>
     </div>
 
     <!-- Лоадер -->
     <div v-if="loading" class="flex justify-center items-center py-12">
-      <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2"
-        :class="[themeStore.isDark ? 'border-dark-accent' : 'border-light-accent']"
-      ></div>
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2"
+        :class="[themeStore.isDark ? 'border-dark-accent' : 'border-light-accent']"></div>
     </div>
 
     <!-- Сетка с контентом -->
-    <div
-      v-else-if="displayItems.length"
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-    >
-      <TermCard
-        v-if="activeTab === 'terms'"
-        v-for="term in displayItems"
-        :key="term.id"
-        :term="term"
-      />
+    <div v-else-if="displayItems.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <TermCard v-if="activeTab === 'terms'" v-for="term in displayItems" :key="term.id" :term="term" />
       <WordCard v-else v-for="word in displayItems" :key="word.id" :word="word" />
     </div>
 
     <!-- Пустой стейт -->
-    <div
-      v-else
-      class="text-center py-12"
-      :class="[themeStore.isDark ? 'text-dark-text/50' : 'text-light-text/50']"
-    >
+    <div v-else class="text-center py-12" :class="[themeStore.isDark ? 'text-dark-text/50' : 'text-light-text/50']">
       Ничего не найдено
     </div>
 
     <!-- Пагинация -->
     <div v-if="displayItems.length" class="flex justify-center mt-8 space-x-4">
-      <button
-        @click="prevPage"
-        :disabled="currentPage === 1"
-        class="px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
-        :class="[
+      <button @click="prevPage" :disabled="currentPage === 1"
+        class="px-4 py-2 rounded-lg transition-colors disabled:opacity-50" :class="[
           themeStore.isDark
             ? 'bg-dark-accent text-dark-text hover:bg-dark-accent/90'
             : 'bg-light-accent text-light-text hover:bg-light-accent/90',
-        ]"
-      >
+        ]">
         Назад
       </button>
       <span class="px-4 py-2" :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
         Страница {{ currentPage }}
       </span>
-      <button
-        @click="nextPage"
-        :disabled="!hasMorePages"
-        class="px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
-        :class="[
+      <button @click="nextPage" :disabled="!hasMorePages"
+        class="px-4 py-2 rounded-lg transition-colors disabled:opacity-50" :class="[
           themeStore.isDark
             ? 'bg-dark-accent text-dark-text hover:bg-dark-accent/90'
             : 'bg-light-accent text-light-text hover:bg-light-accent/90',
-        ]"
-      >
+        ]">
         Вперед
       </button>
     </div>

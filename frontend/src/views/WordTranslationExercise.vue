@@ -31,7 +31,7 @@ const showCorrectAnswer = ref(false)
 
 // Показываем кнопку "Следующее задание" 
 const showNextButton = computed(
-    () => isCorrect.value || (attempts.value >= 2 && showCorrectAnswer.value)
+    () => (attempts.value >= 2 && showCorrectAnswer.value)
 )
 
 // Следим за изменением типа слова
@@ -126,7 +126,7 @@ async function checkAnswer() {
                 // Автоматически генерируем новое задание через задержку
                 setTimeout(() => {
                     generateExercise()
-                }, 1500)
+                }, 500)
             }
         }
     } catch (error) {
@@ -309,6 +309,6 @@ onMounted(async () => {
 }
 
 .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.1s ease-out;
 }
 </style>
