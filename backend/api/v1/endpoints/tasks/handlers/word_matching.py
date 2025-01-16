@@ -19,12 +19,12 @@ from backend.db.models import (
 logger = setup_logger(__name__)
 
 
-class WordMatchingTaskHandler(BaseTaskHandler):
-    """Обработчик заданий на сопоставление слов с переводами."""
+# backend/api/v1/endpoints/tasks/handlers/word_matching.py
 
+
+class WordMatchingTaskHandler(BaseTaskHandler):
     async def generate(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Генерация задания на сопоставление."""
-        logger.debug(f'Generating matching task with params: {params}')
         try:
             session: AsyncSession = params.get('session')
             user_id: int = params.get('user_id')
@@ -34,22 +34,21 @@ class WordMatchingTaskHandler(BaseTaskHandler):
             if not user_id:
                 raise ValidationError('User ID is required')
 
-            # Получаем 20 случайных слов
+            # Получаем 15 случайных слов
             result = await session.execute(
-                select(WordORM).order_by(func.random()).limit(20)
+                select(WordORM).order_by(func.random()).limit(15)
             )
             words = result.scalars().all()
 
-            if len(words) < 20:
+            if len(words) < 15:
                 raise ValidationError('Not enough words available')
 
-            # Создаем списки для перемешивания
+            # Создаем словари для слов и переводов
             original_pairs = [
                 {'id': word.id, 'text': word.word, 'translation': word.translation}
                 for word in words
             ]
 
-            # Создаем отдельные списки для слов и переводов
             originals = [
                 {'id': w['id'], 'text': w['text'].lower()} for w in original_pairs
             ]
@@ -58,12 +57,7 @@ class WordMatchingTaskHandler(BaseTaskHandler):
                 for w in original_pairs
             ]
 
-            # Перемешиваем оба списка
-            # random.shuffle(originals)
-            # random.shuffle(translations)
-
-            # Создаем задание
-            task = {
+            return {
                 'type': 'matching',
                 'content': {
                     'pairs_count': len(words),
@@ -76,33 +70,22 @@ class WordMatchingTaskHandler(BaseTaskHandler):
                 },
             }
 
-            logger.info('Generated matching task')
-            return task
-
         except Exception as e:
             logger.error(f'Error generating matching task: {e}', exc_info=True)
             raise ValidationError(f'Error generating matching task: {str(e)}')
 
     async def validate(self, answer: Dict[str, Any]) -> Dict[str, Any]:
         """Проверка ответа на задание."""
-        task_id: str = answer.get('task_id')  # Получаем task_id из answer
         session: AsyncSession = answer['session']
         user_id: int = answer['user_id']
         user_pairs: Dict[str, str] = answer.get('user_pairs', {})
         correct_pairs: Dict[str, str] = answer.get('correct_pairs', {})
         wrong_attempts: List[Dict[str, Any]] = answer.get('wrong_attempts', [])
         time_spent: int = answer.get('time_spent', 0)
-        level: int = answer.get('level', 1)
-        lives: int = answer.get('lives', 0)
-        current_score: int = answer.get('score', 0)
-        total_multiplier: float = answer.get('multiplier', 1.0)
-        
-        logger.debug(f'Validating matching task with answer: {answer}')
 
         if not user_pairs or not correct_pairs:
             raise ValidationError('Invalid answer format')
 
-        # Подсчет правильных и неправильных ответов
         correct_count = 0
         total_pairs = len(correct_pairs)
         words_stats = {}
@@ -110,11 +93,9 @@ class WordMatchingTaskHandler(BaseTaskHandler):
         # Анализ попыток сопоставления
         for word_id, translation in user_pairs.items():
             is_correct = correct_pairs.get(word_id) == translation.lower()
-
             if is_correct:
                 correct_count += 1
 
-            # Статистика по каждому слову
             words_stats[word_id] = {
                 'attempts': 1,
                 'wrong_attempts': 0,
@@ -130,13 +111,6 @@ class WordMatchingTaskHandler(BaseTaskHandler):
 
         # Расчет точности
         accuracy = correct_count / total_pairs if total_pairs > 0 else 0
-        is_successful = accuracy >= 0.5 and lives > 0
-
-        # Базовый счет
-        base_score = correct_count * 10  # 10 очков за каждую правильную пару
-
-        # Финальный счет с учетом множителей
-        final_score = base_score * total_multiplier
 
         # Создаем записи о попытках для каждого слова
         for word_id, translation in user_pairs.items():
@@ -186,13 +160,11 @@ class WordMatchingTaskHandler(BaseTaskHandler):
 
         await session.commit()
 
-        # Возвращаем словарь с требуемыми ключами
         return {
-            'is_successful': is_successful,
-            'base_score':  round(base_score, 1),
-            'final_score':  round(final_score, 1),
-            'correct_pairs': correct_count,
-            'wrong_pairs': len(wrong_attempts),
-            'accuracy': round(accuracy, 1),
-            'words_stats': words_stats,
+            'statistics': {
+                'correct_pairs': correct_count,
+                'wrong_pairs': len(wrong_attempts),
+                'accuracy': round(accuracy, 2),
+                'words_stats': words_stats,
+            }
         }

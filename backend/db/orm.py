@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.db.database import async_engine, get_session
 
-from .models import Base, DifficultyLevel, TermORM, WordORM, WordType
+from .models import Base, DifficultyLevel, ItemType, TermORM, UserWordStatus, WordORM, WordType
 
 
 async def get_term_by_name(session: AsyncSession, term: str) -> Optional[TermORM]:
@@ -117,3 +117,51 @@ async def get_random_items() -> tuple[list[TermORM], list[WordORM]]:
         terms = await get_random_terms(session)
         words = await get_random_words(session)
         return terms, words
+
+async def save_word_statistics(
+    session: AsyncSession, 
+    user_id: int, 
+    word_id: int, 
+    is_correct: bool
+):
+    """
+    Сохраняет статистику использования слова пользователем
+    
+    Args:
+        session: AsyncSession - сессия БД
+        user_id: int - ID пользователя
+        word_id: int - ID слова
+        is_correct: bool - была ли попытка успешной
+    """
+    try:
+        result = await session.execute(
+            select(UserWordStatus).where(
+                UserWordStatus.user_id == user_id,
+                UserWordStatus.item_id == word_id,
+                UserWordStatus.item_type == ItemType.WORD,
+            )
+        )
+        word_status = result.scalar_one_or_none()
+
+        if word_status:
+            # Обновляем существующий статус
+            if is_correct:
+                word_status.mastery_level = min(100, word_status.mastery_level + 10)
+                word_status.ease_factor = min(3.0, word_status.ease_factor + 0.1)
+            else:
+                word_status.ease_factor = max(1.3, word_status.ease_factor - 0.2)
+        else:
+            # Создаем новый статус
+            word_status = UserWordStatus(
+                user_id=user_id,
+                item_id=word_id,
+                item_type=ItemType.WORD,
+                mastery_level=10.0 if is_correct else 0.0,
+                ease_factor=2.5,
+            )
+            session.add(word_status)
+
+        await session.commit()
+    except Exception as e:
+        await session.rollback()
+        raise e

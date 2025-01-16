@@ -11,7 +11,14 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from logger import setup_logger
 
-from backend.api.v1.endpoints import audio, auth, tasks, terms, users, words
+from backend.api.v1.endpoints import (
+    audio,
+    auth,
+    tasks,
+    terms,
+    users,
+    words,
+)
 from backend.api.v1.endpoints.tasks.handlers import register_handlers
 from backend.core.config import settings
 from backend.core.exceptions import AuthError, NotFoundError, ValidationError
@@ -187,7 +194,6 @@ app.include_router(
 app.include_router(
     users.router, prefix=f'{settings.API_V1_STR}/users', tags=['users']
 )
-
 
 # Health check
 @app.get('/health', tags=['health'])

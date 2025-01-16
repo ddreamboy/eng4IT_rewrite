@@ -56,11 +56,16 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
   const authStore = useAuthStore()
-
+  
+  // Проверяем статус авторизации
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    return { name: 'auth' }
+    // Сохраняем URL для редиректа после авторизации
+    return { 
+      name: 'auth',
+      query: { redirect: to.fullPath }
+    }
   }
 
   if (to.meta.requiresGuest && authStore.isAuthenticated) {
