@@ -153,7 +153,7 @@ async function sendMessage(processedMessage) {
 
     // Сбрасываем текущее сообщение
     currentUserMessage.value = null
-
+    await new Promise(resolve => setTimeout(resolve, 500)) // Добавляем паузу
     // Находим и показываем следующее сообщение
     const currentIndex = messages.value.length
     if (exercise.value.content.messages[currentIndex]) {
