@@ -1,13 +1,18 @@
 // src/components/AutoResizingText.vue
 <template>
-    <div ref="container" class="overflow-hidden w-full h-full flex items-center justify-center">
+    <div ref="container" class="overflow-hidden flex items-center justify-center" :class="[
+        containerClass,
+        fullWidth ? 'w-full' : '',
+        minHeight ? `min-h-[${minHeight}px]` : ''
+    ]">
         <div ref="textElement"
-            class="text-center transform-origin-center transition-transform duration-200 break-words whitespace-pre-wrap px-2"
+            class="text-center transform-origin-center transition-transform duration-200 break-words whitespace-pre-wrap"
             :style="{
                 transform: `scale(${scale})`,
                 maxWidth: '100%',
                 wordBreak: 'break-word',
-                fontSize: `${fontSize}px`
+                fontSize: `${fontSize}px`,
+                lineHeight: lineHeight
             }" :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
             {{ text }}
         </div>
@@ -31,6 +36,23 @@ const props = defineProps({
         type: Number,
         default: 18,
     },
+    // Новые пропсы для гибкости
+    fullWidth: {
+        type: Boolean,
+        default: false,
+    },
+    minHeight: {
+        type: Number,
+        default: null,
+    },
+    containerClass: {
+        type: String,
+        default: '',
+    },
+    lineHeight: {
+        type: String,
+        default: '1.5',
+    }
 })
 
 const themeStore = useThemeStore()

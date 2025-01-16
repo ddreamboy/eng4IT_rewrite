@@ -11,8 +11,8 @@
                 <div class="p-4 rounded-lg" :class="[themeStore.isDark ? 'bg-dark-primary/50' : 'bg-light-primary/50']">
                     <p class="text-base" :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
                         <!-- Текст до gap -->
-                        <TypeWriter :text="textBeforeGap" :typing-speed="10" :enabled="!isTypingLocked"
-                            новый проп @complete="onTypingComplete" />
+                        <TypeWriter :text="textBeforeGap" :typing-speed="10" :enabled="!isTypingLocked" новый проп
+                            @complete="onTypingComplete" />
 
                         <!-- Текущий gap -->
                         <span v-if="currentGapIndex !== null" :class="[
