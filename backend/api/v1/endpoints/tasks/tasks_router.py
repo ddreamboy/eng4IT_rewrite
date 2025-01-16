@@ -262,9 +262,6 @@ async def validate_word_matching(
     correct_pairs: Dict[str, str] = Body(..., description='Matched word pairs'),
     wrong_attempts: List = Body(..., description='Wrong match attempts'),
     time_spent: int = Body(..., description='Time spent in seconds'),
-    level: int = Body(..., description='Current game level'),
-    lives: int = Body(..., description='Remaining lives'),
-    current_score: int = Body(..., description='Current score'),
     current_user_id: int = Depends(get_current_user_id),
     session: AsyncSession = Depends(get_session),
 ):
@@ -276,39 +273,15 @@ async def validate_word_matching(
         pairs: Сопоставленные пары слов
         wrong_attempts: Список неправильных попыток сопоставления
         time_spent: Затраченное время в секундах
-        level: Текущий уровень игры
-        lives: Оставшиеся жизни
-        current_score: Текущий счет
         current_user_id: ID текущего пользователя
         session: Сессия базы данных
     """
     handler = TaskRegistry.get_handler('word_matching')
 
-    logger.debug(f'Task ID: {task_id}')
-    logger.debug(f'Pairs: {pairs}')
-    logger.debug(f'Correct: {correct_pairs}')
-    logger.debug(f'Wrong attempts: {wrong_attempts}')
-    logger.debug(f'Time spent: {time_spent}')
-    logger.debug(f'Level: {level}')
-    logger.debug(f'Lives: {lives}')
-    logger.debug(f'Current score: {current_score}')
-
     if not handler:
         raise ValidationError('Word matching task handler not found')
 
     try:
-        # Вычисляем множители для счета
-        time_multiplier = calculate_time_multiplier(time_spent, len(pairs))
-        level_multiplier = 1 + (
-            level * 0.2
-        )  # Увеличиваем множитель на 20% с каждым уровнем
-        accuracy_multiplier = calculate_accuracy_multiplier(
-            len(wrong_attempts), len(pairs)
-        )
-
-        # Общий множитель
-        total_multiplier = time_multiplier * level_multiplier * accuracy_multiplier
-
         result = await handler.validate(
             {
                 'session': session,
@@ -318,23 +291,10 @@ async def validate_word_matching(
                 'wrong_attempts': wrong_attempts,
                 'time_spent': time_spent,
                 'task_id': task_id,
-                'level': level,
-                'lives': lives,
-                'score': current_score,
-                'multiplier': total_multiplier,
             }
         )
 
         return {
-            'is_successful': result['is_successful'],
-            'score_data': {
-                'base_score': result['base_score'],
-                'time_multiplier': time_multiplier,
-                'level_multiplier': level_multiplier,
-                'accuracy_multiplier': accuracy_multiplier,
-                'total_multiplier': total_multiplier,
-                'final_score': result['final_score'],
-            },
             'statistics': {
                 'correct_pairs': result['correct_pairs'],
                 'wrong_pairs': result['wrong_pairs'],
@@ -346,35 +306,6 @@ async def validate_word_matching(
 
     except Exception as e:
         raise ValidationError(f'Error validating answer: {str(e)}')
-
-
-def calculate_time_multiplier(time_spent: int, pairs_count: int) -> float:
-    """Вычисляет множитель в зависимости от затраченного времени."""
-    # Базовое время: 5 секунд на пару слов
-    base_time = pairs_count * 5
-
-    if time_spent <= base_time:
-        return 1.5  # Максимальный множитель
-    elif time_spent <= base_time * 1.5:
-        return 1.25
-    elif time_spent <= base_time * 2:
-        return 1.0
-    else:
-        return 0.75
-
-
-def calculate_accuracy_multiplier(wrong_attempts: int, total_pairs: int) -> float:
-    """Вычисляет множитель в зависимости от количества ошибок."""
-    error_rate = wrong_attempts / total_pairs
-
-    if error_rate == 0:
-        return 1.5  # Идеальное выполнение
-    elif error_rate <= 0.2:
-        return 1.25
-    elif error_rate <= 0.4:
-        return 1.0
-    else:
-        return 0.75
 
 
 @router.post(

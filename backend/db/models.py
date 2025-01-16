@@ -33,7 +33,7 @@ class DifficultyLevel(enum.Enum):
 
 class TaskType(enum.Enum):
     WORD_TRANSLATION = 'WORD_TRANSLATION'  # Перевод слова
-    TERM_DEFINITION = 'TERM_DEFINITION' # Выбор определения
+    TERM_DEFINITION = 'TERM_DEFINITION'  # Выбор определения
     CONTEXT = 'CONTEXT'  # Заполнение пропуска в контексте
     WORD_MATCHING = 'WORD_MATCHING'  # Сопоставление слов/определений
     WRITE = 'WRITE'  # Написание слова по определению
@@ -322,7 +322,7 @@ class LearningAttempt(Base):
         primaryjoin='and_(LearningAttempt.item_id == TermORM.id, '
         'LearningAttempt.item_type == "term")',
         back_populates='learning_attempts',
-        overlaps="learning_attempts,word"
+        overlaps='learning_attempts,word',
     )
     word = relationship(
         'WordORM',
@@ -330,7 +330,7 @@ class LearningAttempt(Base):
         primaryjoin='and_(LearningAttempt.item_id == WordORM.id, '
         'LearningAttempt.item_type == "word")',
         back_populates='learning_attempts',
-        overlaps="learning_attempts,term"
+        overlaps='learning_attempts,term',
     )
 
     timing = relationship('TaskTiming', uselist=False, back_populates='attempt')
