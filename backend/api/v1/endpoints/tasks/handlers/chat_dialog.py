@@ -32,7 +32,7 @@ class ChatDialogHandler(BaseTaskHandler):
         try:
             session: AsyncSession = params.get('session')
             user_id: int = params.get('user_id')
-            messages_count: int = params.get('messages_count', 3)
+            messages_count: int = params.get('params', {}).get('messages_count', 3)
             specific_terms: list = params.get('params', {}).get('terms', [])
             specific_words: list = params.get('params', {}).get('words', [])
             categories: list = params.get('params', {}).get('categories', [])
