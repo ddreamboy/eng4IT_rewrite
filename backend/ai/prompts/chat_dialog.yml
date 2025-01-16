@@ -22,43 +22,11 @@ chat_dialog: |
   9. Each gap should have 4 options where one is correct
   10. Provide translations for context and all options
   11. Calculate difficulty metrics
-  
-  Output format should match the following JSON structure with double curly braces:
-  ```json
-  {{
-    "context": "string - brief description of work situation",
-    "translation": "string - translation of context",
-    "messages": [
-      {{
-        "author": "string - sender name",
-        "text": "string - message with {{gap1}} placeholders",
-        "translation": "string - message translation",
-        "gaps": [
-          {{
-            "id": "unique_number",
-            "correct": "string - correct answer",
-            "correct_translation": "string - translation of correct answer",
-            "options": [
-              {{
-                "word": "string - option text",
-                "translation": "string - option translation"
-              }}
-            ]
-          }}
-        ]
-      }}
-    ],
-    "metrics": {{
-      "technical_terms_count": "number - count of technical terms",
-      "complex_words_count": "number - count of complex words",
-      "difficulty_score": "number between 0 and 1"
-    }}
-  }}
-  ```
+  12. The dialogue must be complete and logical
 
     Example input:
   {{
-    "messages_count": 3,
+    "messages_count": 5,
     "terms": ["deployment", "continuous integration", "API"],
     "words": ["implement", "schedule", "update"],
     "difficulty": "intermediate"

@@ -32,10 +32,12 @@ class ChatDialogHandler(BaseTaskHandler):
         try:
             session: AsyncSession = params.get('session')
             user_id: int = params.get('user_id')
-            messages_count: int = params.get('messages_count', 3)
-            specific_terms: list = params.get('specific_terms', [])
-            specific_words: list = params.get('specific_words', [])
-            categories: list = params.get('categories', [])
+            messages_count: int = params.get('params', {}).get('messages_count', 3)
+            specific_terms: list = params.get('params', {}).get('terms', [])
+            specific_words: list = params.get('params', {}).get('words', [])
+            categories: list = params.get('params', {}).get('categories', [])
+
+            logger.debug(f'Terms: {specific_terms}, words: {specific_words}')
 
             if not session:
                 raise ValidationError('Session is required')
@@ -71,6 +73,132 @@ class ChatDialogHandler(BaseTaskHandler):
 
             # Генерируем диалог через AI
             result = await self.operation.execute(ai_params)
+
+            # result = {
+            #     'task_id': 'chat_dialog_2214134558912',
+            #     'status': 'completed',
+            #     'result': {
+            #         'type': 'chat_dialog',
+            #         'content': {
+            #             'context': 'Planning the deployment of a new feature and addressing potential performance issues.',
+            #             'translation': 'Планирование развертывания новой функции и решение потенциальных проблем производительности.',
+            #             'messages': [
+            #                 {
+            #                     'author': 'Sarah (Team Lead)',
+            #                     'text': "Hey! We're ready to deploy the new user profile feature.  However, we need to ensure we've addressed potential performance bottlenecks.  The initial load testing showed some concerns with the database.",
+            #                     'translation': 'Привет! Мы готовы развернуть новую функцию профиля пользователя. Однако, нам нужно убедиться, что мы решили потенциальные узкие места в производительности. Начальное нагрузочное тестирование показало некоторые проблемы с базой данных.',
+            #                     'is_user_message': False,
+            #                 },
+            #                 {
+            #                     'author': 'You',
+            #                     'text': "Okay, I'll take the {gap1} to implement the necessary {gap2} strategies before we {gap3} the update.  I'll also double-check the efficiency of our current HTTP Request handling.",
+            #                     'translation': 'Хорошо, я возьму на себя {gap1} по внедрению необходимых стратегий {gap2} перед тем, как мы {gap3} обновление. Я также повторно проверю эффективность обработки наших текущих HTTP-запросов.',
+            #                     'is_user_message': True,
+            #                     'gaps': [
+            #                         {
+            #                             'id': 1,
+            #                             'correct': 'initiative',
+            #                             'correct_translation': 'инициативу',
+            #                             'options': [
+            #                                 {
+            #                                     'word': 'initiative',
+            #                                     'translation': 'инициативу',
+            #                                 },
+            #                                 {
+            #                                     'word': 'to make a decision',
+            #                                     'translation': 'принять решение',
+            #                                 },
+            #                                 {
+            #                                     'word': 'execute',
+            #                                     'translation': 'выполнить',
+            #                                 },
+            #                                 {
+            #                                     'word': 'Deployment',
+            #                                     'translation': 'Развертывание',
+            #                                 },
+            #                             ],
+            #                         },
+            #                         {
+            #                             'id': 2,
+            #                             'correct': 'Feature Scaling',
+            #                             'correct_translation': 'масштабирования функций',
+            #                             'options': [
+            #                                 {
+            #                                     'word': 'Feature Scaling',
+            #                                     'translation': 'масштабирования функций',
+            #                                 },
+            #                                 {
+            #                                     'word': 'Deployment',
+            #                                     'translation': 'Развертывание',
+            #                                 },
+            #                                 {
+            #                                     'word': 'HTTP Request',
+            #                                     'translation': 'HTTP-запрос',
+            #                                 },
+            #                                 {
+            #                                     'word': 'to make a decision',
+            #                                     'translation': 'принять решение',
+            #                                 },
+            #                             ],
+            #                         },
+            #                         {
+            #                             'id': 3,
+            #                             'correct': 'execute',
+            #                             'correct_translation': 'выполним',
+            #                             'options': [
+            #                                 {
+            #                                     'word': 'execute',
+            #                                     'translation': 'выполним',
+            #                                 },
+            #                                 {
+            #                                     'word': 'Deployment',
+            #                                     'translation': 'Развертывание',
+            #                                 },
+            #                                 {
+            #                                     'word': 'initiative',
+            #                                     'translation': 'инициативу',
+            #                                 },
+            #                                 {
+            #                                     'word': 'to make a decision',
+            #                                     'translation': 'принять решение',
+            #                                 },
+            #                             ],
+            #                         },
+            #                     ],
+            #                 },
+            #                 {
+            #                     'author': 'Sarah (Team Lead)',
+            #                     'text': "Sounds good. Let's aim for a deployment by the end of the week. Keep me updated on your progress.",
+            #                     'translation': 'Звучит хорошо. Давайте стремиться к развертыванию к концу недели. Держите меня в курсе вашего прогресса.',
+            #                     'is_user_message': False,
+            #                 },
+            #             ],
+            #             'metrics': {
+            #                 'technical_terms_count': 4,
+            #                 'complex_words_count': 3,
+            #                 'difficulty_score': 0.6,
+            #             },
+            #         },
+            #         'metadata': {
+            #             'used_terms': [
+            #                 'Deployment',
+            #                 'Feature Scaling',
+            #                 'HTTP Request',
+            #             ],
+            #             'used_words': [
+            #                 'initiative',
+            #                 'to make a decision',
+            #                 'execute',
+            #             ],
+            #             'difficulty_metrics': {
+            #                 'technical_terms_count': 4,
+            #                 'complex_words_count': 3,
+            #                 'difficulty_score': 0.6,
+            #             },
+            #         },
+            #     },
+            #     'error': None,
+            # }
 
             # Создаем задание
             task = {

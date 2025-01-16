@@ -6,7 +6,6 @@ from sqlalchemy.future import select
 
 from backend.db.models import (  # Добавлены импорты
     ItemType,
-    UserORM,
     UserWordStatus,
     WordORM,
 )
@@ -30,6 +29,24 @@ async def get_words(
     return words
 
 
+@router.get('/all')
+async def get_all_words(db: AsyncSession = Depends(get_session)):
+    query = select(WordORM)
+    result = await db.execute(query)
+    words = result.scalars().all()
+    response = [
+        {
+            'id': word.id,
+            'word': word.word,
+            'translation': word.translation,
+            'word_type': word.word_type,
+            'difficulty': word.difficulty,
+        }
+        for word in words
+    ]
+    return response
+
+
 @router.get('/favorite/{word_id}')
 async def get_word_favorite_status(
     word_id: int,
@@ -51,7 +68,7 @@ async def add_word_to_favorites(
     word_id: int,
     state: bool,
     db: AsyncSession = Depends(get_session),
-    user_id: int= Depends(get_current_user_id),
+    user_id: int = Depends(get_current_user_id),
 ):
     # Проверка существования слова
     word = await db.get(WordORM, word_id)
