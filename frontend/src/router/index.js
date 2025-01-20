@@ -53,6 +53,12 @@ const router = createRouter({
       component: () => import('@/views/ChatDialogExercise.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/exercise/email-structure',
+      name: 'emailStructure',
+      component: () => import('@/views/EmailStructureExercise.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

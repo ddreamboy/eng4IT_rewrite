@@ -145,7 +145,7 @@ const taskRoutes = {
   word_matching: 'wordMatching',
   chat_dialog: 'chatDialog',
   word_translation: 'wordTranslation',
-  // 'email_structure': 'emailStructure'
+  email_structure: 'emailStructure'
 }
 
 // Маппинг иконок для разных типов заданий
