@@ -290,6 +290,46 @@ class TaskContext(Base):
     attempts = relationship('LearningAttempt', back_populates='context')
 
 
+class ChatDialogGenerated(Base):
+    """Модель для хранения сгенерированных заданий с диалогами."""
+
+    __tablename__ = 'chat_dialog_generated'
+
+    id = Column(Integer, primary_key=True)
+    words = Column(JSON, nullable=False)  # List[str]
+    terms = Column(JSON, nullable=False)  # List[str]
+    difficulty = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    response = Column(JSON, nullable=False)  # Полный ответ от модели
+
+    __table_args__ = (
+        # Индекс для поиска по комбинации слов и терминов
+        Index('idx_chat_dialog_words_terms', 'words', 'terms'),
+    )
+
+
+class EmailStructureGenerated(Base):
+    """Модель для хранения сгенерированных заданий по структуре email."""
+
+    __tablename__ = 'email_structure_generated'
+
+    id = Column(Integer, primary_key=True)
+    words = Column(JSON, nullable=False)  # List[str]
+    terms = Column(JSON, nullable=False)  # List[str]
+    style = Column(String, nullable=False)
+    topic = Column(String, nullable=False)
+    difficulty = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    response = Column(JSON, nullable=False)  # Полный ответ от модели
+
+    __table_args__ = (
+        # Индекс для поиска по комбинации слов и терминов
+        Index('idx_email_structure_words_terms', 'words', 'terms'),
+        # Индекс для поиска по стилю и теме
+        Index('idx_email_structure_style_topic', 'style', 'topic'),
+    )
+
+
 class LearningAttempt(Base):
     """Модель для хранения всех попыток изучения"""
 

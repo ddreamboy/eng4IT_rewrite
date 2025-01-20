@@ -1,10 +1,11 @@
 # backend/api/v1/endpoints/tasks/handlers/email_structure.py
 
+import json
 import random
 from typing import Any, Dict, List
 
 from logger import setup_logger
-from sqlalchemy import func, select
+from sqlalchemy import String, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.ai.operations import EmailStructure  # Нужно будет создать
@@ -12,6 +13,7 @@ from backend.api.v1.endpoints.tasks.base import BaseTaskHandler
 from backend.core.exceptions import ValidationError
 from backend.db.models import (
     DifficultyLevel,
+    EmailStructureGenerated,
     ItemType,
     LearningAttempt,
     TaskType,
@@ -76,6 +78,90 @@ class EmailStructureHandler(BaseTaskHandler):
         # Если score в среднем диапазоне, используем current_level
         return self.DIFFICULTY_MAPPING.get(user.current_level, 'intermediate')
 
+    async def _find_existing_task(
+        self,
+        session: AsyncSession,
+        words: List[str],
+        terms: List[str],
+        style: str,
+        topic: str,
+        difficulty: str,
+    ) -> Dict[str, Any] | None:
+        """Поиск существующего задания с такими же параметрами."""
+        try:
+            # Сортируем списки для обеспечения постоянного порядка
+            sorted_words = sorted(words) if words else []
+            sorted_terms = sorted(terms) if terms else []
+
+            # Ищем задание с такими же параметрами, берем самое свежее
+            query = (
+                select(EmailStructureGenerated)
+                .where(
+                    EmailStructureGenerated.words.cast(String)
+                    == json.dumps(sorted_words),
+                    EmailStructureGenerated.terms.cast(String)
+                    == json.dumps(sorted_terms),
+                    EmailStructureGenerated.style == style,
+                    EmailStructureGenerated.topic == topic,
+                    EmailStructureGenerated.difficulty == difficulty,
+                )
+                .order_by(EmailStructureGenerated.created_at.desc())
+                .limit(1)
+            )
+
+            result = await session.execute(query)
+            existing_task = result.scalar_one_or_none()
+
+            if existing_task:
+                logger.info(
+                    f'Found existing email structure task with ID: {existing_task.id}'
+                )
+                return existing_task.response
+
+            return None
+
+        except Exception as e:
+            logger.error(
+                f'Error finding existing email structure task: {e}', exc_info=True
+            )
+            return None
+
+    async def _save_generated_task(
+        self,
+        session: AsyncSession,
+        words: List[str],
+        terms: List[str],
+        style: str,
+        topic: str,
+        difficulty: str,
+        response: Dict[str, Any],
+    ) -> None:
+        """Сохранение сгенерированного задания в БД."""
+        try:
+            # Сортируем списки для сохранения
+            sorted_words = sorted(words) if words else []
+            sorted_terms = sorted(terms) if terms else []
+
+            # Создаем новую запись
+            new_task = EmailStructureGenerated(
+                words=sorted_words,
+                terms=sorted_terms,
+                style=style,
+                topic=topic,
+                difficulty=difficulty,
+                response=response,
+            )
+
+            session.add(new_task)
+            await session.commit()
+
+            logger.info('Created new chat dialog task, waiting for commit')
+
+        except Exception as e:
+            logger.error(f'Error saving email structure task: {e}', exc_info=True)
+            await session.rollback()
+            raise
+
     async def generate(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Генерация задания на составление email."""
         logger.debug(f'Generating email structure task with params: {params}')
@@ -88,24 +174,44 @@ class EmailStructureHandler(BaseTaskHandler):
             if not user_id:
                 raise ValidationError('User ID is required')
 
-            # Получаем или генерируем параметры
-            style = params.get('style', random.choice(self.STYLES))
-            topic = params.get('topic', random.choice(self.TOPICS))
+            # Получаем параметры из params
+            params_dict = params.get('params', {})
 
-            # Определяем сложность на основе уровня пользователя если не указана
-            difficulty = params.get(
+            # Получаем параметры
+            style = params_dict.get('style') or random.choice(self.STYLES)
+            topic = params_dict.get('topic') or random.choice(self.TOPICS)
+            difficulty = params_dict.get(
                 'difficulty'
             ) or await self._get_user_difficulty(session, user_id)
 
-            # Получаем термины и слова
-            terms = params.get('params', {}).get(
-                'terms'
-            ) or await self._get_random_terms(session, count=2)
-            words = params.get('params', {}).get(
-                'words'
-            ) or await self._get_random_words(session, count=3)
+            # Получаем термины и слова ТОЛЬКО если они не указаны
+            terms = params_dict.get('terms', [])
+            words = params_dict.get('words', [])
 
-            # Готовим параметры для AI
+            # Если оба списка пустые, только тогда генерируем случайные
+            if not terms and not words:
+                terms = await self._get_random_terms(session, count=2)
+                words = await self._get_random_words(session, count=3)
+
+            logger.info(
+                f'Using parameters: style={style}, topic={topic}, difficulty={difficulty}, '
+                f'terms={terms}, words={words}'
+            )
+
+            # Проверяем есть ли уже сгенерированное задание
+            existing_task = await self._find_existing_task(
+                session, words, terms, style, topic, difficulty
+            )
+
+            if existing_task:
+                logger.info('Using existing email structure task')
+                return {
+                    'type': 'email_structure',
+                    'content': existing_task.get('content'),
+                    'metadata': existing_task.get('metadata'),
+                }
+
+            # Если существующего задания нет, генерируем новое
             ai_params = {
                 'style': style,
                 'difficulty': difficulty,
@@ -114,7 +220,6 @@ class EmailStructureHandler(BaseTaskHandler):
                 'words': words,
             }
 
-            # Генерируем задание через AI
             result = await self.operation.execute(ai_params)
 
             # Создаем задание
@@ -130,7 +235,12 @@ class EmailStructureHandler(BaseTaskHandler):
                 },
             }
 
-            logger.info('Generated email structure task')
+            # Сохраняем сгенерированное задание
+            await self._save_generated_task(
+                session, words, terms, style, topic, difficulty, task
+            )
+
+            logger.info('Generated and saved new email structure task')
             return task
 
         except Exception as e:
