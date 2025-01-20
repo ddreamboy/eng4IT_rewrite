@@ -46,10 +46,10 @@
             : 'bg-light-secondary text-light-text border-light-primary',
         ]">
         <option value="">Уровень</option>
-        <option value="beginner">Начинающий</option>
-        <option value="basic">Базовый</option>
-        <option value="intermediate">Средний</option>
-        <option value="advanced">Сложный</option>
+        <!-- <option value="BEGINNER">Начинающий</option> -->
+        <option value="BASIC">Базовый</option>
+        <option value="INTERMEDIATE">Средний</option>
+        <option value="ADVANCED">Сложный</option>
       </select>
 
       <!-- Поиск -->
@@ -61,6 +61,20 @@
               : 'bg-light-secondary text-light-text border-light-primary',
           ]" />
       </div>
+
+      <!-- Переключатель избранного -->
+      <button @click="currentFilters.showFavorites = !currentFilters.showFavorites; fetchCurrentItems()"
+        class="px-4 py-2 rounded-lg transition-colors" :class="[
+          currentFilters.showFavorites
+            ? themeStore.isDark
+              ? 'bg-dark-accent text-dark-text'
+              : 'bg-light-accent text-light-text'
+            : themeStore.isDark
+              ? 'bg-dark-secondary text-dark-text/50'
+              : 'bg-light-secondary text-light-text/50'
+        ]">
+        Избранное
+      </button>
 
       <!-- Сброс фильтров -->
       <button @click="resetFilters" class="px-4 py-2 rounded-lg transition-colors" :class="[
@@ -136,6 +150,7 @@ const currentPage = ref(1)
 const currentFilters = ref({
   difficulty: '',
   search: '',
+  showFavorites: false
 })
 
 // Состояние загрузки
@@ -143,16 +158,16 @@ const loading = ref(false)
 
 // Вычисляемые свойства
 const displayItems = computed(() => {
-  // Добавляем проверку на пустые данные
-  const items = activeTab.value === 'terms' ? termsStore.terms : wordsStore.words
-  console.log('Display items:', items) // Для отладки
-  return items || []
+  if (activeTab.value === 'terms') {
+    return termsStore.terms || []
+  } else {
+    return wordsStore.words || []
+  }
 })
 
 const hasMorePages = computed(() => {
   const store = activeTab.value === 'terms' ? termsStore : wordsStore
-  // Предполагаем, что если получено полное количество элементов, есть еще страницы
-  return displayItems.value.length === store.pagination.pageSize
+  return currentPage.value < store.pagination.totalPages
 })
 
 // Методы навигации
@@ -184,6 +199,7 @@ function resetFilters() {
   currentFilters.value = {
     difficulty: '',
     search: '',
+    showFavorites: false
   }
   currentPage.value = 1
   fetchCurrentItems()
@@ -194,18 +210,24 @@ async function fetchCurrentItems() {
   loading.value = true
 
   try {
+    const params = {
+      page: currentPage.value,
+      page_size: 20,
+      difficulty: currentFilters.value.difficulty || undefined,
+      search: currentFilters.value.search || undefined,
+      favorites_only: currentFilters.value.showFavorites
+    }
+
+    console.log('Fetching with params:', params) // Для отладки
+
     if (activeTab.value === 'terms') {
-      termsStore.filters.difficulty = currentFilters.value.difficulty
-      termsStore.filters.search = currentFilters.value.search
-      termsStore.pagination.page = currentPage.value
-      await termsStore.fetchTerms()
-      await termsStore.fetchFavorites() // Добавляем загрузку избранных
+      await termsStore.fetchTerms(params)
+      console.log('Terms after fetch:', termsStore.terms) // Для отладки
+      await termsStore.fetchFavorites()
     } else {
-      wordsStore.filters.difficulty = currentFilters.value.difficulty
-      wordsStore.filters.search = currentFilters.value.search
-      wordsStore.pagination.page = currentPage.value
-      await wordsStore.fetchWords()
-      await wordsStore.fetchFavorites() // Добавляем загрузку избранных
+      await wordsStore.fetchWords(params)
+      console.log('Words after fetch:', wordsStore.words) // Для отладки
+      await wordsStore.fetchFavorites()
     }
   } catch (error) {
     console.error('Ошибка загрузки:', error)
@@ -220,6 +242,7 @@ watch(activeTab, () => {
   currentFilters.value = {
     difficulty: '',
     search: '',
+    showFavorites: false
   }
   fetchCurrentItems()
 })

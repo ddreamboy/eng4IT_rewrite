@@ -1,6 +1,10 @@
+from math import ceil
+from typing import Optional
+
 from api.deps import get_current_user_id, get_session
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from logger import setup_logger
+from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -17,16 +21,60 @@ router = APIRouter()
 
 @router.get('/')
 async def get_words(
-    page: int = 1, page_size: int = 20, db: AsyncSession = Depends(get_session)
+    page: int = 1,
+    page_size: int = 20,
+    difficulty: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
+    word_type: Optional[str] = Query(None),
+    favorites_only: bool = Query(False),
+    db: AsyncSession = Depends(get_session),
+    user_id: Optional[int] = Depends(get_current_user_id),
 ):
     offset = (page - 1) * page_size
-    query = select(WordORM).offset(offset).limit(page_size)
+    query = select(WordORM)
+
+    # Применяем фильтры
+    if difficulty:
+        query = query.filter(WordORM.difficulty == difficulty)
+
+    if word_type:
+        query = query.filter(WordORM.word_type == word_type)
+
+    if search:
+        search_filter = (
+            WordORM.word.ilike(f'%{search}%')
+            | WordORM.translation.ilike(f'%{search}%')
+            | WordORM.context.ilike(f'%{search}%')
+        )
+        query = query.filter(search_filter)
+
+    if favorites_only and user_id:
+        # Подзапрос для получения избранных слов
+        favorites_subquery = select(UserWordStatus.item_id).filter(
+            UserWordStatus.user_id == user_id,
+            UserWordStatus.item_type == ItemType.WORD,
+            UserWordStatus.is_favorite,
+        )
+        query = query.filter(WordORM.id.in_(favorites_subquery))
+
+    # Добавляем пагинацию
+    query = query.offset(offset).limit(page_size)
+
     result = await db.execute(query)
     words = result.scalars().all()
-    logger.debug(
-        f'Fetched {len(words)} words'
-    )  # Логирование количества полученных слов
-    return words
+
+    # Получаем общее количество записей для пагинации
+    total_query = select(func.count()).select_from(WordORM)
+    total_result = await db.execute(total_query)
+    total_items = total_result.scalar()
+
+    return {
+        'items': words,
+        'total': total_items,
+        'page': page,
+        'page_size': page_size,
+        'total_pages': ceil(total_items / page_size),
+    }
 
 
 @router.get('/all')

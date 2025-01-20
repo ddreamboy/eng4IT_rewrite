@@ -1,10 +1,15 @@
+from math import ceil
+from typing import Optional
+
 from api.deps import get_current_user_id, get_session
 from fastapi import (
     APIRouter,
     Depends,
-    HTTPException,  # Новый импорт для обработки ошибок
+    HTTPException,
+    Query,  # Новый импорт для обработки ошибок
 )
 from logger import setup_logger
+from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -21,43 +26,60 @@ router = APIRouter()
 
 @router.get('/')
 async def get_terms(
-    page: int = 1, page_size: int = 20, db: AsyncSession = Depends(get_session)
+    page: int = 1,
+    page_size: int = 20,
+    difficulty: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
+    category_main: Optional[str] = Query(None),
+    favorites_only: bool = Query(False),
+    db: AsyncSession = Depends(get_session),
+    user_id: Optional[int] = Depends(get_current_user_id),
 ):
     offset = (page - 1) * page_size
-    query = select(TermORM).offset(offset).limit(page_size)
-    result = await db.execute(query)
-    terms = result.scalars().all()
-    logger.debug(
-        f'Fetched {len(terms)} terms'
-    )  # Логирование количества полученных терминов
-    return terms
-
-
-@router.get('/categories')
-async def get_term_categories(db: AsyncSession = Depends(get_session)):
-    query = select(TermORM.category_main).distinct()
-    result = await db.execute(query)
-    categories = result.scalars().all()
-    return categories
-
-@router.get('/all')
-async def get_all_terms(db: AsyncSession = Depends(get_session)):
     query = select(TermORM)
+
+    # Применяем фильтры
+    if difficulty:
+        query = query.filter(TermORM.difficulty == difficulty)
+
+    if category_main:
+        query = query.filter(TermORM.category_main == category_main)
+
+    if search:
+        search_filter = (
+            TermORM.term.ilike(f'%{search}%')
+            | TermORM.primary_translation.ilike(f'%{search}%')
+            | TermORM.definition_ru.ilike(f'%{search}%')
+        )
+        query = query.filter(search_filter)
+
+    if favorites_only and user_id:
+        # Подзапрос для получения избранных терминов
+        favorites_subquery = select(UserWordStatus.item_id).filter(
+            UserWordStatus.user_id == user_id,
+            UserWordStatus.item_type == ItemType.TERM,
+            UserWordStatus.is_favorite,
+        )
+        query = query.filter(TermORM.id.in_(favorites_subquery))
+
+    # Добавляем пагинацию
+    query = query.offset(offset).limit(page_size)
+
     result = await db.execute(query)
     terms = result.scalars().all()
-    response = [
-        {
-            'id': term.id,
-            'term': term.term,
-            'definition_en': term.definition_en,
-            'definition_ru': term.definition_ru,
-            'category_main': term.category_main,
-            'category_additional': term.category_sub,
-            'difficulty': term.difficulty,
-        }
-        for term in terms
-    ]
-    return response
+
+    # Получаем общее количество записей для пагинации
+    total_query = select(func.count()).select_from(TermORM)
+    total_result = await db.execute(total_query)
+    total_items = total_result.scalar()
+
+    return {
+        'items': terms,
+        'total': total_items,
+        'page': page,
+        'page_size': page_size,
+        'total_pages': ceil(total_items / page_size),
+    }
 
 
 @router.get('/favorite/{term_id}')

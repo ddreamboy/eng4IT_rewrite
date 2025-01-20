@@ -23,24 +23,30 @@ export const useTermsStore = defineStore('terms', () => {
   const favorites = ref([])
 
   // Actions
-  async function fetchTerms() {
+  async function fetchTerms(params = {}) {
     loading.value = true
     error.value = null
-
+  
     try {
+      console.log('Поиск терминов', params)
       const response = await axios.get(`${API_URL}/terms/`, {
         params: {
-          page: pagination.value.page,
-          page_size: pagination.value.pageSize,
-          difficulty: filters.value.difficulty,
-          category: filters.value.category,
-          search: filters.value.search,
+          page: params.page || pagination.value.page,
+          page_size: params.page_size || pagination.value.pageSize,
+          difficulty: params.difficulty,
+          search: params.search,
+          favorites_only: params.favorites_only
         },
       })
-
-      terms.value = response.data
-      // Предполагаем, что сервер возвращает общее количество в headers или meta
-      // pagination.value.total = response.headers['x-total-count'] || response.data.total
+  
+      // Обновляем состояние store в соответствии с форматом API
+      terms.value = response.data.items
+      pagination.value = {
+        page: response.data.page,
+        pageSize: response.data.page_size,
+        total: response.data.total,
+        totalPages: response.data.total_pages
+      }
     } catch (err) {
       error.value = err.response?.data?.detail || 'Не удалось загрузить термины'
       console.error('Terms fetch error:', err)
