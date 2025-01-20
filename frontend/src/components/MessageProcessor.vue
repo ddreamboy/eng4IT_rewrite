@@ -11,7 +11,7 @@
                 <div class="p-4 rounded-lg" :class="[themeStore.isDark ? 'bg-dark-primary/50' : 'bg-light-primary/50']">
                     <p class="text-base" :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']">
                         <!-- Текст до gap -->
-                        <TypeWriter :text="textBeforeGap" :typing-speed="10" :enabled="!isTypingLocked" новый проп
+                        <TypeWriter :text="textBeforeGap" :typing-speed="20" :enabled="!isTypingLocked" новый проп
                             @complete="onTypingComplete" />
 
                         <!-- Текущий gap -->
@@ -23,7 +23,7 @@
                         </span>
 
                         <!-- Текст после gap -->
-                        <TypeWriter v-if="shouldShowNextPart" :text="textAfterGap" :typing-speed="50"
+                        <TypeWriter v-if="shouldShowNextPart" :text="textAfterGap" :typing-speed="20"
                             @complete="onAfterGapComplete" />
                     </p>
 
@@ -65,7 +65,7 @@ const TypeWriter = defineComponent({
     props: {
         text: { type: String, required: true },
         typingSpeed: { type: Number, default: 50 },
-        enabled: { type: Boolean, default: true } // Добавляем новый проп
+        enabled: { type: Boolean, default: true }
     },
     emits: ['complete'],
     setup(props, { emit }) {
@@ -85,6 +85,9 @@ const TypeWriter = defineComponent({
 
             isTyping.value = true
 
+            // Начинаем печатать с текущей позиции
+            displayedText.value = text.slice(0, startIndex)
+
             function typeNextCharacter() {
                 if (startIndex < text.length && props.enabled) {
                     displayedText.value = text.slice(0, startIndex + 1)
@@ -102,17 +105,21 @@ const TypeWriter = defineComponent({
         watch(() => props.text, (newText, oldText) => {
             if (newText === oldText) return
 
+            // Очищаем предыдущий таймаут
             if (timeoutId) {
                 clearTimeout(timeoutId)
             }
 
-            displayedText.value = ''
-            isTyping.value = false
-
-            if (props.enabled) {
-                typeText(newText)
+            // Если новый текст включает старый как префикс,
+            // продолжаем печатать с места окончания старого текста
+            if (oldText && newText.startsWith(oldText)) {
+                typeText(newText, oldText.length)
             } else {
-                displayedText.value = newText
+                // Только для первого запуска печатаем с начала
+                if (!oldText) {
+                    displayedText.value = ''
+                    typeText(newText, 0)
+                }
             }
         }, { immediate: true })
 
@@ -197,15 +204,22 @@ async function selectAnswer(answer) {
     if (isCorrect) {
         isTypingLocked.value = true
         selectedAnswers.value[currentGap.value.id] = answer
-        await new Promise(resolve => setTimeout(resolve, 500))
 
+        // Короткая пауза перед показом следующей части
+        await new Promise(resolve => setTimeout(resolve, 300))
+
+        // Показываем следующую часть текста
         shouldShowNextPart.value = true
-        await new Promise(resolve => setTimeout(resolve, 800))
+
+        // Ждем завершения анимации печати
+        await new Promise(resolve => setTimeout(resolve, 500))
 
         if (currentGapIndex.value < props.message.gaps.length - 1) {
             currentGapIndex.value++
             shouldShowNextPart.value = false
         } else {
+            // Если это последний gap, показываем кнопку отправки
+            await new Promise(resolve => setTimeout(resolve, 300))
             isComplete.value = true
         }
         isTypingLocked.value = false
@@ -215,10 +229,10 @@ async function selectAnswer(answer) {
         // После двух неправильных попыток
         if (attemptsCount.value[currentGap.value.id] >= 2) {
             selectedAnswers.value[currentGap.value.id] = currentGap.value.correct
-            await new Promise(resolve => setTimeout(resolve, 500))
+            await new Promise(resolve => setTimeout(resolve, 300))
 
             shouldShowNextPart.value = true
-            await new Promise(resolve => setTimeout(resolve, 800))
+            await new Promise(resolve => setTimeout(resolve, 500))
 
             if (currentGapIndex.value < props.message.gaps.length - 1) {
                 currentGapIndex.value++

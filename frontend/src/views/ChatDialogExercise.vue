@@ -149,14 +149,21 @@ function scrollToBottom() {
 }
 
 async function sendMessage(processedMessage) {
+    // Добавляем сообщение с анимацией
     messages.value.push(processedMessage)
+
+    // Прокручиваем к новому сообщению
+    await scrollToBottom()
 
     // Сбрасываем текущее сообщение
     currentUserMessage.value = null
-    await new Promise(resolve => setTimeout(resolve, 500)) // Добавляем паузу
+
+    // Пауза перед следующим сообщением
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
     // Находим и показываем следующее сообщение
     const currentIndex = messages.value.length
-    if (exercise.value.content.messages[currentIndex]) {
+    if (exercise.value?.content.messages[currentIndex]) {
         await showNextMessage(currentIndex)
     }
 }
@@ -167,18 +174,26 @@ async function showNextMessage(index) {
     const message = { ...exercise.value.content.messages[index] }
 
     if (!message.is_user_message) {
-        // Показываем сообщение бота
+        // Показываем сообщение бота с небольшой задержкой, имитируя набор текста
+        await new Promise(resolve => setTimeout(resolve, 500))
         messages.value.push(message)
-        scrollToBottom()
+        await scrollToBottom()
 
         // Добавляем задержку перед следующим сообщением
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise(resolve => setTimeout(resolve, 1500))
 
         if (index + 1 < exercise.value.content.messages.length) {
-            await showNextMessage(index + 1)
+            const nextMessage = exercise.value.content.messages[index + 1]
+            if (nextMessage.is_user_message) {
+                // Если следующее сообщение от пользователя, устанавливаем его как текущее
+                currentUserMessage.value = nextMessage
+            } else {
+                await showNextMessage(index + 1)
+            }
         }
     } else {
-        // Устанавливаем сообщение пользователя как текущее
+        // Устанавливаем сообщение пользователя как текущее с небольшой задержкой
+        await new Promise(resolve => setTimeout(resolve, 500))
         currentUserMessage.value = message
     }
 }
