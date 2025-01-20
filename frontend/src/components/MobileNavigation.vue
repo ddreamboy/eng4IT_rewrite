@@ -1,7 +1,7 @@
 // src/components/MobileNavigation.vue
 <template>
   <nav
-    class="md:hidden fixed bottom-0 inset-x-0 h-16 bg-light-secondary dark:bg-dark-secondary shadow-lg"
+    class="md:hidden fixed bottom-0 inset-x-0 h-16 bg-light-secondary dark:bg-dark-secondary shadow-lg z-10"
   >
     <div class="grid h-full grid-cols-4">
       <router-link
@@ -20,13 +20,14 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { HomeIcon, BookOpenIcon, AcademicCapIcon, UserIcon } from '@heroicons/vue/24/outline'
+import { HomeIcon, BookOpenIcon, TrophyIcon, UserIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 
 const navigation = [
   { name: 'Главная', path: '/', icon: HomeIcon },
-  { name: 'Профиль', path: '/profile', icon: UserIcon },
   { name: 'Словарь', path: '/dictionary', icon: BookOpenIcon },
+  { name: 'Достижения', path: '/achievements', icon: TrophyIcon },
+  { name: 'Профиль', path: '/profile', icon: UserIcon },
 ]
 </script>
