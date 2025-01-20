@@ -4,19 +4,19 @@ import random
 from typing import Any, Dict
 
 from logger import setup_logger
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.v1.endpoints.tasks.base import BaseTaskHandler
 from backend.core.exceptions import ValidationError
 from backend.db.models import (
-    DifficultyLevel,
     ItemType,
     LearningAttempt,
     TaskType,
     TermORM,
     UserWordStatus,
 )
+from backend.db.orm import get_terms_for_learning
 
 logger = setup_logger(__name__)
 
@@ -31,97 +31,44 @@ class TermDefinitionTaskHandler(BaseTaskHandler):
             session: AsyncSession = params.get('session')
             user_id: int = params.get('user_id')
             category: str = params.get('params', {}).get('category')
-            difficulty: str = params.get('params', {}).get('difficulty')
-            incorrect_options: int = params.get('params', {}).get(
-                'incorrect_options', 3
-            )
 
             if not session:
                 raise ValidationError('Session is required')
             if not user_id:
                 raise ValidationError('User ID is required')
 
-            result = await session.execute(
-                select(TermORM.category_main).distinct()
+            # Получаем все термины для задания
+            all_terms = await get_terms_for_learning(
+                session=session,
+                user_id=user_id,
+                limit=4,  # Получаем 4 термина (1 правильный + 3 неправильных)
+                category=category,
             )
-            categories = [row[0] for row in result.fetchall()]
 
-            if not category:
-                category = random.choice(categories)
-
-            if not difficulty:
-                difficulty = random.choice(list(DifficultyLevel)).name.lower()
-
-            if difficulty not in [level.value for level in DifficultyLevel]:
-                raise ValidationError('Invalid difficulty level')
-
-            difficulty = difficulty.upper()
-
-            # Получаем случайный термин
-            result = await session.execute(
-                select(TermORM)
-                .where(
-                    TermORM.category_main == category,
-                    TermORM.difficulty == difficulty,
+            if not all_terms:
+                # Если с указанной категорией не нашли, пробуем без категории
+                all_terms = await get_terms_for_learning(
+                    session=session, user_id=user_id, limit=4
                 )
-                .order_by(func.random())
-                .limit(1)
-            )
-            term = result.scalar_one_or_none()
 
-            if not term:
-                # Получаем случайный термин
-                result = await session.execute(
-                    select(TermORM)
-                    .where(TermORM.category_main == category)
-                    .order_by(func.random())
-                    .limit(1)
-                )
-                term = result.scalar_one_or_none()
-
-                if not term:
+                if not all_terms:
                     raise ValidationError('No terms available')
 
-            # Получаем неправильные варианты (другие термины из той же категории)
-            wrong_options = await session.execute(
-                select(TermORM)
-                .where(
-                    TermORM.id != term.id,
-                    TermORM.category_main == term.category_main,
-                    TermORM.difficulty == difficulty,
-                )
-                .order_by(func.random())
-                .limit(incorrect_options)
-            )
+            # Берем первый термин как правильный ответ
+            term = all_terms[0]
 
-            # Формируем варианты ответов
-            options = [
-                {
-                    'id': opt.id,
-                    'term': opt.term,
-                    'translation': opt.primary_translation,
-                }
-                for opt in wrong_options.scalars()
-            ]
+            # Формируем варианты ответов из оставшихся терминов
+            options = []
 
-            if len(options) != incorrect_options:
-                wrong_options = await session.execute(
-                    select(TermORM)
-                    .where(
-                        TermORM.id != term.id,
-                        TermORM.category_main == term.category_main,
-                    )
-                    .order_by(func.random())
-                    .limit(incorrect_options)
-                )
-                options = [
+            # Добавляем неправильные варианты
+            for wrong_term in all_terms[1:]:
+                options.append(
                     {
-                        'id': opt.id,
-                        'term': opt.term,
-                        'translation': opt.primary_translation,
+                        'id': wrong_term.id,
+                        'term': wrong_term.term,
+                        'translation': wrong_term.primary_translation,
                     }
-                    for opt in wrong_options.scalars()
-                ]
+                )
 
             # Добавляем правильный вариант
             options.append(
@@ -148,7 +95,7 @@ class TermDefinitionTaskHandler(BaseTaskHandler):
                     'difficulty': term.difficulty.value,
                 },
                 'correct_answer': term.id,
-                'term_id': term.id,  # для логгирования и отладки
+                'term_id': term.id,
             }
 
             logger.info(f'Generated term definition task: {task}')

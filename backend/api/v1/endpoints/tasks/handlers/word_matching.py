@@ -2,6 +2,7 @@
 
 from typing import Any, Dict, List
 
+from backend.db.orm import get_words_for_learning
 from logger import setup_logger
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,11 +37,12 @@ class WordMatchingTaskHandler(BaseTaskHandler):
 
             words_count = 15
 
-            # Получаем 15 случайных слов
-            result = await session.execute(
-                select(WordORM).order_by(func.random()).limit(words_count)
+            # Получаем слова через новый метод
+            words = await get_words_for_learning(
+                session=session,
+                user_id=user_id,
+                limit=words_count
             )
-            words = result.scalars().all()
 
             if len(words) < words_count:
                 raise ValidationError('Not enough words available')

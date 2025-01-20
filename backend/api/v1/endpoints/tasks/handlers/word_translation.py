@@ -4,13 +4,12 @@ import random
 from typing import Any, Dict
 
 from logger import setup_logger
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.v1.endpoints.tasks.base import BaseTaskHandler
 from backend.core.exceptions import ValidationError
 from backend.db.models import (
-    DifficultyLevel,
     ItemType,
     LearningAttempt,
     TaskType,
@@ -18,6 +17,7 @@ from backend.db.models import (
     WordORM,
     WordType,
 )
+from backend.db.orm import get_words_for_learning
 
 logger = setup_logger(__name__)
 
@@ -32,14 +32,12 @@ class WordTranslationTaskHandler(BaseTaskHandler):
             session: AsyncSession = params.get('session')
             user_id: int = params.get('user_id')
             word_type: str = params.get('params', {}).get('word_type')
-            difficulty: str = params.get('params', {}).get('difficulty')
             incorrect_options: int = params.get('params', {}).get(
                 'incorrect_options', 3
             )
 
             if not session:
                 raise ValidationError('Session is required')
-
             if not user_id:
                 raise ValidationError('User ID is required')
 
@@ -49,82 +47,59 @@ class WordTranslationTaskHandler(BaseTaskHandler):
             if word_type.upper() not in [wordType.value for wordType in WordType]:
                 raise ValidationError('Word type is invalid')
 
-            if not difficulty:
-                difficulty = random.choice(list(DifficultyLevel)).name.lower()
-
-            if difficulty not in [level.value for level in DifficultyLevel]:
-                raise ValidationError('Invalid difficulty level')
-
             word_type = word_type.upper()
-            difficulty = difficulty.upper()
 
-            # Получаем случайное слово
-            result = await session.execute(
-                select(WordORM)
-                .where(
-                    WordORM.word_type == word_type,
-                    WordORM.difficulty == difficulty,
-                )
-                .order_by(func.random())
-                .limit(1)
-            )
-            word = result.scalar_one_or_none()
-
-            if not word:
-                # Пробуем получить слово любой сложности для данного типа
-                result = await session.execute(
-                    select(WordORM)
-                    .where(WordORM.word_type == word_type)
-                    .order_by(func.random())
-                    .limit(1)
-                )
-                word = result.scalar_one_or_none()
-
-                if not word:
-                    # Пробуем получить любое слово
-                    result = await session.execute(
-                        select(WordORM).order_by(func.random()).limit(1)
-                    )
-                    word = result.scalar_one_or_none()
-
-                    if not word:
-                        raise ValidationError('No words available')
-
-            # Получаем неправильные варианты (другие переводы)
-            wrong_options = await session.execute(
-                select(WordORM.translation)
-                .where(
-                    WordORM.id != word.id,
-                    WordORM.word_type == word_type,
-                    WordORM.difficulty == difficulty,
-                )
-                .order_by(func.random())
-                .limit(incorrect_options)
+            # Получаем все слова для задания, передавая word_type
+            all_words = await get_words_for_learning(
+                session=session,
+                user_id=user_id,
+                limit=incorrect_options + 1,  # +1 для правильного ответа
+                word_type=word_type,
             )
 
-            options = [opt[0] for opt in wrong_options.fetchall()]
-            if len(options) != incorrect_options:
-                wrong_options = await session.execute(
-                    select(WordORM.translation)
-                    .where(
-                        WordORM.id != word.id,
-                        WordORM.word_type == word_type,
-                    )
-                    .order_by(func.random())
-                    .limit(incorrect_options)
+            if not all_words:
+                # Если не нашли слова указанного типа, пробуем без фильтра по типу
+                all_words = await get_words_for_learning(
+                    session=session, user_id=user_id, limit=incorrect_options + 1
                 )
 
-                if len(options) != incorrect_options:
-                    wrong_options = await session.execute(
-                        select(WordORM.translation)
-                        .where(
-                            WordORM.id != word.id,
-                        )
-                        .order_by(func.random())
-                        .limit(incorrect_options)
-                    )
-                    options = [opt[0].lower() for opt in wrong_options.fetchall()]
+                if not all_words:
+                    raise ValidationError('No words available')
 
+            # Берем первое слово как правильный ответ
+            word = all_words[0]
+
+            # Формируем варианты ответов
+            options = []
+
+            # Добавляем неправильные варианты
+            for wrong_word in all_words[1:]:
+                options.append(wrong_word.translation.lower())
+
+            # Если не хватает вариантов ответов, получаем дополнительные слова того же типа
+            if len(options) < incorrect_options:
+                additional_words = await get_words_for_learning(
+                    session=session,
+                    user_id=user_id,
+                    limit=incorrect_options - len(options),
+                    word_type=word_type,
+                )
+                for add_word in additional_words:
+                    if add_word.id != word.id:
+                        options.append(add_word.translation.lower())
+
+                # Если всё ещё не хватает, берем любые слова
+                if len(options) < incorrect_options:
+                    additional_words = await get_words_for_learning(
+                        session=session,
+                        user_id=user_id,
+                        limit=incorrect_options - len(options),
+                    )
+                    for add_word in additional_words:
+                        if add_word.id != word.id:
+                            options.append(add_word.translation.lower())
+
+            # Добавляем правильный вариант
             options.append(word.translation.lower())
 
             # Перемешиваем варианты
@@ -136,8 +111,8 @@ class WordTranslationTaskHandler(BaseTaskHandler):
                 'content': {
                     'word': word.word,
                     'options': options,
-                    'context': word.context,  # Добавляем контекст
-                    'context_translation': word.context_translation,  # И его перевод
+                    'context': word.context,
+                    'context_translation': word.context_translation,
                     'word_type': word.word_type,
                     'difficulty': word.difficulty,
                 },
@@ -147,6 +122,7 @@ class WordTranslationTaskHandler(BaseTaskHandler):
 
             logger.info(f'Generated translation task: {task}')
             return task
+
         except Exception as e:
             logger.error(f'Error generating translation task: {e}', exc_info=True)
             raise ValidationError(f'Error generating translation task: {str(e)}')
@@ -165,7 +141,7 @@ class WordTranslationTaskHandler(BaseTaskHandler):
         user_id: int = answer['user_id']
         user_answer: str = answer.get('answer')
         word_id: int = answer.get('word_id')
-        
+
         logger.debug(f'Word ID: {word_id}')
 
         # Получаем слово

@@ -5,7 +5,7 @@ import random
 from typing import Any, Dict, List
 
 from logger import setup_logger
-from sqlalchemy import String, func, select
+from sqlalchemy import String, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.ai.operations import EmailStructure  # Нужно будет создать
@@ -22,6 +22,7 @@ from backend.db.models import (
     UserWordStatus,
     WordORM,
 )
+from backend.db.orm import get_terms_for_learning, get_words_for_learning
 
 logger = setup_logger(__name__)
 
@@ -44,22 +45,22 @@ class EmailStructureHandler(BaseTaskHandler):
         self.operation = EmailStructure()
 
     async def _get_random_terms(
-        self, session: AsyncSession, count: int = 3
+        self, session: AsyncSession, user_id: int, count: int = 3
     ) -> List[str]:
         """Получение случайных технических терминов."""
-        terms = await session.execute(
-            select(TermORM.term).order_by(func.random()).limit(count)
+        terms = await get_terms_for_learning(
+            session=session, user_id=user_id, limit=count
         )
-        return [term for term in terms.scalars()]
+        return [term.term for term in terms]
 
     async def _get_random_words(
-        self, session: AsyncSession, count: int = 3
+        self, session: AsyncSession, user_id: int, count: int = 3
     ) -> List[str]:
         """Получение случайных бизнес-слов."""
-        words = await session.execute(
-            select(WordORM.word).order_by(func.random()).limit(count)
+        words = await get_words_for_learning(
+            session=session, user_id=user_id, limit=count
         )
-        return [word for word in words.scalars()]
+        return [word.word for word in words]
 
     async def _get_user_difficulty(
         self, session: AsyncSession, user_id: int
@@ -190,8 +191,8 @@ class EmailStructureHandler(BaseTaskHandler):
 
             # Если оба списка пустые, только тогда генерируем случайные
             if not terms and not words:
-                terms = await self._get_random_terms(session, count=2)
-                words = await self._get_random_words(session, count=3)
+                terms = await self._get_random_terms(session, user_id, count=2)
+                words = await self._get_random_words(session, user_id, count=3)
 
             logger.info(
                 f'Using parameters: style={style}, topic={topic}, difficulty={difficulty}, '

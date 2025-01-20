@@ -1,6 +1,7 @@
 import json
 from typing import Any, Dict, List
 
+from backend.db.orm import get_terms_for_learning, get_words_for_learning
 from logger import setup_logger
 from sqlalchemy import String, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -120,24 +121,20 @@ class ChatDialogHandler(BaseTaskHandler):
             if not user_id:
                 raise ValidationError('User ID is required')
 
-            # Если не указаны конкретные слова/термины, выбираем случайные
+            # Если не указаны конкретные слова/термины, выбираем на основе критериев
             if not specific_terms and not specific_words:
-                # Получаем случайные термины
-                terms_query = select(TermORM.term)
-                if categories:
-                    terms_query = terms_query.where(
-                        TermORM.category_main.in_(categories)
-                    )
-                terms = await session.execute(
-                    terms_query.order_by(func.random()).limit(3)
+                words = await get_words_for_learning(
+                    session=session,
+                    user_id=user_id,
+                    limit=3
                 )
-                specific_terms = [term[0] for term in terms.fetchall()]
-
-                # Получаем случайные слова
-                words = await session.execute(
-                    select(WordORM.word).order_by(func.random()).limit(3)
+                terms = await get_terms_for_learning(
+                    session=session,
+                    user_id=user_id,
+                    limit=3
                 )
-                specific_words = [word[0] for word in words.fetchall()]
+                specific_words = [word.word for word in words]
+                specific_terms = [term.term for term in terms]
 
             # Проверяем есть ли уже сгенерированное задание
             existing_task = await self._find_existing_task(

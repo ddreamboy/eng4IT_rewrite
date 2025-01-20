@@ -1,11 +1,20 @@
-from typing import Optional
+import random
+from typing import List, Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.db.database import async_engine, get_session
 
-from .models import Base, DifficultyLevel, ItemType, TermORM, UserWordStatus, WordORM, WordType
+from .models import (
+    Base,
+    DifficultyLevel,
+    ItemType,
+    TermORM,
+    UserWordStatus,
+    WordORM,
+    WordType,
+)
 
 
 async def get_term_by_name(session: AsyncSession, term: str) -> Optional[TermORM]:
@@ -118,15 +127,13 @@ async def get_random_items() -> tuple[list[TermORM], list[WordORM]]:
         words = await get_random_words(session)
         return terms, words
 
+
 async def save_word_statistics(
-    session: AsyncSession, 
-    user_id: int, 
-    word_id: int, 
-    is_correct: bool
+    session: AsyncSession, user_id: int, word_id: int, is_correct: bool
 ):
     """
     Сохраняет статистику использования слова пользователем
-    
+
     Args:
         session: AsyncSession - сессия БД
         user_id: int - ID пользователя
@@ -146,7 +153,9 @@ async def save_word_statistics(
         if word_status:
             # Обновляем существующий статус
             if is_correct:
-                word_status.mastery_level = min(100, word_status.mastery_level + 10)
+                word_status.mastery_level = min(
+                    100, word_status.mastery_level + 10
+                )
                 word_status.ease_factor = min(3.0, word_status.ease_factor + 0.1)
             else:
                 word_status.ease_factor = max(1.3, word_status.ease_factor - 0.2)
@@ -165,3 +174,135 @@ async def save_word_statistics(
     except Exception as e:
         await session.rollback()
         raise e
+
+
+# backend/api/v1/endpoints/words.py
+
+
+async def get_words_for_learning(
+    session: AsyncSession,
+    user_id: int,
+    limit: int = 5,
+    word_type: Optional[str] = None,
+) -> List[WordORM]:
+    """
+    Получает слова для изучения:
+    1. Все слова которых нет в UserWordStatus (с учетом word_type если указан)
+    2. Добавляет слова с низким mastery_level пока не достигнут limit
+    """
+    # Базовый фильтр по типу слова
+    word_type_filter = (
+        and_(True) if not word_type else WordORM.word_type == word_type
+    )
+
+    # Получаем ID слов, которые есть в UserWordStatus
+    tracked_words_query = select(UserWordStatus.item_id).where(
+        UserWordStatus.user_id == user_id,
+        UserWordStatus.item_type == ItemType.WORD,
+    )
+    tracked_result = await session.execute(tracked_words_query)
+    tracked_word_ids = [row[0] for row in tracked_result]
+
+    # Получаем новые слова (которых нет в UserWordStatus)
+    new_words_query = select(WordORM).where(
+        and_(
+            WordORM.id.not_in(tracked_word_ids) if tracked_word_ids else True,
+            word_type_filter,
+        )
+    )
+    new_words_result = await session.execute(new_words_query)
+    new_words = new_words_result.scalars().all()
+
+    if random.randint(0, 9) == 0:
+        new_words = new_words[:1]
+
+    # Если новых слов >= limit, берем случайные limit штук
+    if len(new_words) >= limit:
+        return sorted(new_words, key=lambda x: random.random())[:limit]
+
+    # Если новых слов недостаточно, добираем с низким mastery_level
+    required_more = limit - len(new_words)
+
+    tracked_words_query = (
+        select(WordORM)
+        .join(
+            UserWordStatus,
+            and_(
+                UserWordStatus.item_id == WordORM.id,
+                UserWordStatus.item_type == ItemType.WORD,
+            ),
+        )
+        .where(and_(UserWordStatus.user_id == user_id, word_type_filter))
+        .order_by(UserWordStatus.mastery_level.asc())
+        .limit(required_more)
+    )
+
+    tracked_words_result = await session.execute(tracked_words_query)
+    tracked_words = tracked_words_result.scalars().all()
+
+    return new_words + tracked_words
+
+
+async def get_terms_for_learning(
+    session: AsyncSession,
+    user_id: int,
+    limit: int = 5,
+    category: Optional[str] = None,
+) -> List[TermORM]:
+    """
+    Получает термины для изучения:
+    1. Все термины которых нет в UserWordStatus (с учетом category если указана)
+    2. Добавляет термины с низким mastery_level пока не достигнут limit
+    """
+
+    # Базовый фильтр категории
+    category_filter = (
+        and_(True) if not category else TermORM.category_main == category
+    )
+
+    # Получаем ID терминов из UserWordStatus
+    tracked_terms_query = select(UserWordStatus.item_id).where(
+        UserWordStatus.user_id == user_id,
+        UserWordStatus.item_type == ItemType.TERM,
+    )
+    tracked_result = await session.execute(tracked_terms_query)
+    tracked_term_ids = [row[0] for row in tracked_result]
+
+    # Получаем новые термины
+    new_terms_query = select(TermORM).where(
+        and_(
+            TermORM.id.not_in(tracked_term_ids) if tracked_term_ids else True,
+            category_filter,
+        )
+    )
+    new_terms_result = await session.execute(new_terms_query)
+    new_terms = new_terms_result.scalars().all()
+
+    if random.randint(0, 9) == 0:
+        new_terms = new_terms[:1]
+
+    # Если новых терминов >= limit, берем случайные limit штук
+    if len(new_terms) >= limit:
+        return sorted(new_terms, key=lambda x: random.random())[:limit]
+
+    # Если новых терминов недостаточно, добираем с низким mastery_level
+    required_more = limit - len(new_terms)
+
+    tracked_terms_query = (
+        select(TermORM)
+        .join(
+            UserWordStatus,
+            and_(
+                UserWordStatus.item_id == TermORM.id,
+                UserWordStatus.item_type == ItemType.TERM,
+            ),
+        )
+        .where(and_(UserWordStatus.user_id == user_id, category_filter))
+        .order_by(UserWordStatus.mastery_level.asc())
+        .limit(required_more)
+    )
+
+    tracked_terms_result = await session.execute(tracked_terms_query)
+    tracked_terms = tracked_terms_result.scalars().all()
+
+    return new_terms + tracked_terms
