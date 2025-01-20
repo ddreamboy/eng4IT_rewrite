@@ -80,6 +80,25 @@ async def get_terms(
         'page_size': page_size,
         'total_pages': ceil(total_items / page_size),
     }
+    
+@router.get('/all')
+async def get_all_terms(db: AsyncSession = Depends(get_session)):
+    query = select(TermORM)
+    result = await db.execute(query)
+    terms = result.scalars().all()
+    response = [
+        {
+            'id': term.id,
+            'term': term.term,
+            'definition_en': term.definition_en,
+            'definition_ru': term.definition_ru,
+            'category_main': term.category_main,
+            'category_additional': term.category_sub,
+            'difficulty': term.difficulty,
+        }
+        for term in terms
+    ]
+    return response
 
 
 @router.get('/favorite/{term_id}')

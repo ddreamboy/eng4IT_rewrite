@@ -59,6 +59,12 @@ const router = createRouter({
       component: () => import('@/views/EmailStructureExercise.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/achievements',
+      name: 'achievements',
+      component: () => import('@/views/AchievementsPage.vue'),
+      meta: { requiresAuth: true },
+    }
   ],
 })
 

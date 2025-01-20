@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.core.config import settings
 
-from .endpoints import auth, tasks, terms, users, words
+from .endpoints import auth, tasks, users
 
 
 def create_app() -> FastAPI:
