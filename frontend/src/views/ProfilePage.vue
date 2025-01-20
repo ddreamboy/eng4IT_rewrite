@@ -32,7 +32,7 @@
       </div>
 
       <!-- Статистика аккаунта -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
         <StatCard title="Текущий уровень" :value="formatLevel(profile.current_level)" icon="AcademicCapIcon" />
         <StatCard title="Балл владения" :value="profile.proficiency_score" icon="ChartBarIcon" />
         <StatCard title="Дневная цель" :value="profile.daily_goal" icon="ClockIcon" />
