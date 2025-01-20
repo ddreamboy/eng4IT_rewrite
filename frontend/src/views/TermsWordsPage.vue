@@ -212,7 +212,7 @@ async function fetchCurrentItems() {
   try {
     const params = {
       page: currentPage.value,
-      page_size: 20,
+      page_size: 12,
       difficulty: currentFilters.value.difficulty || undefined,
       search: currentFilters.value.search || undefined,
       favorites_only: currentFilters.value.showFavorites
