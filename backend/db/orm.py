@@ -1,6 +1,8 @@
 import random
+from datetime import datetime
 from typing import List, Optional
 
+from logger import setup_logger
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +17,8 @@ from .models import (
     WordORM,
     WordType,
 )
+
+logger = setup_logger(__name__)
 
 
 async def get_term_by_name(session: AsyncSession, term: str) -> Optional[TermORM]:
@@ -218,7 +222,11 @@ async def get_words_for_learning(
 
     # Если новых слов >= limit, берем случайные limit штук
     if len(new_words) >= limit:
-        return sorted(new_words, key=lambda x: random.random())[:limit]
+        selected_words = sorted(new_words, key=lambda x: random.random())[:limit]
+        # Записываем взаимодействие только для выбранных слов
+        for word in selected_words:
+            await record_interaction(session, user_id, word.id, ItemType.WORD)
+        return selected_words
 
     # Если новых слов недостаточно, добираем с низким mastery_level
     required_more = limit - len(new_words)
@@ -240,7 +248,13 @@ async def get_words_for_learning(
     tracked_words_result = await session.execute(tracked_words_query)
     tracked_words = tracked_words_result.scalars().all()
 
-    return new_words + tracked_words
+    words = new_words + tracked_words
+
+    # Записываем взаимодействие для каждого слова
+    for word in words:
+        await record_interaction(session, user_id, word.id, ItemType.WORD)
+
+    return words
 
 
 async def get_terms_for_learning(
@@ -283,7 +297,11 @@ async def get_terms_for_learning(
 
     # Если новых терминов >= limit, берем случайные limit штук
     if len(new_terms) >= limit:
-        return sorted(new_terms, key=lambda x: random.random())[:limit]
+        selected_terms = sorted(new_terms, key=lambda x: random.random())[:limit]
+        # Записываем взаимодействие только для выбранных терминов
+        for term in selected_terms:
+            await record_interaction(session, user_id, term.id, ItemType.TERM)
+        return selected_terms
 
     # Если новых терминов недостаточно, добираем с низким mastery_level
     required_more = limit - len(new_terms)
@@ -305,4 +323,40 @@ async def get_terms_for_learning(
     tracked_terms_result = await session.execute(tracked_terms_query)
     tracked_terms = tracked_terms_result.scalars().all()
 
-    return new_terms + tracked_terms
+    terms = new_terms + tracked_terms
+
+    # Записываем взаимодействие для каждого термина
+    for term in terms:
+        await record_interaction(session, user_id, term.id, ItemType.TERM)
+
+    return terms
+
+
+async def record_interaction(
+    session: AsyncSession, user_id: int, item_id: int, item_type: ItemType
+) -> None:
+    """Записать взаимодействие с словом/термином"""
+    try:
+        logger.debug(f'Recording interaction for {item_type} {item_id}')
+        status = await session.execute(
+            select(UserWordStatus).where(
+                UserWordStatus.user_id == user_id,
+                UserWordStatus.item_id == item_id,
+                UserWordStatus.item_type == item_type,
+            )
+        )
+        user_word_status = status.scalar_one_or_none()
+
+        if not user_word_status:
+            user_word_status = UserWordStatus(
+                user_id=user_id, item_id=item_id, item_type=item_type
+            )
+            session.add(user_word_status)
+
+        user_word_status.last_reviewed = datetime.utcnow()
+        await session.flush()
+
+    except Exception as e:
+        logger.error(f'Error recording interaction: {e}')
+        await session.rollback()
+        raise

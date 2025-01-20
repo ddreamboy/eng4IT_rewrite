@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from logger import setup_logger
 
 from backend.api.v1.endpoints import (
+    achievements,
     audio,
     auth,
     tasks,
@@ -194,6 +195,12 @@ app.include_router(
 app.include_router(
     users.router, prefix=f'{settings.API_V1_STR}/users', tags=['users']
 )
+app.include_router(
+    achievements.router,
+    prefix=f'{settings.API_V1_STR}/achievements',
+    tags=['achievements'],
+)
+
 
 # Health check
 @app.get('/health', tags=['health'])

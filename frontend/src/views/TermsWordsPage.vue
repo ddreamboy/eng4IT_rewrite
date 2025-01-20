@@ -37,23 +37,50 @@
     </div>
 
     <!-- Фильтры -->
-    <div class="mb-6 flex space-x-4">
-      <!-- Фильтр сложности -->
-      <select v-model="currentFilters.difficulty" @change="applyFilters" class="px-4 py-2 rounded-lg transition-colors"
-        :class="[
-          themeStore.isDark
-            ? 'bg-dark-secondary text-dark-text border-dark-primary'
-            : 'bg-light-secondary text-light-text border-light-primary',
-        ]">
-        <option value="">Уровень</option>
-        <!-- <option value="BEGINNER">Начинающий</option> -->
-        <option value="BASIC">Базовый</option>
-        <option value="INTERMEDIATE">Средний</option>
-        <option value="ADVANCED">Сложный</option>
-      </select>
+    <div class="mb-6 flex flex-col sm:flex-row gap-4">
+      <div class="flex flex-col sm:flex-row gap-4 w-full">
+        <!-- Фильтр сложности -->
+        <select v-model="currentFilters.difficulty" @change="applyFilters"
+          class="w-full sm:w-auto px-4 py-2 rounded-lg transition-colors" :class="[
+            themeStore.isDark
+              ? 'bg-dark-secondary text-dark-text border-dark-primary'
+              : 'bg-light-secondary text-light-text border-light-primary',
+          ]">
+          <option value="">Уровень</option>
+          <option value="BASIC">Базовый</option>
+          <option value="INTERMEDIATE">Средний</option>
+          <option value="ADVANCED">Сложный</option>
+        </select>
+
+        <!-- Кнопки фильтров -->
+        <div class="flex gap-2 w-full sm:w-auto">
+          <!-- Переключатель избранного -->
+          <button @click="currentFilters.showFavorites = !currentFilters.showFavorites; fetchCurrentItems()"
+            class="flex-1 sm:flex-none px-4 py-2 rounded-lg transition-colors" :class="[
+              currentFilters.showFavorites
+                ? themeStore.isDark
+                  ? 'bg-dark-accent text-dark-text'
+                  : 'bg-light-accent text-light-text'
+                : themeStore.isDark
+                  ? 'bg-dark-secondary text-dark-text/50'
+                  : 'bg-light-secondary text-light-text/50'
+            ]">
+            Избранное
+          </button>
+
+          <!-- Сброс фильтров -->
+          <button @click="resetFilters" class="flex-1 sm:flex-none px-4 py-2 rounded-lg transition-colors" :class="[
+            themeStore.isDark
+              ? 'bg-dark-accent text-dark-text hover:bg-dark-accent/90'
+              : 'bg-light-accent text-light-text hover:bg-light-accent/90',
+          ]">
+            Сбросить
+          </button>
+        </div>
+      </div>
 
       <!-- Поиск -->
-      <div class="flex-grow relative">
+      <div class="w-full">
         <input v-model="currentFilters.search" @input="debouncedApplyFilters" placeholder="Поиск..."
           class="w-full px-4 py-2 rounded-lg transition-colors" :class="[
             themeStore.isDark
@@ -61,29 +88,6 @@
               : 'bg-light-secondary text-light-text border-light-primary',
           ]" />
       </div>
-
-      <!-- Переключатель избранного -->
-      <button @click="currentFilters.showFavorites = !currentFilters.showFavorites; fetchCurrentItems()"
-        class="px-4 py-2 rounded-lg transition-colors" :class="[
-          currentFilters.showFavorites
-            ? themeStore.isDark
-              ? 'bg-dark-accent text-dark-text'
-              : 'bg-light-accent text-light-text'
-            : themeStore.isDark
-              ? 'bg-dark-secondary text-dark-text/50'
-              : 'bg-light-secondary text-light-text/50'
-        ]">
-        Избранное
-      </button>
-
-      <!-- Сброс фильтров -->
-      <button @click="resetFilters" class="px-4 py-2 rounded-lg transition-colors" :class="[
-        themeStore.isDark
-          ? 'bg-dark-accent text-dark-text hover:bg-dark-accent/90'
-          : 'bg-light-accent text-light-text hover:bg-light-accent/90',
-      ]">
-        Сбросить
-      </button>
     </div>
 
     <!-- Лоадер -->
