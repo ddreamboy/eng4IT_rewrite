@@ -95,25 +95,6 @@
                 </span>
               </div>
             </div>
-
-            <!-- Пример задания -->
-            <div v-if="task.example" class="text-sm">
-              <h4
-                class="font-semibold mb-2"
-                :class="[themeStore.isDark ? 'text-dark-text' : 'text-light-text']"
-              >
-                Пример:
-              </h4>
-              <pre
-                class="p-3 rounded-lg whitespace-pre-wrap text-xs"
-                :class="[
-                  themeStore.isDark
-                    ? 'bg-dark-primary text-dark-text'
-                    : 'bg-light-primary text-light-text',
-                ]"
-                >{{ JSON.stringify(task.example, null, 2) }}</pre
-              >
-            </div>
           </div>
         </div>
       </div>
