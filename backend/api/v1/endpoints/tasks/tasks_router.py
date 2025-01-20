@@ -276,6 +276,10 @@ async def validate_word_matching(
         current_user_id: ID текущего пользователя
         session: Сессия базы данных
     """
+    logger.info(
+        f'Received validation request: task_id={task_id}, pairs={pairs}, correct_pairs={correct_pairs}'
+    )
+
     handler = TaskRegistry.get_handler('word_matching')
 
     if not handler:
@@ -305,6 +309,7 @@ async def validate_word_matching(
         }
 
     except Exception as e:
+        logger.error(f'Error validating answer: {str(e)}', exc_info=True)
         raise ValidationError(f'Error validating answer: {str(e)}')
 
 
@@ -497,9 +502,85 @@ async def generate_email_structure(
     session: AsyncSession = Depends(get_session),
 ):
     """Генерация задания по структуре email."""
-    return await _generate_task(
-        'email_structure', request, current_user_id, session
-    )
+    logger.info(f'Received email structure request: {request}')
+    logger.info(f'Current user ID: {current_user_id}')
+
+    try:
+        result = await _generate_task(
+            'email_structure', request, current_user_id, session
+        )
+        logger.info(f'Generated result: {result}')
+        return result
+    except Exception as e:
+        logger.error(f'Error in generate_email_structure: {str(e)}', exc_info=True)
+        raise
+
+
+@router.post(
+    '/generate/email-structure/validate',
+    response_model=Dict[str, Any],
+    summary='Validate email structure answer',
+    description='Validates the order and content of email blocks and returns detailed statistics',
+    tags=['tasks'],
+)
+async def validate_email_structure(
+    task_id: str = Body(..., description='ID of the task'),
+    user_blocks: List[Dict] = Body(..., description='User arranged blocks'),
+    correct_blocks: List[Dict] = Body(..., description='Correct blocks order'),
+    words: List[str] = Body(default=[], description='Used words'),
+    terms: List[str] = Body(default=[], description='Used terms'),
+    current_user_id: int = Depends(get_current_user_id),
+    session: AsyncSession = Depends(get_session),
+):
+    """
+    Валидация ответа для задания по структуре email.
+
+    Args:
+        task_id: ID задания
+        user_blocks: Расставленные пользователем блоки
+        correct_blocks: Правильный порядок блоков
+        used_items: Список использованных слов/терминов
+        item_types: Типы использованных элементов (word/term)
+        current_user_id: ID текущего пользователя
+        session: Сессия базы данных
+    """
+    handler = TaskRegistry.get_handler('email_structure')
+
+    if not handler:
+        raise ValidationError('Email structure task handler not found')
+
+    try:
+        is_correct = await handler.validate(
+            {
+                'session': session,
+                'user_id': current_user_id,
+                'blocks': user_blocks,
+                'correct_blocks': correct_blocks,
+                'terms': terms,
+                'words': words,
+                'task_id': task_id,
+            }
+        )
+
+        return {
+            'is_successful': is_correct,
+            'statistics': {
+                'correct_blocks': len(
+                    [
+                        i
+                        for i, (user, correct) in enumerate(
+                            zip(user_blocks, correct_blocks)
+                        )
+                        if user['type'] == correct['type']
+                    ]
+                ),
+                'total_blocks': len(correct_blocks),
+            },
+        }
+
+    except Exception as e:
+        logger.error(f'Error validating answer: {str(e)}', exc_info=True)
+        raise ValidationError(f'Error validating answer: {str(e)}')
 
 
 # Вспомогательная функция для генерации заданий

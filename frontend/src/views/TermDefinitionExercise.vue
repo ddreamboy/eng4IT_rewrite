@@ -24,7 +24,7 @@ const showCorrectAnswer = ref(false)
 
 // Показываем кнопку "Следующее задание" только когда ответ правильный или исчерпаны попытки
 const showNextButton = computed(
-  () => isCorrect.value || (attempts.value >= 2 && showCorrectAnswer.value),
+  () => (attempts.value >= 2 && showCorrectAnswer.value),
 )
 
 // Следим за изменением категории
@@ -109,14 +109,14 @@ async function checkAnswer() {
     isCorrect.value = response.data.is_correct
     attempts.value++
 
-    // Показываем правильный ответ только после второй попытки или при правильном ответе
+    // Показываем правильный ответ только после  попытки или при правильном ответе
     if (isCorrect.value || attempts.value >= 2) {
       showCorrectAnswer.value = true
       if (isCorrect.value) {
         // Автоматически генерируем новое задание через небольшую задержку
         setTimeout(() => {
           generateExercise()
-        }, 1500)
+        }, 500)
       }
     }
   } catch (error) {

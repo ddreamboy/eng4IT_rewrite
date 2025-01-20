@@ -23,22 +23,29 @@ export const useWordsStore = defineStore('words', () => {
   const favorites = ref([])
 
   // Actions
-  async function fetchWords() {
+  async function fetchWords(params = {}) {
     loading.value = true
     error.value = null
-
+  
     try {
       const response = await axios.get(`${API_URL}/words/`, {
         params: {
-          page: pagination.value.page,
-          page_size: pagination.value.pageSize,
-          difficulty: filters.value.difficulty,
-          word_type: filters.value.wordType,
-          search: filters.value.search,
+          page: params.page || pagination.value.page,
+          page_size: params.page_size || pagination.value.pageSize,
+          difficulty: params.difficulty,
+          search: params.search,
+          favorites_only: params.favorites_only
         },
       })
-      console.log('Words response:', response.data) // Для отладки
-      words.value = response.data || []
+  
+      // Обновляем состояние store в соответствии с форматом API
+      words.value = response.data.items
+      pagination.value = {
+        page: response.data.page,
+        pageSize: response.data.page_size,
+        total: response.data.total,
+        totalPages: response.data.total_pages
+      }
     } catch (err) {
       error.value = err.response?.data?.detail || 'Не удалось загрузить слова'
       console.error('Words fetch error:', err)
