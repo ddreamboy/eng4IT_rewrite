@@ -106,7 +106,7 @@ source venv/bin/activate  # Linux/MacOS
 
 2. **Установка зависимостей**
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 3. **Настройка переменных окружения**
