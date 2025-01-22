@@ -1,10 +1,10 @@
 from typing import AsyncGenerator, Optional
 
-from core.security import verify_token
-from db.database import get_session
+from backend.core.security import verify_token
+from backend.db.database import get_session
 from fastapi import Depends, Header, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from services.auth import AuthService
+from backend.services.auth import AuthService
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.core.config import settings
 

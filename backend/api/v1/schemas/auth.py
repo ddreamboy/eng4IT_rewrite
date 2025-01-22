@@ -3,8 +3,9 @@
 from datetime import datetime
 from typing import Optional
 
-from core.security import check_password_strength
 from pydantic import BaseModel, EmailStr, Field, field_validator
+
+from backend.core.security import check_password_strength
 
 
 class UserCreate(BaseModel):

@@ -1,13 +1,13 @@
 from math import ceil
 from typing import Optional
 
-from api.deps import get_current_user_id, get_session
 from fastapi import APIRouter, Depends, HTTPException, Query
 from logger import setup_logger
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from backend.api.deps import get_current_user_id, get_session
 from backend.db.models import (  # Добавлены импорты
     ItemType,
     UserWordStatus,

@@ -2,8 +2,9 @@
 
 from typing import Dict, Optional
 
-from db.models import DifficultyLevel
 from pydantic import BaseModel, EmailStr
+
+from backend.db.models import DifficultyLevel
 
 
 class UserBase(BaseModel):
