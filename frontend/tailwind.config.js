@@ -11,34 +11,40 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Темная тема
-        'dark-primary': '#4B4033',  // Глубокий кофейный
-        'dark-secondary': '#6B5841', // Светлый мокка
-        'dark-accent': '#C7B29E',   // Мягкий кремовый
-        'dark-text': '#EDE3D9',     // Песочный
-        'dark-muted': '#A89787',    // Нежный серо-бежевый
-        // Светлая тема
-        'light-primary': '#FAF3E6', // Кремово-белый
-        'light-secondary': '#EFE2D1', // Светлый песочный
-        'light-accent': '#D4AF6A',   // Золотистый акцент
-        'light-text': '#5A4633',     // Тёплый кофейный для текста
-        'light-muted': '#C1A78D',    // Светло-бежевый с золотистым оттенком
-        // Состояния
+        // Dark theme - Серые оттенки как у Claude
+        'dark': {
+          'primary': '#1A1B1E',    // Глубокий серый
+          'secondary': '#2B2C2F',  // Серый для контента
+          'accent': '#D4B483',     // Золотистый акцент
+          'text': '#FFFFFF',       // Белый текст
+          'muted': '#A1A1AA',      // Приглушенный серый
+        },
+        
+        // Light theme - Vanilla & Gold
+        'light': {
+          'primary': '#FFF9F0',    // Off-white
+          'secondary': '#F5EBE0',  // Warm vanilla
+          'accent': '#D4B483',     // Golden beige  
+          'text': '#4A3728',       // Dark coffee
+          'muted': '#BCA89B',      // Soft taupe
+        },
+      
+        // States 
         'success': {
-          light: '#A3C4A8',  // Светлый мятный
-          dark: '#6D8B6A'    // Тёмный мятный
+          light: '#9DC4A1',  // Sage green
+          dark: '#5E7D61'    // Forest green
         },
         'warning': {
-          light: '#D8B987',  // Светлый карамельный
-          dark: '#B08C5C'    // Тёмный карамельный
+          light: '#E6C687',  // Warm gold
+          dark: '#BC955C'    // Bronze
         },
         'error': {
-          light: '#D78A89',  // Светлый терракотовый
-          dark: '#A66261'    // Тёмный терракотовый
+          light: '#E59895',  // Dusty rose
+          dark: '#B66E6B'    // Burgundy
         },
         'info': {
-          light: '#B3C3C8',  // Светлый голубовато-серый
-          dark: '#85979E'    // Тёмный голубовато-серый
+          light: '#A7BBC1',  // Steel blue
+          dark: '#798D93'    // Slate
         }
       }
       
