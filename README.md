@@ -141,7 +141,7 @@ npm install
 
 2. **Настройка окружения**
 ```env
-VITE_API_URL=http://localhost:8000/api/v1
+VITE_API_URL=http://localhost:7000/api/v1
 ```
 
 3. **Запуск**
@@ -189,7 +189,7 @@ frontend/
 <td>
 
 ### 🔍 Swagger UI
-`http://localhost:8000/docs`
+`http://localhost:7000/docs`
 
 </td>
 </tr>
