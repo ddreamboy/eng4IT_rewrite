@@ -7,3 +7,4 @@ TODO.md
 backend/ai/piper/
 *.wav
 .vscode/
+.pytest_cache/

@@ -4,7 +4,7 @@ from typing import Dict, Optional
 
 import redis.asyncio as redis
 
-from core.config import settings
+from backend.core.config import settings
 
 
 class TaskStatusStore:

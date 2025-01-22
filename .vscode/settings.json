@@ -1,3 +1,8 @@
 {
-    "commentTranslate.hover.enabled": true
+    "commentTranslate.hover.enabled": true,
+    "python.testing.pytestArgs": [
+        "backend"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

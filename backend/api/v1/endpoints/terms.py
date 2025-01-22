@@ -1,7 +1,6 @@
 from math import ceil
 from typing import Optional
 
-from api.deps import get_current_user_id, get_session
 from fastapi import (
     APIRouter,
     Depends,
@@ -13,6 +12,7 @@ from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from backend.api.deps import get_current_user_id, get_session
 from backend.db.models import (
     ItemType,
     TermORM,
@@ -80,7 +80,8 @@ async def get_terms(
         'page_size': page_size,
         'total_pages': ceil(total_items / page_size),
     }
-    
+
+
 @router.get('/all')
 async def get_all_terms(db: AsyncSession = Depends(get_session)):
     query = select(TermORM)

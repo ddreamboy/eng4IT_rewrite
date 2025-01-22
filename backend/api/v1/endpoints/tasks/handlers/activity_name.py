@@ -2,7 +2,8 @@ from typing import Any, Dict
 
 from ai.gemini import GeminiServiceSinglethon
 from ai.operations import ActivityName
-from core.task_store import task_store
+
+from backend.core.task_store import task_store
 
 from ..base import BaseTaskHandler
 

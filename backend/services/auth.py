@@ -3,18 +3,19 @@
 from datetime import datetime
 from typing import Optional, Tuple
 
-from api.v1.schemas.auth import UserCreate, UserLogin
-from core.exceptions import AuthError, NotFoundError
-from core.security import (
+from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.api.v1.schemas.auth import UserCreate, UserLogin
+from backend.core.exceptions import AuthError, NotFoundError
+from backend.core.security import (
     create_access_token,
     create_password_hash,
     create_refresh_token,
     verify_password,
 )
-from db.models import UserORM
-from sqlalchemy import select, update
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
+from backend.db.models import UserORM
 
 
 class AuthService:
