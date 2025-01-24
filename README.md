@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/eng4it) [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org) [![Vue.js](https://img.shields.io/badge/vue.js-3.0+-green.svg)](https://vuejs.org) [![FastAPI](https://img.shields.io/badge/fastapi-latest-teal.svg)](https://fastapi.tiangolo.com)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/eng4it) [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org) [![Vue.js](https://img.shields.io/badge/vue.js-3.0+-green.svg)](https://vuejs.org) [![FastAPI](https://img.shields.io/badge/fastapi-latest-teal.svg)](https://fastapi.tiangolo.com)
 
 ---
 
