@@ -214,6 +214,19 @@ pytest backend/tests/
 </table>
 
 ---
+### Внешний вид приложения
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/64c1a6c2-6ea1-4cfc-bdaa-34ae22789361" width="1280">
+  <img src="https://github.com/user-attachments/assets/bbb689fa-75d9-42f9-aeef-d7684d85abaa" width="1280">
+  <img src="https://github.com/user-attachments/assets/e57a67e8-df0e-4145-b108-c475726260f1" width="1280">
+  <img src="https://github.com/user-attachments/assets/1cf29766-3796-4682-969c-ef00834ae2f6" width="1280">
+  <img src="https://github.com/user-attachments/assets/5d3f1df1-da9f-4ced-a768-bbe6f5aa30ff" width="1280">
+  <img src="https://github.com/user-attachments/assets/1fa2fdf9-ad6b-4526-8142-534ca9176238" width="1280">
+</div>
+
+
+---
 
 <div align="center">
 
